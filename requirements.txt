@@ -1,0 +1,3 @@
+mkdocs-simple-blog
+mkdocs-awesome-pages-plugin
+pymdown-extensions

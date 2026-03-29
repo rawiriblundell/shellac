@@ -240,6 +240,155 @@ str_is_digits() {
   esac
 }
 
+# @description Return 0 if the string is a valid integer (optional leading minus, digits only).
+#   Differs from str_is_digits: allows a leading '-' sign.
+#   An empty string or bare '-' returns 1.
+#
+# @arg $1 string String to test
+#
+# @example
+#   str_is_int "42"    # => 0
+#   str_is_int "-7"    # => 0
+#   str_is_int "+7"    # => 1  (unary + not accepted)
+#   str_is_int "3.14"  # => 1
+#
+# @exitcode 0 Non-empty valid integer; 1 otherwise
+str_is_int() {
+  local _str _digits
+  if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
+    IFS= read -r _str
+  else
+    _str="${1:-}"
+  fi
+  # Strip optional leading minus; empty remainder or any non-digit → fail
+  _digits="${_str#-}"
+  case "${_digits}" in
+    (''|*[![:digit:]]*) return 1 ;;
+  esac
+}
+
+# @description Return 0 if the string is a valid hexadecimal value.
+#   Case-insensitive. Accepts an optional 0x/0X prefix.
+#   An empty string or bare '0x'/'0X' returns 1.
+#
+# @arg $1 string String to test
+#
+# @example
+#   str_is_hex "DEADBEEF"   # => 0
+#   str_is_hex "0xff"       # => 0
+#   str_is_hex "0x"         # => 1  (no digits after prefix)
+#   str_is_hex "0xGG"       # => 1
+#
+# @exitcode 0 Non-empty valid hex string; 1 otherwise
+str_is_hex() {
+  local _str _digits
+  if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
+    IFS= read -r _str
+  else
+    _str="${1:-}"
+  fi
+  # Strip optional 0x/0X prefix; empty remainder or any non-hex char → fail
+  _digits="${_str#0[xX]}"
+  case "${_digits}" in
+    (''|*[![:xdigit:]]*) return 1 ;;
+  esac
+}
+
+# @description Return 0 if the string is valid base64-encoded content.
+#   Accepts both standard ('+', '/') and URL-safe ('_', '-') alphabets.
+#   Requires proper padding: length must be a multiple of 4; trailing '='
+#   or '==' is allowed, but '=' may not appear elsewhere in the string.
+#
+# @arg $1 string String to test
+#
+# @example
+#   str_is_base64 "YWJj"     # => 0  ("abc")
+#   str_is_base64 "YQ=="     # => 0  ("a")
+#   str_is_base64 "YQ"       # => 1  (not padded to multiple of 4)
+#   str_is_base64 "YQ==="    # => 1  (over-padded)
+#   str_is_base64 "!!"       # => 1
+#
+# @exitcode 0 Valid padded base64 string; 1 otherwise
+str_is_base64() {
+  local _str _len _body _pad
+  if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
+    IFS= read -r _str
+  else
+    _str="${1:-}"
+  fi
+  [[ -z "${_str}" ]] && return 1
+  _len="${#_str}"
+  # Length must be a multiple of 4
+  (( _len % 4 != 0 )) && return 1
+  # Isolate body (everything before the first '=') and trailing padding
+  _body="${_str%%=*}"
+  _pad="${_str#"${_body}"}"
+  # Padding may only be '', '=', or '=='
+  case "${_pad}" in
+    (''|'='|'==') ;;
+    (*) return 1 ;;
+  esac
+  # Body must be non-empty and contain only base64 alphabet chars
+  # (standard: A-Za-z0-9+/  or URL-safe: A-Za-z0-9_-)
+  case "${_body}" in
+    (''|*[!A-Za-z0-9+/_-]*) return 1 ;;
+  esac
+}
+
+# @description Return 0 if every letter character in the string is uppercase.
+#   Non-letter characters (digits, punctuation, etc.) are ignored.
+#   An empty string or a string with no letters passes.
+#
+# @arg $1 string String to test
+#
+# @example
+#   str_is_upper "HELLO"      # => 0
+#   str_is_upper "HELLO123"   # => 0
+#   str_is_upper "Hello"      # => 1
+#   str_is_upper "123"        # => 0  (no letters to be wrong)
+#
+# @exitcode 0 All letters are uppercase (or no letters present); 1 otherwise
+str_is_upper() {
+  local _str _stripped
+  if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
+    IFS= read -r _str
+  else
+    _str="${1:-}"
+  fi
+  # Remove all uppercase letters; any surviving lowercase letter → fail
+  _stripped="${_str//[[:upper:]]/}"
+  case "${_stripped}" in
+    (*[[:lower:]]*) return 1 ;;
+  esac
+}
+
+# @description Return 0 if every letter character in the string is lowercase.
+#   Non-letter characters (digits, punctuation, etc.) are ignored.
+#   An empty string or a string with no letters passes.
+#
+# @arg $1 string String to test
+#
+# @example
+#   str_is_lower "hello"      # => 0
+#   str_is_lower "hello123"   # => 0
+#   str_is_lower "Hello"      # => 1
+#   str_is_lower "123"        # => 0  (no letters to be wrong)
+#
+# @exitcode 0 All letters are lowercase (or no letters present); 1 otherwise
+str_is_lower() {
+  local _str _stripped
+  if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
+    IFS= read -r _str
+  else
+    _str="${1:-}"
+  fi
+  # Remove all lowercase letters; any surviving uppercase letter → fail
+  _stripped="${_str//[[:lower:]]/}"
+  case "${_stripped}" in
+    (*[[:upper:]]*) return 1 ;;
+  esac
+}
+
 # @description Test if a string is a plausible email address.
 #   Checks structural format only — no DNS or deliverability checks.
 #

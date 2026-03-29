@@ -848,3 +848,7 @@ shellac() {
     ;;
   esac
 }
+
+# Make color and text-effect variables available immediately in interactive shells.
+# $- contains 'i' when the shell is interactive; non-interactive scripts are unaffected.
+[[ $- = *i* ]] && include "text/color"

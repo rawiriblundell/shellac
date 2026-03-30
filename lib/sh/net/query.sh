@@ -119,62 +119,6 @@ net_query_asn_attr() {
   done
 }
 
-# @description Test basic internet connectivity by attempting a TCP connection
-#   to a well-known host (Google Public DNS by default).
-#
-# @arg $1 string Optional: host to test (default: 8.8.8.8)
-# @arg $2 string Optional: port to test (default: 53)
-#
-# @exitcode 0 Connection succeeded
-# @exitcode 1 Connection failed or timed out
-net_query_internet() {
-  local test_host test_port
-  test_host="${1:-8.8.8.8}"
-  test_port="${2:-53}"
-  timeout 1 bash -c ">/dev/tcp/${test_host}/${test_port}" >/dev/null 2>&1
-}
-
-# @description Test connectivity to a remote host's port via bash /dev/tcp or /dev/udp.
-#
-# @arg $1 string Remote hostname or IP address
-# @arg $2 int Port number (default: 22)
-# @arg $3 string Protocol: tcp or udp (default: tcp)
-#
-# @example
-#   net_query_port example.com 443
-#   net_query_port example.com 53 udp
-#
-# @exitcode 0 Port is reachable
-# @exitcode 1 Port is unreachable or timed out
-net_query_port() {
-  timeout 1 bash -c "</dev/${3:-tcp}/${1:?No target}/${2:-22}" 2>/dev/null
-}
-
-# @description Poll a host/port until it becomes reachable or a timeout expires.
-#   Retries once per second using net_query_port.
-#
-# @arg $1 string Remote hostname or IP address
-# @arg $2 int Port number (default: 22)
-# @arg $3 int Timeout in seconds (default: 30)
-#
-# @example
-#   net_wait_for_port db.example.com 5432 60
-#
-# @exitcode 0 Port became reachable within the timeout
-# @exitcode 1 Timeout expired before port was reachable
-net_wait_for_port() {
-  local host port timeout i
-  host="${1:?No target}"
-  port="${2:-22}"
-  timeout="${3:-30}"
-
-  for (( i = 0; i < timeout; i++ )); do
-    net_query_port "${host}" "${port}" && return 0
-    sleep 1
-  done
-  return 1
-}
-
 # @description Parse a URL into its component parts.
 #   With one argument, prints all components as key: value lines.
 #   With a second argument, prints only the requested field.

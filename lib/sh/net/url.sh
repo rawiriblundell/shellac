@@ -1,0 +1,168 @@
+# shellcheck shell=bash
+
+# Copyright 2022 Rawiri Blundell
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+# Provenance: https://github.com/rawiriblundell/shellac
+# SPDX-License-Identifier: Apache-2.0
+
+[ -n "${_SHELLAC_LOADED_net_url+x}" ] && return 0
+_SHELLAC_LOADED_net_url=1
+
+# @description Percent-encode a string for use in a URL query string.
+#   Encodes all characters except unreserved: A-Z a-z 0-9 - _ . ~
+#
+# @arg $1 string Value to encode
+#
+# @stdout Percent-encoded string
+# @exitcode 0 Always
+url_encode() {
+  local string char encoded i
+  string="${1}"
+  encoded=""
+  for (( i = 0; i < ${#string}; i++ )); do
+    char="${string:i:1}"
+    case "${char}" in
+      ([A-Za-z0-9\-_.~]) encoded+="${char}" ;;
+      (*) encoded+="$(printf '%%%02X' "'${char}")" ;;
+    esac
+  done
+  printf -- '%s\n' "${encoded}"
+}
+
+# @description Decode a percent-encoded URL string.
+#   Also converts '+' to space (application/x-www-form-urlencoded convention).
+#
+# @arg $1 string Percent-encoded string
+#
+# @stdout Decoded string
+# @exitcode 0 Always
+url_decode() {
+  local encoded
+  encoded="${1//+/ }"
+  # Replace %XX with \xXX then interpret with printf %b
+  printf -- '%b\n' "${encoded//%/\\x}"
+}
+
+# @description Parse a URL query string into key=value lines.
+#   With -n <name>, populates a named associative array instead.
+#   Keys and values are percent-decoded. For repeated keys, the last
+#   value wins when writing to an associative array.
+#
+# @arg $1 string Optional: '-n <name>' to specify target associative array name
+# @arg $2 string Query string (e.g. 'foo=bar&baz=qux'), or $1 if -n not used
+#
+# @example
+#   url_parse_query 'name=Alice&city=Auckland'
+#   # => name=Alice
+#   # => city=Auckland
+#
+#   declare -A params
+#   url_parse_query -n params 'name=Alice&city=Auckland'
+#   printf '%s\n' "${params[name]}"   # => Alice
+#
+# @stdout key=value lines (without -n)
+# @exitcode 0 Success
+# @exitcode 2 Missing argument
+url_parse_query() {
+  local arr_name qs pair key value
+  arr_name=""
+
+  if [[ "${1}" = "-n" ]]; then
+    arr_name="${2:?url_parse_query: -n requires an array name}"
+    shift 2
+  fi
+
+  qs="${1:?url_parse_query: query string argument required}"
+  # Strip leading '?' if present
+  qs="${qs#\?}"
+
+  if [[ -n "${arr_name}" ]]; then
+    local -n _url_parse_query_target="${arr_name}"
+  fi
+
+  local IFS='&'
+  for pair in ${qs}; do
+    key="${pair%%=*}"
+    value="${pair#*=}"
+    key=$(url_decode "${key}")
+    value=$(url_decode "${value}")
+    if [[ -n "${arr_name}" ]]; then
+      # shellcheck disable=SC2034
+      _url_parse_query_target["${key}"]="${value}"
+    else
+      printf -- '%s=%s\n' "${key}" "${value}"
+    fi
+  done
+}
+
+# @description Extract a single parameter value from a URL query string.
+#
+# @arg $1 string Query string (e.g. 'foo=bar&baz=qux')
+# @arg $2 string Parameter key to look up
+#
+# @stdout Parameter value (percent-decoded), or empty if not found
+# @exitcode 0 Key found
+# @exitcode 1 Key not found
+url_get_param() {
+  local qs key pair k v
+  qs="${1:?url_get_param: query string argument required}"
+  key="${2:?url_get_param: key argument required}"
+  qs="${qs#\?}"
+
+  local IFS='&'
+  for pair in ${qs}; do
+    k="${pair%%=*}"
+    v="${pair#*=}"
+    k=$(url_decode "${k}")
+    if [[ "${k}" = "${key}" ]]; then
+      url_decode "${v}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+# @description Build a percent-encoded query string from key=value arguments.
+#   Keys and values are each percent-encoded. Output does not include a leading '?'.
+#
+# @arg $@ string One or more 'key=value' pairs
+#
+# @example
+#   url_build_query name=Alice city=Auckland
+#   # => name=Alice&city=Auckland
+#
+#   url_build_query "q=hello world" lang=en
+#   # => q=hello%20world&lang=en
+#
+# @stdout Percent-encoded query string
+# @exitcode 0 Always
+# @exitcode 1 No arguments
+url_build_query() {
+  (( ${#} == 0 )) && { printf -- '%s\n' "url_build_query: at least one key=value argument required" >&2; return 1; }
+
+  local pair key value result first
+  result=""
+  first=1
+
+  for pair in "${@}"; do
+    key="${pair%%=*}"
+    value="${pair#*=}"
+    (( first )) || result+="&"
+    result+="$(url_encode "${key}")=$(url_encode "${value}")"
+    first=0
+  done
+
+  printf -- '%s\n' "${result}"
+}

@@ -20,5 +20,52 @@
 [ -n "${_SHELLAC_LOADED_crypto_ssl_cert_join+x}" ] && return 0
 _SHELLAC_LOADED_crypto_ssl_cert_join=1
 
-# TODO: Create a function that joins certs into chains
-# I likely have the code for this already - must check my archives...
+# @description Join two or more PEM certificate files into a single chain bundle.
+#   Each input file is validated as a PEM certificate before concatenation.
+#   Output is written to stdout or to a file with -o.
+#
+# @arg $1 string Optional: '-o <file>' to write output to a file
+# @arg $@ string Two or more PEM certificate files (order determines chain order)
+#
+# @example
+#   ssl_cert_join cert.pem intermediate.pem root.pem > bundle.pem
+#   ssl_cert_join -o bundle.pem cert.pem intermediate.pem root.pem
+#
+# @stdout PEM chain bundle
+# @exitcode 0 Success
+# @exitcode 1 Missing arguments, unreadable file, or invalid PEM certificate
+ssl_cert_join() {
+  local outfile cert
+
+  if [[ "${1}" = "-o" ]]; then
+    outfile="${2:?ssl_cert_join: -o requires an output file path}"
+    shift 2
+  fi
+
+  if (( ${#} < 1 )); then
+    printf -- '%s\n' "ssl_cert_join: at least one certificate file required" >&2
+    return 1
+  fi
+
+  # Validate all inputs before writing any output
+  for cert in "${@}"; do
+    if [[ ! -f "${cert}" ]]; then
+      printf -- '%s\n' "ssl_cert_join: not a file: ${cert}" >&2
+      return 1
+    fi
+    if [[ ! -r "${cert}" ]]; then
+      printf -- '%s\n' "ssl_cert_join: permission denied: ${cert}" >&2
+      return 1
+    fi
+    if ! openssl x509 -noout -in "${cert}" 2>/dev/null; then
+      printf -- '%s\n' "ssl_cert_join: not a valid PEM certificate: ${cert}" >&2
+      return 1
+    fi
+  done
+
+  if [[ -n "${outfile}" ]]; then
+    cat -- "${@}" > "${outfile}"
+  else
+    cat -- "${@}"
+  fi
+}

@@ -52,6 +52,35 @@ array_sort_numeric() {
   _arr=( "${_sorted[@]}" )
 }
 
+# @description Sort a named array in place using natural (version) order.
+#   Numbers embedded in strings are compared numerically, so file2 sorts
+#   before file10 and v1.9 sorts before v1.10.
+#   Requires GNU coreutils sort -V. If unavailable, falls back to standard
+#   lexicographic sort and prints a warning to stderr.
+#
+# @arg $1 string Name of the array variable.
+#
+# @example
+#   files=( file10.txt file2.txt file1.txt )
+#   array_sort_natural files
+#   printf '%s\n' "${files[@]}"
+#   # => file1.txt
+#   # => file2.txt
+#   # => file10.txt
+#
+# @exitcode 0 Always
+array_sort_natural() {
+  local -n _arr="${1:?No array name given}"
+  local -a _sorted
+  if sort -V /dev/null 2>/dev/null; then
+    readarray -t _sorted < <(printf -- '%s\n' "${_arr[@]}" | sort -V)
+  else
+    printf -- '%s\n' "array_sort_natural: sort -V unavailable, falling back to lexicographic sort" >&2
+    readarray -t _sorted < <(printf -- '%s\n' "${_arr[@]}" | sort)
+  fi
+  _arr=( "${_sorted[@]}" )
+}
+
 # @description Reverse the order of elements in a named array in place.
 #
 # @arg $1 string Name of the array variable.

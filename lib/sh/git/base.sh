@@ -35,6 +35,30 @@ git_root() {
   git rev-parse --show-toplevel 2>/dev/null
 }
 
+# @description Get the URL for a named git remote.
+#
+# @arg $1 string Remote name (default: origin)
+#
+# @example
+#   git_remote_get            # => git@github.com:owner/repo.git
+#   git_remote_get upstream   # => https://github.com/owner/upstream.git
+#
+# @stdout Remote URL
+# @exitcode 0 Success
+# @exitcode 1 Not in a git repo or remote not found
+git_remote_get() {
+  local remote
+  remote="${1:-origin}"
+  if ! git_is_repo; then
+    printf -- '%s\n' "git_remote_get: not in a git repository" >&2
+    return 1
+  fi
+  command git remote get-url "${remote}" 2>/dev/null || {
+    printf -- '%s\n' "git_remote_get: remote '${remote}' not found" >&2
+    return 1
+  }
+}
+
 # @description Get the name of the current git repository (from the remote URL,
 #   falling back to the directory name).
 #

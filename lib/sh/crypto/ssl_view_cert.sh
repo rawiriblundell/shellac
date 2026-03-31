@@ -41,7 +41,7 @@ fi
 # (c) 2019 Rawiri Blundell, Datacom Compute.  MIT License.
 ssl_view_cert () {
     local _ssl_view_cert_algorithm _ssl_view_cert_host _ssl_view_cert_port _ssl_view_cert_in
-    local _ssl_view_cert_exp_epoch _ssl_view_cert_now_epoch
+    local _ssl_view_cert_exp_epoch _ssl_view_cert_now_epoch _ssl_view_cert_date_str _ssl_view_cert_days
     _ssl_view_cert_in="${2}"
 
     if (( "${#_ssl_view_cert_in}" == 0 )); then
@@ -124,10 +124,31 @@ ssl_view_cert () {
                 awk '{printf("%s %02d %d %s\n", $1,$2,$4,$3)}'
         ;;
         ([Dd]ays)
-            _ssl_view_cert_exp_epoch=$(openssl x509 -in "${_ssl_view_cert_in}" -enddate -noout | cut -d= -f2)
-            _ssl_view_cert_exp_epoch=$(date -d "${_ssl_view_cert_exp_epoch}" +%s)
+            _ssl_view_cert_date_str=$(openssl x509 -in "${_ssl_view_cert_in}" -enddate -noout | cut -d= -f2)
+            # date -d is GNU-specific; test before use, fall back to perl Time::Local
+            if date -d "${_ssl_view_cert_date_str}" +%s >/dev/null 2>&1; then
+                _ssl_view_cert_exp_epoch=$(date -d "${_ssl_view_cert_date_str}" +%s)
+            elif command -v perl >/dev/null 2>&1; then
+                _ssl_view_cert_exp_epoch=$(perl -e '
+                    use Time::Local;
+                    my ($mon,$day,$time,$year) = (split /\s+/, $ARGV[0])[0,1,2,3];
+                    my %m = (Jan=>0,Feb=>1,Mar=>2,Apr=>3,May=>4,Jun=>5,
+                             Jul=>6,Aug=>7,Sep=>8,Oct=>9,Nov=>10,Dec=>11);
+                    my ($h,$mi,$s) = split /:/, $time;
+                    print timegm($s,$mi,$h,$day,$m{$mon},$year-1900)."\n";
+                ' "${_ssl_view_cert_date_str}")
+            else
+                printf -- 'ssl_view_cert: %s\n' "days: requires GNU date or perl" >&2
+                return 1
+            fi
             _ssl_view_cert_now_epoch=$(date +%s)
-            printf -- '%d\n' "$(( (_ssl_view_cert_exp_epoch - _ssl_view_cert_now_epoch) / 86400 ))"
+            _ssl_view_cert_days=$(( (_ssl_view_cert_exp_epoch - _ssl_view_cert_now_epoch) / 86400 ))
+            # Human-friendly output when stdout is a terminal; plain integer otherwise
+            if [[ -t 1 ]]; then
+                printf -- '%d days\n' "${_ssl_view_cert_days}"
+            else
+                printf -- '%d\n' "${_ssl_view_cert_days}"
+            fi
         ;;
         ([Ss]tate)
             case "$(openssl x509 -in "${_ssl_view_cert_in}" -checkend "${3:-0}")" in

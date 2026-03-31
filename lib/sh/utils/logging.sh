@@ -20,31 +20,64 @@
 [ -n "${_SHELLAC_LOADED_utils_logging+x}" ] && return 0
 _SHELLAC_LOADED_utils_logging=1
 
+# Log level filter. Set before including this library or at any time to control
+# which messages are emitted. Valid values: DEBUG INFO WARN ERROR (default: INFO)
+: "${LOG_LEVEL:=INFO}"
+
+# @description Map a log level name to a numeric value for comparison.
+#   Returns 0=DEBUG 1=INFO 2=WARN 3=ERROR; unknown levels map to INFO.
+#
+# @arg $1 string Level name
+# @stdout Numeric level value
+_log_level_num() {
+    case "${1}" in
+        (DEBUG) printf '0' ;;
+        (INFO)  printf '1' ;;
+        (WARN)  printf '2' ;;
+        (ERROR) printf '3' ;;
+        (*)     printf '1' ;;
+    esac
+}
+
+# @description Log a debug message via logmsg. Suppressed unless LOG_LEVEL=DEBUG.
+#
+# @arg $@ string Message text
+#
+# @exitcode 0 Always
+log_debug() {
+    (( $(_log_level_num "${LOG_LEVEL}") > 0 )) && return 0
+    logmsg -t "${0##*/}" "DEBUG: ${*}"
+}
+
 # @description Log an informational message via logmsg.
+#   Suppressed when LOG_LEVEL is WARN or ERROR.
 #
 # @arg $@ string Message text
 #
 # @exitcode 0 Always
 log_info() {
+    (( $(_log_level_num "${LOG_LEVEL}") > 1 )) && return 0
     logmsg -t "${0##*/}" "INFO: ${*}"
 }
 
-# @description Log an error message via logmsg.
+# @description Log a warning message via logmsg.
+#   Suppressed when LOG_LEVEL is ERROR.
+#
+# @arg $@ string Message text
+#
+# @exitcode 0 Always
+log_warn() {
+    (( $(_log_level_num "${LOG_LEVEL}") > 2 )) && return 0
+    logmsg -t "${0##*/}" "WARN: ${*}"
+}
+
+# @description Log an error message via logmsg. Never suppressed by LOG_LEVEL.
 #
 # @arg $@ string Message text
 #
 # @exitcode 0 Always
 log_error() {
     logmsg -t "${0##*/}" "ERROR: ${*}"
-}
-
-# @description Log a warning message via logmsg.
-#
-# @arg $@ string Message text
-#
-# @exitcode 0 Always
-log_warn() {
-    logmsg -t "${0##*/}" "WARN: ${*}"
 }
 
 # @description Log a message to the system log using systemd-cat, logger, or a fallback

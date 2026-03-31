@@ -80,7 +80,7 @@ relying on shell tricks. Despite being POSIX for decades, it's routinely
 unknown even to experienced shell programmers. The common substitute is
 `tr -d '\n'` chained with a trailing `echo` or `printf` to restore the
 final newline — a pattern that appears in production scripts, dotfiles, and
-Stack Overflow answers from people with fifteen years of shell experience.
+Stack Overflow answers from people with decades of shell experience.
 `fold` has the same problem: it's been in every UNIX since the 1970s, and
 most developers reach for Python or awk before they think of it.
 

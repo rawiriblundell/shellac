@@ -6,4 +6,4 @@
 
 [ -n "${_SHELLAC_LOADED_text_last+x}" ] && return 0
 # shellcheck disable=SC1090
-. "$(dirname -- "${BASH_SOURCE[0]}")/../text/last.sh"
+. "$(dirname -- "${BASH_SOURCE[0]}")/../text/first.sh"

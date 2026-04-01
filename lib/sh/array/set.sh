@@ -46,6 +46,7 @@ array_diff() {
   for _item in "${_arr_a[@]}"; do
     [[ -z "${_seen[${_item}]+x}" ]] && printf -- '%s\n' "${_item}"
   done
+  return 0
 }
 
 # @description Print elements present in both arr_a and arr_b.
@@ -74,6 +75,7 @@ array_intersect() {
   for _item in "${_arr_a[@]}"; do
     [[ -n "${_seen[${_item}]+x}" ]] && printf -- '%s\n' "${_item}"
   done
+  return 0
 }
 
 # @description Print all unique elements from both arrays (set union).

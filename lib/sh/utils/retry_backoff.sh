@@ -103,9 +103,13 @@ cmd_retry_constant() {
 # @exitcode 0 Command succeeded; 1 Timeout reached; 2 Missing command
 cmd_retry_until() {
   local timeout interval deadline now attempt
-  timeout="${1:?cmd_retry_until: missing timeout argument}"
+  if (( ${#} == 0 )); then
+    printf -- '%s\n' "cmd_retry_until: missing timeout argument" >&2
+    return 2
+  fi
+  timeout="${1}"
   interval="${2:-5}"
-  shift 2
+  (( $# >= 2 )) && shift 2 || shift 1
   (( ${#} == 0 )) && { printf -- '%s\n' "cmd_retry_until: missing command" >&2; return 2; }
 
   deadline=$(( $(date +%s) + timeout ))

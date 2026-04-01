@@ -64,6 +64,7 @@ array_filter() {
   for _item in "${_arr[@]}"; do
     [[ "${_item}" = ${_pattern} ]] && printf -- '%s\n' "${_item}"
   done
+  return 0
 }
 
 # @description Apply a function to each element of a named array and print the results.

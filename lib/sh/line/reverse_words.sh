@@ -32,5 +32,5 @@ line_reverse_words() {
     for _reverse_words_word in ${@}; do
         _reverse_words_output="${_reverse_words_word} ${_reverse_words_output}"
     done
-    printf -- '%s\n' "${_reverse_words_output}"
+    printf -- '%s\n' "${_reverse_words_output% }"
 }

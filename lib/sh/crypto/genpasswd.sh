@@ -20,6 +20,8 @@
 [ -n "${_SHELLAC_LOADED_crypto_genpasswd+x}" ] && return 0
 _SHELLAC_LOADED_crypto_genpasswd=1
 
+include "crypto/random"
+
 # @description Generate random passwords when 'pwgen' or 'apg' are not available.
 #   Supports standard alphanumeric, special character, and Koremutake phonetic syllable
 #   modes. Options to require at least one digit, uppercase, or special character.

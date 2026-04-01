@@ -28,13 +28,16 @@ _SHELLAC_LOADED_text_rot13=1
 # @exitcode 0 Success
 # @exitcode 1 No input given
 rot13 () {
-  # If parameter is a file, or stdin is used, action that first
-  if [[ -r "${1}" ]]||[[ ! -t 0 ]]; then
-    tr a-zA-Z n-za-mN-ZA-M < "${1:-/dev/stdin}"
-  # Otherwise, if a parameter is given, rot13 all parameters
-  elif [[ "${1}" ]]; then
+  # If parameter is a readable file, use that
+  if [[ -r "${1}" ]]; then
+    tr a-zA-Z n-za-mN-ZA-M < "${1}"
+  # If a non-empty parameter is given, rot13 it as a string
+  elif [[ -n "${1}" ]]; then
     tr a-zA-Z n-za-mN-ZA-M <<< "$*"
-  # Otherwise, print usage
+  # If stdin is piped, use that
+  elif [[ ! -t 0 ]]; then
+    tr a-zA-Z n-za-mN-ZA-M
+  # Otherwise print usage
   else
     printf -- '%s\n' "Usage: rot13 [FILE|STDIN|STRING]"
     return 1

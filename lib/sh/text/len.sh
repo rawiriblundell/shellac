@@ -45,14 +45,16 @@ str_len() {
       LC_ALL="${_lc_all_orig}"
     ;;
     ('')
-      # Check for piped input
-      if [[ ! -t 0 ]]; then
+      # No argument at all: check for piped input or return 0
+      if (( $# == 0 )) && [[ ! -t 0 ]]; then
         while read -r; do
           printf -- '%s\n' "${#REPLY} ${REPLY}"
         done
-      # Otherwise there's no piped input and nothing given.
-      # The length of nothing is 0.
+      elif (( $# == 0 )); then
+        # No arguments and no stdin: length of nothing is 0
+        printf -- '%d\n' "0"
       else
+        # Explicit empty string argument
         printf -- '%d\n' "0"
       fi
     ;;

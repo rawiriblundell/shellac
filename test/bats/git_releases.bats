@@ -49,10 +49,10 @@ load 'helpers/setup'
 # ---------------------------------------------------------------------------
 
 @test "_git_fetch_release_json: latest cli/cli returns JSON with tag_name" {
+  curl -fsSL --max-time 5 "https://api.github.com/repos/cli/cli/releases/latest" \
+    >/dev/null 2>&1 || skip "no network access to GitHub API"
   run shellac_run '
     include "git/releases"
-    curl -fsSL --max-time 5 https://api.github.com/repos/cli/cli/releases/latest \
-      >/dev/null 2>&1 || skip "no network access"
     json=$(_git_fetch_release_json cli/cli latest)
     printf "%s\n" "${json}" | jq -r .tag_name'
   [ "${status}" -eq 0 ]
@@ -60,10 +60,10 @@ load 'helpers/setup'
 }
 
 @test "_git_fetch_release_json: non-existent repo exits 1" {
+  curl -fsSL --max-time 5 "https://api.github.com" >/dev/null 2>&1 \
+    || skip "no network access to GitHub API"
   run shellac_run '
     include "git/releases"
-    curl -fsSL --max-time 5 https://api.github.com \
-      >/dev/null 2>&1 || skip "no network access"
     _git_fetch_release_json no-such-owner-xyz/no-such-repo-xyz latest'
   [ "${status}" -eq 1 ]
 }
@@ -73,12 +73,12 @@ load 'helpers/setup'
 # ---------------------------------------------------------------------------
 
 @test "git_fetch_release: downloads a real asset from cli/cli latest" {
+  curl -fsSL --max-time 5 "https://api.github.com/repos/cli/cli/releases/latest" \
+    >/dev/null 2>&1 || skip "no network access to GitHub API"
   run shellac_run '
     include "git/releases"
-    curl -fsSL --max-time 5 https://api.github.com/repos/cli/cli/releases/latest \
-      >/dev/null 2>&1 || skip "no network access"
     dir=$(mktemp -d)
-    trap "rm -rf ${dir}" RETURN
+    trap "rm -rf ${dir}" EXIT
     cd "${dir}" || exit 1
     git_fetch_release cli/cli latest x86_64
     ls "${dir}"'

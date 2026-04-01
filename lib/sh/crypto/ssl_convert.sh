@@ -44,7 +44,7 @@ ssl_cer_to_crt() {
         return 1
     fi
 
-    grep "TRUSTED" "${_in}" >/dev/null 2>&1 || _enctype="DER"
+    grep -q "^-----BEGIN" "${_in}" || _enctype="DER"
     openssl x509 -inform "${_enctype:-PEM}" -in "${_in}" -out "${_out}"
 }
 

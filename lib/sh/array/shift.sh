@@ -29,10 +29,10 @@ _SHELLAC_LOADED_array_shift=1
 # @exitcode 0 Always
 array_shift() {
   # Create nameref to real array
-  local -n arr="$1"
-  local n
-  n="${2:-1}"
-  arr=("${arr[@]:${n}}")
+  local -n _arr="$1"
+  local _n
+  _n="${2:-1}"
+  _arr=("${_arr[@]:${_n}}")
 }
 
 # @description Rotate elements of a named array left by n positions.

@@ -132,4 +132,5 @@ cmd_exec() {
     fi
     (( _die )) && exit 1
   fi
+  return 0
 }

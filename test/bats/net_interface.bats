@@ -119,11 +119,11 @@ load 'helpers/setup'
 }
 
 @test "_net_nics_is_physical: returns 0 for an interface with a /device symlink" {
-  run shellac_run 'include "net/interface"
-    phys=$(ls -d /sys/class/net/*/device 2>/dev/null | head -1)
-    [[ -z "${phys}" ]] && skip "no physical interfaces found"
-    iface="${phys%/device}"; iface="${iface##*/}"
-    _net_nics_is_physical "${iface}"'
+  local phys iface
+  phys=$(ls -d /sys/class/net/*/device 2>/dev/null | head -1)
+  [[ -z "${phys}" ]] && skip "no physical interfaces found"
+  iface="${phys%/device}"; iface="${iface##*/}"
+  run shellac_run "include \"net/interface\"; _net_nics_is_physical \"${iface}\""
   [ "${status}" -eq 0 ]
 }
 
@@ -171,10 +171,10 @@ load 'helpers/setup'
 }
 
 @test "_net_nics_state: returns UP for an UP interface" {
-  run shellac_run 'include "net/interface"
-    up=$(ip -brief link show | awk "NF>=2 && \$2==\"UP\"{print \$1; exit}")
-    [[ -z "${up}" ]] && skip "no UP interfaces found"
-    _net_nics_state "${up}"'
+  local up
+  up=$(ip -brief link show | awk 'NF>=2 && $2=="UP"{print $1; exit}')
+  [[ -z "${up}" ]] && skip "no UP interfaces found"
+  run shellac_run "include \"net/interface\"; _net_nics_state \"${up}\""
   [ "${status}" -eq 0 ]
   [ "${output}" = "UP" ]
 }
@@ -200,13 +200,13 @@ load 'helpers/setup'
 }
 
 @test "_net_nics_speed: returns speed string with Mb/s for a physical interface" {
-  run shellac_run 'include "net/interface"
-    phys=$(ls -d /sys/class/net/*/device 2>/dev/null | head -1)
-    [[ -z "${phys}" ]] && skip "no physical interfaces found"
-    iface="${phys%/device}"; iface="${iface##*/}"
-    speed_file="/sys/class/net/${iface}/speed"
-    [[ ! -r "${speed_file}" ]] && skip "no readable speed file for ${iface}"
-    _net_nics_speed "${iface}"'
+  local phys iface speed_file
+  phys=$(ls -d /sys/class/net/*/device 2>/dev/null | head -1)
+  [[ -z "${phys}" ]] && skip "no physical interfaces found"
+  iface="${phys%/device}"; iface="${iface##*/}"
+  speed_file="/sys/class/net/${iface}/speed"
+  cat "${speed_file}" >/dev/null 2>&1 || skip "speed file for ${iface} not readable"
+  run shellac_run "include \"net/interface\"; _net_nics_speed \"${iface}\""
   [ "${status}" -eq 0 ]
   [[ "${output}" = *"Mb/s"* ]]
 }
@@ -265,11 +265,11 @@ load 'helpers/setup'
 }
 
 @test "_net_nics_report: identifies type as physical for a physical interface" {
-  run shellac_run 'include "net/interface"
-    phys=$(ls -d /sys/class/net/*/device 2>/dev/null | head -1)
-    [[ -z "${phys}" ]] && skip "no physical interfaces found"
-    iface="${phys%/device}"; iface="${iface##*/}"
-    _net_nics_report "${iface}"'
+  local phys iface
+  phys=$(ls -d /sys/class/net/*/device 2>/dev/null | head -1)
+  [[ -z "${phys}" ]] && skip "no physical interfaces found"
+  iface="${phys%/device}"; iface="${iface##*/}"
+  run shellac_run "include \"net/interface\"; _net_nics_report \"${iface}\""
   [ "${status}" -eq 0 ]
   [[ "${output}" = *"physical"* ]]
 }

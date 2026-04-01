@@ -152,7 +152,7 @@ random_int() {
   _n_min="${2:-1}"
   _n_max="${3:-32767}"
   _n_mod=$(( _n_max - _n_min + 1 ))
-  if (( _n_mod == 0 )); then return 3; fi
+  if (( _n_min >= _n_max )); then return 3; fi
   # De-bias the modulo as best as possible
   _rand_thres=$(( -(32768 - _n_mod) % _n_mod ))
   if (( _rand_thres < 0 )); then
@@ -163,7 +163,7 @@ random_int() {
     _x_int="${RANDOM}"
     if (( _x_int > ${_rand_thres:-0} )); then
       printf -- '%d\n' "$(( _x_int % _n_mod + _n_min ))"
-      (( _i++ ))
+      (( _i += 1 ))
     fi
   done
 }

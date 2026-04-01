@@ -53,12 +53,14 @@ if ! command -v dos2unix >/dev/null 2>&1; then
           continue
         fi
         # Make a temporary file
-        # TODO: Make this more robust/portable
-        # TODO: portably basename the filename first
-        _dos2unix_tmp="/tmp/${_dos2unix_file}"
+        _dos2unix_tmp=$(mktemp) || {
+          printf -- '%s\n' "Unable to create temp file for '${_dos2unix_file}'" >&2
+          (( _dos2unix_rc++ ))
+          continue
+        }
 
         # Convert the input file to the temp file
-        tr -d '\r' "${_dos2unix_file}" > "${_dos2unix_tmp}" || {
+        tr -d '\r' < "${_dos2unix_file}" > "${_dos2unix_tmp}" || {
           printf -- '%s\n' "Unable to convert '${_dos2unix_file}'" >&2
           (( _dos2unix_rc++ ))
           continue
@@ -73,10 +75,11 @@ if ! command -v dos2unix >/dev/null 2>&1; then
         # Remove the temporary file
         rm "${_dos2unix_tmp}" 2>/dev/null
       done
-      (( _dos2unix_rc++ > 0 )) && return 1
+      (( _dos2unix_rc > 0 )) && return 1
+      return 0
     # Otherwise we're parsing stdin
     else
-      tr -d '\r' -
+      tr -d '\r'
     fi
   }
 fi

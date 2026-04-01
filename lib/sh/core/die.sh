@@ -117,4 +117,5 @@ cmd_retry() {
         (( _sleep > 0 )) && sleep "${_sleep}"
     done
     (( _count > 0 )) && printf -- '\n' >&2
+    return 0
 }

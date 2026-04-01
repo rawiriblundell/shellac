@@ -204,8 +204,8 @@ requires() {
                 _bashver="BASH${_bashver/./}"
                 # Test on string (e.g. BASH44 = BASH44)
                 [ "${_item}" = "${_bashver}" ] && continue
-                # Test on integer by stripping "BASH" (e.g. 51 -ge 44)
-                (( ${_item/BASH/} >= ${_bashver/BASH/} )) && continue
+                # Test on integer by stripping "BASH" (e.g. current 51 >= required 44)
+                (( ${_bashver/BASH/} >= ${_item/BASH/} )) && continue
             fi
             ;;
 

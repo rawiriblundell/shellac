@@ -21,6 +21,8 @@
 [ -n "${_SHELLAC_LOADED_text_style+x}" ] && return 0
 _SHELLAC_LOADED_text_style=1
 
+include core/is
+
 # TODO:
 # * Check for $COLORTERM and fail out if/when possible
 # * Something with this:
@@ -72,17 +74,18 @@ text_bold() {
 }
 
 # @description Convert a comma-separated list to newline-separated format.
-#   See also text_n2c() and text_n2s() for the inverse.
+#   See also str_n2c() and str_n2s() for the inverse.
 #
 # @arg $1 string Optional: file path (default: stdin)
 #
 # @stdout One item per line
 # @exitcode 0 Always
-text_c2n() {
-  while read -r; do 
+str_c2n() {
+  while read -r; do
     printf -- '%s\n' "${REPLY}" | tr "," "\\n"
   done < "${1:-/dev/stdin}"
 }
+text_c2n() { str_c2n "${@}"; }
 
 # @description Center each line of input within the terminal width.
 #   Lines longer than the terminal width are folded and each segment centered.
@@ -175,13 +178,14 @@ text_italic() {
 }
 
 # @description Convert newline-separated input to a single comma-separated line.
-#   See also text_c2n() for the inverse.
+#   See also str_c2n() for the inverse.
 #
 # @arg $1 string Optional: file path (default: stdin)
 #
 # @stdout Comma-separated values on a single line
 # @exitcode 0 Always
-text_n2c() { paste -sd ',' "${1:--}"; }
+str_n2c() { paste -sd ',' "${1:--}"; }
+text_n2c() { str_n2c "${@}"; }
 
 # @description Convert newline-separated input to a single space-separated line.
 #
@@ -189,7 +193,8 @@ text_n2c() { paste -sd ',' "${1:--}"; }
 #
 # @stdout Space-separated values on a single line
 # @exitcode 0 Always
-text_n2s() { paste -sd ' ' "${1:--}"; }
+str_n2s() { paste -sd ' ' "${1:--}"; }
+text_n2s() { str_n2s "${@}"; }
 
 # @description Print a specific line number from a file or stdin.
 #
@@ -490,17 +495,19 @@ text_rgb.bg() {
 
 if (( BASH_VERSINFO >= 4 )); then
   # @internal
-  text_capitalise-string() {
+  str_capitalise-string() {
     printf -- '%s\n' "${1^}"
   }
 else
   # @internal
-  text_capitalise-string() {
+  str_capitalise-string() {
     # Split off the first character, uppercase it and trim
     # Next, print the string from the second character onwards
-    printf -- '%s\n' "$(text_toupper "${1:0:1}")${1:1}"
+    printf -- '%s\n' "$(str_toupper "${1:0:1}")${1:1}"
   }
 fi
+# @internal
+text_capitalise-string() { str_capitalise-string "${@}"; }
 
 # @description Capitalise the first letter of each word in the input.
 #   Accepts input as an argument or via stdin/file.
@@ -511,7 +518,7 @@ fi
 # @stdout Capitalised text
 # @exitcode 0 Success
 # @exitcode 1 Both stdin and argument provided simultaneously
-text_capitalise() {
+str_capitalise() {
   # Ignore any instances of '*' that may be in a file
   local GLOBIGNORE
   local _eof
@@ -525,7 +532,7 @@ text_capitalise() {
     return 0
   # Disallow both piping in strings and declaring strings
   elif [[ ! -t 0 ]] && [[ -n "${1}" ]]; then
-    printf -- '%s\n' "text_capitalise: please select either piping in or declaring a string to capitalise, not both." >&2
+    printf -- '%s\n' "str_capitalise: please select either piping in or declaring a string to capitalise, not both." >&2
     return 1
   fi
 
@@ -547,7 +554,7 @@ text_capitalise() {
       for _in_string in ${REPLY}; do
         # If _in_string is an integer, skip to the next element
         test "${_in_string}" -eq "${_in_string}" 2>/dev/null && continue
-        text_capitalise-string "${_in_string}"
+        str_capitalise-string "${_in_string}"
       # We use paste to trim and rejoin any trailing whitespace
       done | paste -sd ' ' -
     done < "${1:-/dev/stdin}"
@@ -556,12 +563,13 @@ text_capitalise() {
   # Processing follows the same path as before.
   elif [[ -n "$*" ]]; then
     for _in_string in "$@"; do
-      text_capitalise-string "${_in_string}"
+      str_capitalise-string "${_in_string}"
     done | paste -sd ' ' -
   fi
 
   GLOBIGNORE=
 }
+text_capitalise() { str_capitalise "${@}"; }
 
 # @description Convert text to lowercase. Accepts a string argument, file path, or stdin.
 #   Tries Bash 4 parameter expansion, then awk, then tr as fallbacks.
@@ -571,7 +579,7 @@ text_capitalise() {
 # @stdout Lowercased text
 # @exitcode 0 Success
 # @exitcode 1 No available conversion method found
-text_tolower() {
+str_tolower() {
   if [[ -n "${1}" ]] && [[ ! -r "${1}" ]]; then
     if (( BASH_VERSINFO >= 4 )); then
       printf -- '%s ' "${*,,}" | paste -sd '\0' -
@@ -580,7 +588,7 @@ text_tolower() {
     elif is_command tr; then
       printf -- '%s ' "$*" | tr '[:upper:]' '[:lower:]'
     else
-      printf -- '%s\n' "text_tolower - no available method found" >&2
+      printf -- '%s\n' "str_tolower - no available method found" >&2
       return 1
     fi
   else
@@ -594,11 +602,12 @@ text_tolower() {
     elif is_command tr; then
       tr '[:upper:]' '[:lower:]'
     else
-      printf -- '%s\n' "text_tolower - no available method found" >&2
+      printf -- '%s\n' "str_tolower - no available method found" >&2
       return 1
     fi < "${1:-/dev/stdin}"
   fi
 }
+text_tolower() { str_tolower "${@}"; }
 
 # @description Convert text to uppercase. Accepts a string argument, file path, or stdin.
 #   Tries Bash 4 parameter expansion, then awk, then tr as fallbacks.
@@ -608,7 +617,7 @@ text_tolower() {
 # @stdout Uppercased text
 # @exitcode 0 Success
 # @exitcode 1 No available conversion method found
-text_toupper() {
+str_toupper() {
   if [[ -n "${1}" ]] && [[ ! -r "${1}" ]]; then
     if (( BASH_VERSINFO >= 4 )); then
       printf -- '%s ' "${*^^}" | paste -sd '\0' -
@@ -617,7 +626,7 @@ text_toupper() {
     elif is_command tr; then
       printf -- '%s ' "$*" | tr '[:lower:]' '[:upper:]'
     else
-      printf -- '%s\n' "text_toupper - no available method found" >&2
+      printf -- '%s\n' "str_toupper - no available method found" >&2
       return 1
     fi
   else
@@ -631,11 +640,12 @@ text_toupper() {
     elif is_command tr; then
       tr '[:lower:]' '[:upper:]'
     else
-      printf -- '%s\n' "text_toupper - no available method found" >&2
+      printf -- '%s\n' "str_toupper - no available method found" >&2
       return 1
     fi < "${1:-/dev/stdin}"
   fi
 }
+text_toupper() { str_toupper "${@}"; }
 
 # @description Remove ANSI/VT100 color and formatting escape codes from a string.
 #   Useful for measuring true display length or logging colored output to plain text.

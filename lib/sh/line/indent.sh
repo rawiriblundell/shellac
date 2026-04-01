@@ -49,3 +49,8 @@ indent() {
 str_indent() {
   line_indent "${@}"
 }
+
+# @description Alias for line_indent.
+text_indent() {
+  line_indent "${@}"
+}

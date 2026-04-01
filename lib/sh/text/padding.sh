@@ -53,3 +53,4 @@ str_padding() {
   _str_padding="$(printf -- '%*s' "${_str_padding_width}" | tr ' ' '.')"
   printf "%s%s%s\n" "${_str_padding_key}" "${_str_padding}" "${_str_padding_val}"
 }
+text_padding() { str_padding "${@}"; }

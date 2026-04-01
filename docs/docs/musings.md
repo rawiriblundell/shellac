@@ -185,10 +185,23 @@ The tension is:
   any function that touches the content of a string, the prefix loses its
   signal value.
 
-No clean resolution yet. One option is to add `str_` aliases for the case
-functions in `style.sh` and migrate the canonical name over time. Another
-is to split `style.sh` into `style.sh` (ANSI/display only) and a
-`case.sh` that absorbs both `style.sh` case functions and `case_convert.sh`
-under consistent `str_` names. Either way, the current state is a gap worth
-knowing about when adding new functions: case conversion belongs in `str_`,
-not `text_`.
+This has been partially resolved. The value-transformation functions in
+`style.sh` — `text_toupper`, `text_tolower`, `text_capitalise`, `text_c2n`,
+`text_n2c`, `text_n2s` — have been renamed to `str_*` canonical names, with
+`text_*` kept as thin aliases for backward compatibility. The ANSI formatting
+functions (`text_bold`, `text_fg`, etc.) and display layout functions
+(`text_center`, `text_wordwrap`) remain `text_*`, which is where they belong.
+
+The alias approach also ran in the other direction: `str_truncate`,
+`str_padding`, and `line_indent` — all display/presentation operations —
+gained `text_*` aliases (`text_truncate`, `text_padding`, `text_indent`).
+
+The rule that emerged from the cleanup: `text_*` means the function is
+primarily about how something looks on screen. `str_*` means it transforms
+a string value. When in doubt, ask whether the function would make sense in
+a non-terminal context. Case conversion: yes. Centering text to terminal
+width: no.
+
+New functions should follow this consistently. The `text_*` aliases in
+`style.sh` exist to avoid breaking callers — they are not an invitation to
+keep writing `text_` for value transformations.

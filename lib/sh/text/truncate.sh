@@ -55,3 +55,4 @@ str_truncate() {
     printf -- '%s' "${text:0:${length}}"
   fi
 }
+text_truncate() { str_truncate "${@}"; }

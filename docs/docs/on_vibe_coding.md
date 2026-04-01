@@ -12,8 +12,9 @@ The conversation started with a question about how to characterise the work.
 ## Would you describe this as "vibe coding"?
 
 **Human:** Would you describe our combined efforts as "vibe coding" or would
-the starting point of a human-built framework, code, style guides, deslop
-rules etc make this count as something else?
+the starting point of a human-built framework, with existing code, prepared for
+AI collaboration with the provision of style guides, deslop rules etc make 
+this count as something else?
 
 **Claude:** Vibe coding, as Karpathy described it, is essentially: describe
 what you want, accept what comes out, move fast, don't read the code. The
@@ -53,8 +54,8 @@ generate things worth finding bugs in.
 
 ## How would this have panned out had it been vibe coded?
 
-**Human:** How would this have panned out had it been vibe coded? What are the
-human behaviours and technical constraint differences?
+**Human:** How would this have panned out had it been completely vibe coded? What
+would be the differences in human behaviours and technical constraints?
 
 **Claude:** The human behaviours would be different first.
 

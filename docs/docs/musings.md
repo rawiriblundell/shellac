@@ -135,3 +135,60 @@ exists only to prefer the faster path.
 
 The heuristic used here: if the fallback produces a different answer, it is
 not a fallback. Guard hard, fail loudly, and let the caller handle it.
+
+---
+
+## str_*, line_*, text_*: where the prefix boundaries blur
+
+The three prefixes were intended to encode a meaningful distinction:
+
+- **`str_`** — operates on a string value in memory. Input is an argument,
+  output is a transformed value. Character-level. `str_len`, `str_replace`,
+  `str_ucfirst`, `str_snake_case`.
+- **`line_`** — operates on a stream of lines. Input is stdin or a file,
+  output is line-structured. `line_first`, `line_grep`, `line_sort`,
+  `line_count`.
+- **`text_`** — transforms text for presentation or display. `text_bold`,
+  `text_center`, `text_underline`, `text_fg`.
+
+That model is clean on paper. In practice, `text_` has blurred into a
+catch-all for "things that transform how text looks," which includes both
+ANSI terminal formatting (`text_bold`, `text_fg`) and plain case conversion
+(`text_toupper`, `text_tolower`, `text_capitalise`). The case conversion
+functions live in `text/style.sh` alongside escape-code wrappers, but
+they are not display formatting — they are value transformations.
+
+Meanwhile, `str_ucfirst`, `str_ucwords`, and `str_title_case` do the same
+category of work with a `str_` prefix from `text/case_convert.sh`. The
+result is a gap in the model: full uppercase is `text_toupper`, but
+capitalise-first-word is `str_ucfirst`. The caller wanting to uppercase a
+string has no obvious prefix to reach for.
+
+The cross-language context makes this sharper. Python, Ruby, JavaScript, and
+Go all put case conversion on the string type itself: `s.upper()`,
+`s.upcase`, `s.toUpperCase()`, `strings.ToUpper(s)`. There is no
+distinction between "string operation" and "text presentation" at the
+language level — it is all one namespace. Shell has no string type, so
+shellac has to impose that organization through naming. But the naming
+currently reflects the file the function was written in more than the
+semantic category it belongs to.
+
+The tension is:
+
+- **`str_` is the right prefix** for case conversion — these are value
+  transformations, not presentation effects. `str_toupper` would be
+  consistent with `str_ucfirst` and cross-language convention.
+- **`text_toupper` and `text_tolower` already exist** and are in use.
+  Renaming or aliasing them risks breaking callers and fragmenting the
+  documentation.
+- **`text_` should mean "display/presentation"** — if it expands to cover
+  any function that touches the content of a string, the prefix loses its
+  signal value.
+
+No clean resolution yet. One option is to add `str_` aliases for the case
+functions in `style.sh` and migrate the canonical name over time. Another
+is to split `style.sh` into `style.sh` (ANSI/display only) and a
+`case.sh` that absorbs both `style.sh` case functions and `case_convert.sh`
+under consistent `str_` names. Either way, the current state is a gap worth
+knowing about when adding new functions: case conversion belongs in `str_`,
+not `text_`.

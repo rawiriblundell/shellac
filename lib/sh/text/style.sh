@@ -21,8 +21,6 @@
 [ -n "${_SHELLAC_LOADED_text_style+x}" ] && return 0
 _SHELLAC_LOADED_text_style=1
 
-include core/is
-
 # TODO:
 # * Check for $COLORTERM and fail out if/when possible
 # * Something with this:
@@ -241,7 +239,7 @@ text_printline() {
   fi
 
   # Finally after all that testing is done, we throw in a cursory test for 'sed'
-  if is_command sed; then
+  if command -v sed >/dev/null 2>&1; then
     sed -ne "${_line_no}{p;q;}" -e "\$s/.*/text_printline: end of stream reached./" -e '$ w /dev/stderr' "${_file:-/dev/stdin}"
   # Otherwise we print a message that 'sed' isn't available
   else
@@ -583,9 +581,9 @@ str_tolower() {
   if [[ -n "${1}" ]] && [[ ! -r "${1}" ]]; then
     if (( BASH_VERSINFO >= 4 )); then
       printf -- '%s ' "${*,,}" | paste -sd '\0' -
-    elif is_command awk; then
+    elif command -v awk >/dev/null 2>&1; then
       printf -- '%s ' "$*" | awk '{print tolower($0)}'
-    elif is_command tr; then
+    elif command -v tr >/dev/null 2>&1; then
       printf -- '%s ' "$*" | tr '[:upper:]' '[:lower:]'
     else
       printf -- '%s\n' "str_tolower - no available method found" >&2
@@ -597,9 +595,9 @@ str_tolower() {
         printf -- '%s\n' "${REPLY,,}"
       done
       [[ -n "${REPLY}" ]] && printf -- '%s\n' "${REPLY,,}"
-    elif is_command awk; then
+    elif command -v awk >/dev/null 2>&1; then
       awk '{print tolower($0)}'
-    elif is_command tr; then
+    elif command -v tr >/dev/null 2>&1; then
       tr '[:upper:]' '[:lower:]'
     else
       printf -- '%s\n' "str_tolower - no available method found" >&2
@@ -621,9 +619,9 @@ str_toupper() {
   if [[ -n "${1}" ]] && [[ ! -r "${1}" ]]; then
     if (( BASH_VERSINFO >= 4 )); then
       printf -- '%s ' "${*^^}" | paste -sd '\0' -
-    elif is_command awk; then
+    elif command -v awk >/dev/null 2>&1; then
       printf -- '%s ' "$*" | awk '{print toupper($0)}'
-    elif is_command tr; then
+    elif command -v tr >/dev/null 2>&1; then
       printf -- '%s ' "$*" | tr '[:lower:]' '[:upper:]'
     else
       printf -- '%s\n' "str_toupper - no available method found" >&2
@@ -635,9 +633,9 @@ str_toupper() {
         printf -- '%s\n' "${REPLY^^}"
       done
       [[ -n "${REPLY}" ]] && printf -- '%s\n' "${REPLY^^}"
-    elif is_command awk; then
+    elif command -v awk >/dev/null 2>&1; then
       awk '{print toupper($0)}'
-    elif is_command tr; then
+    elif command -v tr >/dev/null 2>&1; then
       tr '[:lower:]' '[:upper:]'
     else
       printf -- '%s\n' "str_toupper - no available method found" >&2

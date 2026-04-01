@@ -205,3 +205,63 @@ width: no.
 New functions should follow this consistently. The `text_*` aliases in
 `style.sh` exist to avoid breaking callers — they are not an invitation to
 keep writing `text_` for value transformations.
+
+---
+
+## Self-reference: DRY versus extractability
+
+One of the criticisms shellac levels at other shell library projects is
+constant self-reference. A function calls another function from the same
+project, which calls another, and before long the dependency graph is deep
+enough that pulling out a single function means pulling out half the library.
+The irony is that shellac can do this too, if it's not deliberate about it.
+
+The canonical example that came up: `is_command` is a thin wrapper around
+`command -v`:
+
+```bash
+is_command() {
+    command -v "${1:-$RANDOM}" >/dev/null 2>&1
+}
+```
+
+Using `is_command` inside `text/style.sh` to check for `awk` or `tr` means
+anyone who wants to lift `str_toupper` into their own script also needs
+`is_command` — which lives in `core/is.sh`, which is part of shellac's
+core. A function that could have been self-contained now has a load-order
+dependency on the library it came from.
+
+`command -v tool >/dev/null 2>&1` is POSIX, readable, and needs nothing. It's
+three extra characters over `is_command tool`. The extra characters cost
+nothing; the dependency does.
+
+The tension is:
+
+- **DRY** — the library already has `is_command`, using it is consistent.
+- **Extractability** — each function should be copy-pasteable without
+  dragging in infrastructure. That's part of what makes shellac different
+  from the libraries it criticises.
+
+In a library context DRY is the wrong frame. The goal is not to avoid
+repeating `>/dev/null 2>&1` — it's to avoid creating coupling that reduces
+the value of the individual function. Three categories of cross-library
+reference are worth distinguishing:
+
+**Avoidable** — calling a shellac wrapper where a native shell or POSIX
+primitive does the same job. `is_command` → `command -v`. These should not
+appear in library code. Replace them on sight.
+
+**Functional** — a function whose purpose is to compose other library
+functions. `crypto/genpasswd.sh` calling `random_int` is reasonable because
+`genpasswd` is inherently a higher-level function; it builds on `random` by
+design. These dependencies should be explicit `include` statements so the
+load order is declared, not assumed.
+
+**Aggregator** — a module whose entire purpose is to bundle others.
+`sys/hogs.sh` includes `sys/cpuhogs`, `sys/memhogs`, and `sys/swaphogs`
+and re-exports them as a single entry point. That's the point of the
+module; the dependency is the feature.
+
+The heuristic: if the dependency is invisible to the function's caller and
+could be replaced with a primitive, replace it. If the dependency is the
+reason the function exists, keep it and declare it explicitly.

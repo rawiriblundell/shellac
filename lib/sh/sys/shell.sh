@@ -56,5 +56,8 @@ sys_shell() {
     return 1
   fi
   # Strip leading dash: login shells set argv[0] to '-bash', '-zsh' etc.
-  printf -- '%s\n' "${_sys_shell_cmd#-}"
+  _sys_shell_cmd="${_sys_shell_cmd#-}"
+  # If we still have 'busybox', assume ash — it's the standard BusyBox shell
+  [[ "${_sys_shell_cmd}" = "busybox" ]] && _sys_shell_cmd="ash"
+  printf -- '%s\n' "${_sys_shell_cmd}"
 }

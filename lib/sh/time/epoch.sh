@@ -65,12 +65,12 @@ else
 time_epoch() {
     local year julian_day hour minute second year_offset year_secs
 
-    # POSIX portable way to assign all vars; leading zeros stripped via 10# below
-    # to prevent unwanted octal interpretation. The heredoc content is intentionally
-    # unindented — do not indent it, as <<- only strips tabs, not spaces.
-    IFS=: read -r year julian_day hour minute second <<-EOF
-$(date -u +%Y:%j:%H:%M:%S)
-EOF
+    # set -- splits date output into positional params, avoiding heredoc indentation traps.
+    # Unquoted intentionally: word splitting on spaces separates the five fields.
+    # The 10# prefix below strips leading zeros to prevent octal interpretation.
+    # shellcheck disable=SC2046
+    set -- $(date -u '+%Y %j %H %M %S')
+    year="${1}"; julian_day="${2}"; hour="${3}"; minute="${4}"; second="${5}"
 
     # year_offset: years elapsed since 1600 (the algorithm's base year)
     year_offset=$(( year - 1600 ))

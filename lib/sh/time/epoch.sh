@@ -62,22 +62,23 @@ else
 # Portable version based on http://www.etalabs.net/sh_tricks.html
 # We strip leading 0's in order to prevent unwanted octal math
 # This seems terse, but the vars are the same as their 'date' formats
-    time_epoch() {
-        local year julian_day hour minute second year_offset year_secs
+time_epoch() {
+    local year julian_day hour minute second year_offset year_secs
 
-        # POSIX portable way to assign all vars; leading zeros stripped via 10# below
-        # to prevent unwanted octal interpretation
-        IFS=: read -r year julian_day hour minute second <<-EOF
+    # POSIX portable way to assign all vars; leading zeros stripped via 10# below
+    # to prevent unwanted octal interpretation. The heredoc content is intentionally
+    # unindented — do not indent it, as <<- only strips tabs, not spaces.
+    IFS=: read -r year julian_day hour minute second <<-EOF
 $(date -u +%Y:%j:%H:%M:%S)
 EOF
 
-        # year_offset: years elapsed since 1600 (the algorithm's base year)
-        year_offset=$(( year - 1600 ))
-        # year_secs: seconds from Unix epoch to the start of the current day
-        year_secs=$(( (year_offset * 365 + year_offset / 4 - year_offset / 100 + year_offset / 400 + $(( 10#${julian_day} )) - 135140) * 86400 ))
+    # year_offset: years elapsed since 1600 (the algorithm's base year)
+    year_offset=$(( year - 1600 ))
+    # year_secs: seconds from Unix epoch to the start of the current day
+    year_secs=$(( (year_offset * 365 + year_offset / 4 - year_offset / 100 + year_offset / 400 + $(( 10#${julian_day} )) - 135140) * 86400 ))
 
-        printf -- '%s\n' "$(( year_secs + ($(( 10#${hour} )) * 3600) + ($(( 10#${minute} )) * 60) + $(( 10#${second} )) ))"
-    }
+    printf -- '%s\n' "$(( year_secs + ($(( 10#${hour} )) * 3600) + ($(( 10#${minute} )) * 60) + $(( 10#${second} )) ))"
+}
 fi
 
 # @description Return the current Unix epoch expressed in a larger time unit.

@@ -31,9 +31,16 @@ _SHELLAC_LOADED_sys_sys_shell=1
 # @exitcode 1 Unable to determine the running shell
 sys_shell() {
   if [ -r "/proc/$$/cmdline" ]; then
-    # We use 'tr' because 'cmdline' files have NUL terminated lines
-    # TODO: Possibly handle multi-word output e.g. 'busybox ash'
-    printf -- '%s\n' "$(tr '\0' ' ' </proc/"$$"/cmdline)"
+    local _sys_shell_cmd
+    # cmdline fields are NUL-separated; read -d '' gets the first field (executable path)
+    IFS= read -r -d '' _sys_shell_cmd <"/proc/$$/cmdline" 2>/dev/null || true
+    # Strip any leading path components
+    _sys_shell_cmd="${_sys_shell_cmd##*/}"
+    # BusyBox reports itself as 'busybox'; the actual shell is the second NUL-field
+    if [ "${_sys_shell_cmd}" = "busybox" ]; then
+      _sys_shell_cmd=$(tr '\0' '\n' <"/proc/$$/cmdline" | sed -n '2p')
+    fi
+    printf -- '%s\n' "${_sys_shell_cmd}"
   elif ps -p "$$" >/dev/null 2>&1; then
     ps -p "$$" | awk -F'[\t /]' 'END {print $NF}'
   # This one works well except for busybox

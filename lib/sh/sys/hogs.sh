@@ -45,10 +45,13 @@ sys_hogs() {
     (mem)  shift; memhogs "${@}" ;;
     (swap) shift; swaphogs "${@}" ;;
     ('')
+      printf -- '%s\n' "CPU Hogs:"
       cpuhogs
       printf -- '\n'
+      printf -- '%s\n' "Memory Hogs:"
       memhogs
       printf -- '\n'
+      printf -- '%s\n' "Swap Hogs:"
       swaphogs
     ;;
     (*)

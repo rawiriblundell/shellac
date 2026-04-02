@@ -30,36 +30,31 @@ _SHELLAC_LOADED_sys_sys_shell=1
 # @exitcode 0 Success
 # @exitcode 1 Unable to determine the running shell
 sys_shell() {
+  local _sys_shell_cmd
   if [ -r "/proc/$$/cmdline" ]; then
-    local _sys_shell_cmd
-    # cmdline fields are NUL-separated; read -d '' gets the first field (executable path)
-    IFS= read -r -d '' _sys_shell_cmd <"/proc/$$/cmdline" 2>/dev/null || true
-    # Strip any leading path components
-    _sys_shell_cmd="${_sys_shell_cmd##*/}"
-    # BusyBox reports itself as 'busybox'; the actual shell is the second NUL-field
-    if [ "${_sys_shell_cmd}" = "busybox" ]; then
-      _sys_shell_cmd=$(tr '\0' '\n' <"/proc/$$/cmdline" | sed -n '2p')
-    fi
-    printf -- '%s\n' "${_sys_shell_cmd}"
+    # Convert NUL-separated cmdline to spaces; awk extracts the last non-empty
+    # slash-or-space-delimited token, which is the shell name regardless of
+    # whether the path is absolute (/bin/bash), prefixed (busybox ash), or bare
+    _sys_shell_cmd=$(tr '\0' ' ' <"/proc/$$/cmdline" | awk -F'[ /]' '{print $(NF-1)}')
   elif ps -fp "$$" >/dev/null 2>&1; then
     # -f (full format) expands CMD to the full command line so awk $NF
-    # correctly extracts the shell name from multi-word cases (e.g. 'busybox ash' -> 'ash')
-    # and strips leading path components (e.g. '/bin/bash' -> 'bash')
-    ps -fp "$$" | awk -F'[\t /]' 'END {print $NF}'
+    # handles paths (/bin/bash -> bash) and multi-word names (busybox ash -> ash)
+    _sys_shell_cmd=$(ps -fp "$$" | awk -F'[ \t/]' 'END {print $NF}')
   # ps -o comm= works well except for busybox
   elif ps -o comm= -p $$ >/dev/null 2>&1; then
-    ps -o comm= -p $$
+    _sys_shell_cmd=$(ps -o comm= -p $$)
   elif ps -o pid,comm= >/dev/null 2>&1; then
-    ps -o pid,comm= | awk -v ppid="$$" '$1==ppid {print $2}'
+    _sys_shell_cmd=$(ps -o pid,comm= | awk -v ppid="$$" '$1==ppid {print $2}')
   # FreeBSD, may require more parsing
   elif command -v procstat >/dev/null 2>&1; then
-    procstat -bh $$
+    _sys_shell_cmd=$(procstat -bh $$)
   else
     case "${BASH_VERSION}" in (*.*) printf -- '%s\n' "bash"; return 0 ;; esac
     case "${KSH_VERSION}" in (*.*) printf -- '%s\n' "ksh"; return 0 ;; esac
     case "${ZSH_VERSION}" in (*.*) printf -- '%s\n' "zsh"; return 0 ;; esac
-    # If we get to this point, fail out:
     printf -- '%s\n' "Unable to find method to determine the shell" >&2
     return 1
   fi
+  # Strip leading dash: login shells set argv[0] to '-bash', '-zsh' etc.
+  printf -- '%s\n' "${_sys_shell_cmd#-}"
 }

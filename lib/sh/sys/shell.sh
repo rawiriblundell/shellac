@@ -42,8 +42,9 @@ sys_shell() {
     fi
     printf -- '%s\n' "${_sys_shell_cmd}"
   elif ps -p "$$" >/dev/null 2>&1; then
+    # awk -F'[\t /]' + $NF handles paths and multi-word names (e.g. busybox ash)
     ps -p "$$" | awk -F'[\t /]' 'END {print $NF}'
-  # This one works well except for busybox
+  # ps -o comm= works well except for busybox
   elif ps -o comm= -p $$ >/dev/null 2>&1; then
     ps -o comm= -p $$
   elif ps -o pid,comm= >/dev/null 2>&1; then

@@ -82,11 +82,10 @@ collaborative tool, not a copy-and-paste crux.
 
 ## Productivity metrics
 
-These figures were calculated at the 10-day mark of collaboration (2026-03-12
-to 2026-03-21) and are intended as a honest, methodology-transparent estimate
-rather than marketing copy.
+These figures are presented at two snapshots and are intended as an honest,
+methodology-transparent estimate rather than marketing copy.
 
-### What was delivered
+### Snapshot 1: 10-day mark (2026-03-12 to 2026-03-21)
 
 | Category | Detail |
 |----------|--------|
@@ -105,6 +104,23 @@ new functions (`array/readlist`, `text/encode`, `fs/base64`,
 including CI pipeline; five documentation pages written from scratch; license
 audit of 58 competing projects; cross-language stdlib coverage gap analysis.
 
+### Snapshot 2: 21-day mark (2026-03-12 to 2026-04-02)
+
+| Category | Detail |
+|----------|--------|
+| Commits | 267 in 18 active days (+52 since snapshot 1) |
+| GitHub issues opened | 30 (nos. 32–61, +2 since snapshot 1) |
+| GitHub issues closed | 29 (+10 since snapshot 1) |
+| Functions in codebase | 741 unique (+7 since snapshot 1) |
+
+Additional work since snapshot 1: 84 bats test files covering the full module
+surface (1,412 tests); 16 source fixes found by those tests spanning arithmetic
+exit codes, circular namerefs, timezone-dependent date arithmetic, missing
+includes, and logic errors; `str_*`/`text_*` naming refactor in `style.sh`
+with backward-compatible aliases; `is_command` → `command -v` replacement to
+improve individual function extractability; `on_vibe_coding.md` and two new
+`musings.md` entries on prefix boundary tension and DRY versus extractability.
+
 ### Manual baseline
 
 Prior to this collaboration the codebase was maintained at roughly 30 minutes
@@ -112,6 +128,8 @@ per evening, with occasional spikes when interest ran high. At that pace,
 accounting for context-switching overhead (~20% of each session spent
 re-orienting) and the realistic tendency for high-overhead research tasks to
 get deprioritised indefinitely:
+
+#### Snapshot 1 estimate (10-day work)
 
 | Work category | Estimated evenings solo |
 |---------------|------------------------|
@@ -133,15 +151,40 @@ comparison) likely would not have been attempted at all solo — the setup cost
 exceeds what fits in a 30-minute window, so they would have stayed on the
 "someday" list.
 
+#### Snapshot 2 estimate (additional 8 active days)
+
+| Work category | Estimated evenings solo |
+|---------------|------------------------|
+| 84 bats test files (written; running; iterating) | 10–14 |
+| 16 source fixes found by tests | 4–6 |
+| `str_*`/`text_*` naming refactor | 2–3 |
+| Documentation (`on_vibe_coding`, musings entries) | 4–5 |
+| `is_command` → `command -v`; other small fixes | 1–2 |
+| **Additional total** | **21–30 evenings** |
+| **Cumulative total** | **85–120 evenings** |
+
+Cumulative at 30 minutes per evening: **10–14 months of calendar time**.
+The test suite in particular — 84 files across the full module surface — has a
+high solo cost not just in writing time but in the tendency to stay perpetually
+half-done. A partial test suite that doesn't cover the whole surface doesn't
+tell you much; the full-coverage pass is the valuable artifact.
+
 ### Force multiplier
 
-| Method | Calculation | Result |
-|--------|-------------|--------|
-| Calendar ratio | 9–12 months ÷ 10 days | ~27–36x |
-| With scope premium (tasks not attempted solo) | × 1.5–2x | **40–70x** |
+| Method | Snapshot 1 | Snapshot 2 (cumulative) |
+|--------|-----------|------------------------|
+| Calendar ratio | 9–12 months ÷ 10 days = ~27–36x | 10–14 months ÷ 18 days = ~17–23x |
+| With scope premium (tasks not attempted solo) | × 1.5–2x → **40–70x** | × 1.5–2x → **25–45x** |
 
-**Central estimate: 40–60x**, consistent with the figure arrived at
-independently after the first week of collaboration.
+**Snapshot 1 central estimate: 40–60x.** **Snapshot 2 central estimate: 30–40x.**
+
+The cumulative multiplier is lower than the 10-day figure for an honest
+reason: the denominator grew. The first 10 days were dense with high-leverage,
+high-scope-premium work — a 58-repo license audit, a four-language stdlib
+comparison, a complete test framework from scratch. The next 8 active days
+were still productive but weighted toward implementation and refinement rather
+than research tasks with outsized setup cost. A sustained 40–60x is not
+realistic; a sustained 30–40x over a longer working period is.
 
 The multiplier is not primarily about typing speed. It comes from: no
 context-switching overhead between sessions; research tasks that are

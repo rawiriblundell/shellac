@@ -41,9 +41,11 @@ sys_shell() {
       _sys_shell_cmd=$(tr '\0' '\n' <"/proc/$$/cmdline" | sed -n '2p')
     fi
     printf -- '%s\n' "${_sys_shell_cmd}"
-  elif ps -p "$$" >/dev/null 2>&1; then
-    # awk -F'[\t /]' + $NF handles paths and multi-word names (e.g. busybox ash)
-    ps -p "$$" | awk -F'[\t /]' 'END {print $NF}'
+  elif ps -fp "$$" >/dev/null 2>&1; then
+    # -f (full format) expands CMD to the full command line so awk $NF
+    # correctly extracts the shell name from multi-word cases (e.g. 'busybox ash' -> 'ash')
+    # and strips leading path components (e.g. '/bin/bash' -> 'bash')
+    ps -fp "$$" | awk -F'[\t /]' 'END {print $NF}'
   # ps -o comm= works well except for busybox
   elif ps -o comm= -p $$ >/dev/null 2>&1; then
     ps -o comm= -p $$

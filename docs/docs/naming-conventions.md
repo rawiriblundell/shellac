@@ -159,6 +159,29 @@ is_redhat_like
 These have not yet been given a module prefix. Candidates:
 `sys_is_aws`, `sys_is_azure`. Deferred.
 
+### `str_*`, `text_*`, `line_*` — string, display, and stream operations
+
+These three prefixes encode a meaningful distinction:
+
+- **`str_`** — operates on a string value in memory. Input is an argument,
+  output is a transformed value. Character-level. No terminal assumptions.
+  `str_toupper`, `str_replace`, `str_ucfirst`, `str_snake_case`.
+- **`line_`** — operates on a stream of lines. Input is stdin or a file,
+  output is line-structured. `line_first`, `line_indent`, `line_filter`.
+- **`text_`** — applies display or presentation formatting, typically for
+  terminal output. ANSI colour and styling (`text_bold`, `text_fg`), layout
+  (`text_center`, `text_wordwrap`). These functions assume a visual context.
+
+The test: would this function make sense in a non-terminal, non-display
+context? Case conversion — yes, `str_toupper`. Centering a line to terminal
+width — no, `text_center`.
+
+Functions that transform string values belong in `str_*` regardless of where
+they were originally written. `text_*` aliases may be kept for backward
+compatibility but are not canonical. Display-oriented wrappers around
+`str_*` or `line_*` functions may carry `text_*` aliases where callers
+would naturally reach for that prefix.
+
 ---
 
 ## File naming

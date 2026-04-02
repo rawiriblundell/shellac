@@ -25,9 +25,18 @@ tasks:
 - **Coverage gap analysis** — comparing shellac's 750+ functions against the
   standard libraries of Python, Ruby, Go, and Node.js to identify meaningful
   gaps worth filling
+- **Test coverage** — generating 84 bats test files covering the full module
+  surface (1,412 tests); working through the failures to find and fix 16
+  source bugs spanning arithmetic exit codes, circular namerefs,
+  timezone-dependent date arithmetic, missing includes, and logic errors
+- **Naming refactors** — migrating value-transform functions in `text/style.sh`
+  to canonical `str_*` names; adding `text_*` aliases to display-oriented
+  functions in `str_*` and `line_*`; replacing internal `is_command` calls
+  with `command -v` to improve individual function extractability
 - **Documentation** — writing `shellac_in_practice.md` (two real scripts
   rewritten side-by-side), `musings.md` (design tensions that don't have clean
-  resolutions), and structural docs like `.pages` nav ordering
+  resolutions), `on_vibe_coding.md` (a conversation about AI-assisted
+  engineering versus vibe coding), and structural docs like `.pages` nav ordering
 - **GitHub issues** — drafting and filing issues for new modules, with
   counterparts in other languages documented for context
 - **MkDocs configuration** — adding `md_in_html` for side-by-side code layout

@@ -137,10 +137,10 @@ s.toUpperCase()                                      # JavaScript
 "${var^^}"                                           # bash 4+ only; cryptic to anyone who hasn't memorised parameter expansion
 printf '%s' "${var}" | tr '[:lower:]' '[:upper:]'    # portable; requires knowing tr is a character translator, not a string function
 
-text_toupper "${var}"                                # shellac
+str_toupper "${var}"                                 # shellac
 ```
 
-Every other language names the operation.  Shell gives you a sigil or a pipeline through a utility designed for something else.  `text_toupper` does what it says.  That's the difference a library makes.
+Every other language names the operation.  Shell gives you a sigil or a pipeline through a utility designed for something else.  `str_toupper` does what it says.  That's the difference a library makes.
 
 There are existing shell library projects, but most have at least one of these problems: restrictive licensing, Linux-only, so deeply self-referential the code is unreadable, or naming conventions that make you feel like you're writing enterprise Java (`____awesome__shell_library____+5000____class::::text__split__` is hyperbole, but not by much).
 

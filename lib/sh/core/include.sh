@@ -84,12 +84,17 @@ include() {
     local _subdir
     local _load_target
     local _verbose
+    local _force
 
     _verbose=0
-    if [ "${1}" = '-v' ]; then
-        _verbose=1
+    _force=0
+    while [ "${1}" = '-v' ] || [ "${1}" = '-f' ] || [ "${1}" = '--force' ]; do
+        case "${1}" in
+            (-v)         _verbose=1 ;;
+            (-f|--force) _force=1 ;;
+        esac
         shift
-    fi
+    done
 
     sh_stack_add "Entering 'include()' and processing ${#} found arg(s): '${*}'"
 
@@ -115,7 +120,7 @@ include() {
     if [ -f "${_include_target}" ]; then
         sh_stack_add "Full path: '${_include_target}' exists.  Is it readable?"
         if [ -r "${_include_target}" ]; then
-            _include_is_loaded "${_include_target}" && return 0
+            (( _force )) || { _include_is_loaded "${_include_target}" && return 0; }
             sh_stack_add "Full path: '${_include_target}' readable.  Loading."
             if _include_source "${_include_target}" "${_verbose}"; then
                 return 0
@@ -155,7 +160,7 @@ include() {
             _subdir="${_element}/${_include_target}"
             sh_stack_add "Loading all libraries and functions from '${_subdir}'"
             for _load_target in "${_subdir}"/*.sh; do
-                _include_is_loaded "${_load_target}" && continue
+                (( _force )) || { _include_is_loaded "${_load_target}" && continue; }
                 if [ -r "${_load_target}" ]; then
                     _include_source "${_load_target}" "${_verbose}" || {
                         _shellac_stack dump
@@ -190,7 +195,7 @@ include() {
                 return 1
             fi
 
-            _include_is_loaded "${_load_target}" && return 0
+            (( _force )) || { _include_is_loaded "${_load_target}" && return 0; }
 
             _include_source "${_load_target}" "${_verbose}" || {
                 printf -- 'include: %s\n' "Failed to load '${_load_target}'" >&2

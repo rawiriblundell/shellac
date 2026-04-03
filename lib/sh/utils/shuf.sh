@@ -36,8 +36,8 @@ command -v shuf >/dev/null 2>&1 && return 0
 # @exitcode 1 RANDOM not available, conflicting options, or invalid argument
 shuf() {
   local OPTIND input_range input_strings n_min n_max n_count shuf_array shuf_repeat
-  local i
-  local n
+  local _idx
+  local _rand_pos
   local reservoir_size
 
   # Test that $RANDOM is present and functioning as a pseudo-random source.
@@ -122,9 +122,9 @@ shuf() {
     fi
     # If repeats are ok, just get it over and done with
     if [[ "${shuf_repeat}" = "true" ]] && (( n_count <= 32767 )); then
-      for i in $(random_int "${n_count}" 1 "${#shuf_array[@]}"); do
-        (( i-- ))
-        printf -- '%s\n' "${shuf_array[i]}"
+      for _idx in $(random_int "${n_count}" 1 "${#shuf_array[@]}"); do
+        (( _idx-- ))
+        printf -- '%s\n' "${shuf_array[_idx]}"
       done
       return "$?"
     # Otherwise, dump shuf_array into fd6
@@ -156,27 +156,27 @@ shuf() {
 
     # If there's more input, we start selecting random points in
     # the reservoir to evict and replace with incoming data
-    i="${#shuf_array[@]}"
+    _idx="${#shuf_array[@]}"
     while IFS=$'\n' read -r -u 6; do
-      n=$(random_int 1 1 "$i")
-      (( n-- ))
-      if (( n < ${#shuf_array[@]} )); then
-        printf -- '%s\n' "${shuf_array[n]}"
-        shuf_array[n]="${REPLY}"
+      _rand_pos=$(random_int 1 1 "$_idx")
+      (( _rand_pos-- ))
+      if (( _rand_pos < ${#shuf_array[@]} )); then
+        printf -- '%s\n' "${shuf_array[_rand_pos]}"
+        shuf_array[_rand_pos]="${REPLY}"
       else
         printf -- '%s\n' "${REPLY}"
       fi
-      (( i++ ))
+      (( _idx++ ))
     done
 
     # At this point we very likely have something left in the reservoir
     # so we shuffle it out.  This is effectively Satollo's algorithm
     while (( ${#shuf_array[@]} > 0 )); do
-      n=$(random_int 1 1 "${#shuf_array[@]}")
-      (( n-- ))
-      if (( n < ${#shuf_array[@]} )) && [[ -n "${shuf_array[n]}" ]]; then
-        printf -- '%s\n' "${shuf_array[n]}"
-        unset -- 'shuf_array[n]'
+      _rand_pos=$(random_int 1 1 "${#shuf_array[@]}")
+      (( _rand_pos-- ))
+      if (( _rand_pos < ${#shuf_array[@]} )) && [[ -n "${shuf_array[_rand_pos]}" ]]; then
+        printf -- '%s\n' "${shuf_array[_rand_pos]}"
+        unset -- 'shuf_array[_rand_pos]'
         # shellcheck disable=SC2206
         shuf_array=( "${shuf_array[@]}" )
       fi

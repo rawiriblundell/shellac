@@ -91,9 +91,9 @@ file_is_backed_up() {
   else
     pattern="${src}.bak.*"
   fi
-  local f
-  for f in ${pattern}; do
-    [[ -f "${f}" ]] && return 0
+  local _backup_file
+  for _backup_file in ${pattern}; do
+    [[ -f "${_backup_file}" ]] && return 0
   done
   return 1
 }

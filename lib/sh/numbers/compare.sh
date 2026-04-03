@@ -43,12 +43,12 @@ _SHELLAC_LOADED_numbers_compare=1
 #
 # @exitcode 0 Equal; 1 First > second; 2 First < second
 num_compare() {
-  local a b
-  a="${1:?num_compare: missing first integer}"
-  b="${2:?num_compare: missing second integer}"
-  if (( a == b )); then
+  local _lhs _rhs
+  _lhs="${1:?num_compare: missing first integer}"
+  _rhs="${2:?num_compare: missing second integer}"
+  if (( _lhs == _rhs )); then
     return 0
-  elif (( a > b )); then
+  elif (( _lhs > _rhs )); then
     return 1
   else
     return 2
@@ -67,10 +67,10 @@ num_compare() {
 #
 # @exitcode 0 Equal; 1 First > second; 2 First < second
 num_compare_float() {
-  local a b
-  a="${1:?num_compare_float: missing first number}"
-  b="${2:?num_compare_float: missing second number}"
-  awk -v a="${a}" -v b="${b}" 'BEGIN {
+  local _lhs _rhs
+  _lhs="${1:?num_compare_float: missing first number}"
+  _rhs="${2:?num_compare_float: missing second number}"
+  awk -v a="${_lhs}" -v b="${_rhs}" 'BEGIN {
     if (a == b) { exit 0 }
     else if (a > b) { exit 1 }
     else { exit 2 }

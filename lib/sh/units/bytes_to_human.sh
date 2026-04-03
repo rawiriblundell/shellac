@@ -33,25 +33,25 @@ _SHELLAC_LOADED_units_bytes_to_human=1
 # @stdout Human-readable size string, e.g. "2.19 KB", "1.50 GB"
 # @exitcode 0 Success; 2 Missing argument
 units_bytes_to_human() {
-  local b d s
-  declare -a S
+  local _bytes _decimal _suffix_idx
+  declare -a _suffixes
   if (( ${#} == 0 )); then
     if [[ ! -t 0 ]]; then
-      IFS= read -r b
+      IFS= read -r _bytes
     else
       printf -- '%s\n' "units_bytes_to_human: missing argument" >&2
       return 2
     fi
   else
-    b="${1}"
+    _bytes="${1}"
   fi
-  d=""
-  s=0
-  S=( Bytes {K,M,G,T,P,E,Y,Z}B )
-  while (( b > 1024 )); do
-    d="$(printf -- '.%02d' "$(( b % 1024 * 100 / 1024 ))")"
-    b=$(( b / 1024 ))
-    (( s++ ))
+  _decimal=""
+  _suffix_idx=0
+  _suffixes=( Bytes {K,M,G,T,P,E,Y,Z}B )
+  while (( _bytes > 1024 )); do
+    _decimal="$(printf -- '.%02d' "$(( _bytes % 1024 * 100 / 1024 ))")"
+    _bytes=$(( _bytes / 1024 ))
+    (( _suffix_idx++ ))
   done
-  printf -- '%s\n' "${b}${d} ${S[${s}]}"
+  printf -- '%s\n' "${_bytes}${_decimal} ${_suffixes[${_suffix_idx}]}"
 }

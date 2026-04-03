@@ -42,15 +42,15 @@ debug_trap_err() {
 # @stderr Stack trace and error exit code
 # @exitcode Propagates the original error exit code
 debug_err_handler() {
-    local i
+    local _frame
     local _exit_code
     trap - ERR
-    i=0
+    _frame=0
     _exit_code="${1}"
     printf -- '%s\n' "Aborting on error ${_exit_code}:" \
         "--------------------" >&2
-    while caller "${i}" >&2; do
-        : $(( i += 1 ))
+    while caller "${_frame}" >&2; do
+        : $(( _frame += 1 ))
     done
     exit "${_exit_code}"
 }

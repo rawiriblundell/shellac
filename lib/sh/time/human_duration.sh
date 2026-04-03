@@ -33,13 +33,13 @@ _SHELLAC_LOADED_time_human_duration=1
 # @stdout Human-readable duration
 # @exitcode 0 Success; 2 Missing argument
 time_human_duration() {
-  local t day hr min sec
+  local _total_secs day hr min sec
   (( ${#} == 0 )) && { printf -- '%s\n' "time_human_duration: missing argument" >&2; return 2; }
-  t="${1}"
-  day="$(( t / 60 / 60 / 24 ))"
-  hr="$(( t / 60 / 60 % 24 ))"
-  min="$(( t / 60 % 60 ))"
-  sec="$(( t % 60 ))"
+  _total_secs="${1}"
+  day="$(( _total_secs / 60 / 60 / 24 ))"
+  hr="$(( _total_secs / 60 / 60 % 24 ))"
+  min="$(( _total_secs / 60 % 60 ))"
+  sec="$(( _total_secs % 60 ))"
   (( day > 0 )) && printf -- '%d days ' "${day}"
   (( hr > 0  )) && printf -- '%d hours ' "${hr}"
   (( min > 0 )) && printf -- '%d minute(s) ' "${min}"

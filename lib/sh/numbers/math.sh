@@ -34,12 +34,12 @@ _SHELLAC_LOADED_numbers_math=1
 # @stdout Absolute value
 # @exitcode 0 Always; 1 Missing or non-integer argument
 num_abs() {
-  local n
-  n="${1:-}"
-  [[ -z "${n}" ]] && { printf -- '%s\n' "num_abs: missing argument" >&2; return 1; }
-  printf -- '%d' "${n}" >/dev/null 2>&1 || { printf -- '%s\n' "num_abs: not an integer: ${n}" >&2; return 1; }
-  (( n < 0 )) && n=$(( -n ))
-  printf -- '%d\n' "${n}"
+  local _val
+  _val="${1:-}"
+  [[ -z "${_val}" ]] && { printf -- '%s\n' "num_abs: missing argument" >&2; return 1; }
+  printf -- '%d' "${_val}" >/dev/null 2>&1 || { printf -- '%s\n' "num_abs: not an integer: ${_val}" >&2; return 1; }
+  (( _val < 0 )) && _val=$(( -_val ))
+  printf -- '%d\n' "${_val}"
 }
 
 # @description Return the lesser of two integers.
@@ -54,13 +54,13 @@ num_abs() {
 # @stdout Smaller value
 # @exitcode 0 Always; 1 Missing argument
 num_min() {
-  local a b
-  a="${1:?num_min: missing first argument}"
-  b="${2:?num_min: missing second argument}"
-  if (( a <= b )); then
-    printf -- '%d\n' "${a}"
+  local _lhs _rhs
+  _lhs="${1:?num_min: missing first argument}"
+  _rhs="${2:?num_min: missing second argument}"
+  if (( _lhs <= _rhs )); then
+    printf -- '%d\n' "${_lhs}"
   else
-    printf -- '%d\n' "${b}"
+    printf -- '%d\n' "${_rhs}"
   fi
 }
 
@@ -76,13 +76,13 @@ num_min() {
 # @stdout Larger value
 # @exitcode 0 Always; 1 Missing argument
 num_max() {
-  local a b
-  a="${1:?num_max: missing first argument}"
-  b="${2:?num_max: missing second argument}"
-  if (( a >= b )); then
-    printf -- '%d\n' "${a}"
+  local _lhs _rhs
+  _lhs="${1:?num_max: missing first argument}"
+  _rhs="${2:?num_max: missing second argument}"
+  if (( _lhs >= _rhs )); then
+    printf -- '%d\n' "${_lhs}"
   else
-    printf -- '%d\n' "${b}"
+    printf -- '%d\n' "${_rhs}"
   fi
 }
 
@@ -99,16 +99,16 @@ num_max() {
 # @stdout Modulo result
 # @exitcode 0 Always; 1 Division by zero or missing argument
 num_modulo() {
-  local a m result
-  a="${1:?num_modulo: missing dividend}"
-  m="${2:?num_modulo: missing divisor}"
-  (( m == 0 )) && { printf -- '%s\n' "num_modulo: division by zero" >&2; return 1; }
-  result=$(( a % m ))
+  local _dividend _divisor _result
+  _dividend="${1:?num_modulo: missing dividend}"
+  _divisor="${2:?num_modulo: missing divisor}"
+  (( _divisor == 0 )) && { printf -- '%s\n' "num_modulo: division by zero" >&2; return 1; }
+  _result=$(( _dividend % _divisor ))
   # Adjust to mathematical modulo (result same sign as divisor)
-  if (( result != 0 && (result < 0) != (m < 0) )); then
-    result=$(( result + m ))
+  if (( _result != 0 && (_result < 0) != (_divisor < 0) )); then
+    _result=$(( _result + _divisor ))
   fi
-  printf -- '%d\n' "${result}"
+  printf -- '%d\n' "${_result}"
 }
 
 # @description Clamp an integer to [min, max].

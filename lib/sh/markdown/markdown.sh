@@ -71,10 +71,10 @@ md_bullet() { printf -- '- %s\n' "${*}"; }
 # @arg $@ string  Item text
 # @stdout "N. text\n"
 md_numbered() {
-  local n
-  n="${1:?No item number provided}"
+  local _item_num
+  _item_num="${1:?No item number provided}"
   shift
-  printf -- '%s. %s\n' "${n}" "${*}"
+  printf -- '%s. %s\n' "${_item_num}" "${*}"
 }
 
 # @description Print a blockquote line.

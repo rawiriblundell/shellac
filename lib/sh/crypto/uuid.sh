@@ -41,7 +41,14 @@ include time/epoch
 
 # @internal
 _uuid_randchars() {
-  tr -dc a-f0-9 < /dev/urandom | fold -w 1 | head -n "${1:-36}"
+  local _n
+  local _raw
+  _n="${1:-36}"
+  # Bounded dd read avoids the SIGPIPE propagation that hangs in CI pipeline
+  # environments where SIGPIPE is SIG_IGN. 16/256 = 6.25% hex density, so
+  # _n * 100 bytes yields ~6*_n hex chars on average — far more than needed.
+  _raw=$(dd if=/dev/urandom bs=$(( _n * 100 )) count=1 2>/dev/null | tr -dc 'a-f0-9')
+  printf -- '%s\n' "${_raw:0:${_n}}"
 }
 
 # @internal
@@ -538,7 +545,7 @@ uuid_v8() {
 # @stdout A pseudo-UUID string
 # @exitcode 0 Always
 uuid_pseudo() {
-  od -x /dev/urandom | head -n 1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}'
+  dd if=/dev/urandom bs=16 count=1 2>/dev/null | od -x | head -n 1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}'
 }
 
 # @description Generate a UUID of the specified version (default: v4).

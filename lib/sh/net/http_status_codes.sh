@@ -17,51 +17,68 @@ _SHELLAC_LOADED_net_http_status_codes=1
 # @description Look up and print a description of an HTTP status code. Also accepts
 #   category names to print all codes in that category at once.
 #
-# @arg $1 string HTTP status code (e.g. 404) or category keyword:
+# @arg $1 string Optional output format flag:
+#   --short / -s  — code and name only (e.g. '200 OK')
+#   --json        — JSON object with code, name, and description
+#   --code        — numeric code only
+#   --name        — status name only
+# @arg $2 string HTTP status code (e.g. 404) or category keyword:
 #   info, informational, success, successful, redirect, redirection,
 #   client, client_errors, server, server_errors
 #
 # @example
 #   net_http_code_explain 404
-#   net_http_code_explain server
+#   net_http_code_explain --short 404
+#   net_http_code_explain --json server
+#   net_http_code_explain --code 200
 #
-# @stdout The numeric code, short name, and description
+# @stdout The numeric code, short name, and description (default); or formatted output
 # @exitcode 0 Success
 # @exitcode 1 No argument or unrecognised code
 net_http_code_explain() {
-  local _code _http_status_code _http_status_description 
+  local _flag _format _code _http_status_code _http_status_description
+  _flag=''
+  _format='default'
+
+  case "${1}" in
+    (--short|-s) _flag="${1}"; _format='short'; shift ;;
+    (--json)     _flag="${1}"; _format='json';  shift ;;
+    (--code)     _flag="${1}"; _format='code';  shift ;;
+    (--name)     _flag="${1}"; _format='name';  shift ;;
+  esac
+
   case "${1}" in
     ([iI]nfo|[iI]nformational)
       for _code in 100 101 102 103 104; do
-        net_http_code_explain "${_code}"
+        net_http_code_explain ${_flag:+"${_flag}"} "${_code}"
         printf -- '%s\n' ""
       done
       return 0
     ;;
     ([sS]uccess|[sS]uccessful)
       for _code in 200 201 202 203 204 205 206 207 208 226; do
-        net_http_code_explain "${_code}"
+        net_http_code_explain ${_flag:+"${_flag}"} "${_code}"
         printf -- '%s\n' ""
       done
       return 0
     ;;
     ([rR]edirection)
       for _code in 300 301 302 303 304 305 306 307 308; do
-        net_http_code_explain "${_code}"
+        net_http_code_explain ${_flag:+"${_flag}"} "${_code}"
         printf -- '%s\n' ""
       done
       return 0
     ;;
     ([cC]lient|[cC]lient_[eE]rrors)
       for _code in 400 401 402 403 404 405 406 407 408 409 410 411 412 413 414 415 416 417 418 421 422 423 424 425 426 428 429 431 440 444 449 451 460 463 464 499; do
-        net_http_code_explain "${_code}"
+        net_http_code_explain ${_flag:+"${_flag}"} "${_code}"
         printf -- '%s\n' ""
       done
       return 0
     ;;
     ([sS]erver|[sS]erver_[eE]rrors)
       for _code in 500 501 502 503 504 505 506 507 508 510 511 562 599; do
-        net_http_code_explain "${_code}"
+        net_http_code_explain ${_flag:+"${_flag}"} "${_code}"
         printf -- '%s\n' ""
       done
       return 0
@@ -497,8 +514,27 @@ net_http_code_explain() {
     ;;
   esac
 
-  # TODO: add more output formats
-  printf -- '%s %s\n%s\n' "${1}" "${_http_status_code}" "${_http_status_description}"
+  case "${_format}" in
+    (short)
+      printf -- '%s %s\n' "${1}" "${_http_status_code}"
+    ;;
+    (json)
+      # Escape any embedded double quotes in the description
+      local _desc_escaped
+      _desc_escaped="${_http_status_description//\"/\\\"}"
+      printf -- '{"code": %s, "name": "%s", "description": "%s"}\n' \
+        "${1}" "${_http_status_code}" "${_desc_escaped}"
+    ;;
+    (code)
+      printf -- '%s\n' "${1}"
+    ;;
+    (name)
+      printf -- '%s\n' "${_http_status_code}"
+    ;;
+    (default)
+      printf -- '%s %s\n%s\n' "${1}" "${_http_status_code}" "${_http_status_description}"
+    ;;
+  esac
   return 0
 }
  

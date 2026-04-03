@@ -85,6 +85,49 @@ teardown() {
   [ "${status}" -eq 0 ]
 }
 
+@test "requires: BASH99 fails on current bash (< 9.9)" {
+  run shellac_run 'include "core/requires"; requires BASH99'
+  [ "${status}" -eq 1 ]
+}
+
+# ---------------------------------------------------------------------------
+# ZSH version check (injecting fake ZSH_VERSION)
+# ---------------------------------------------------------------------------
+
+@test "requires: ZSH57 succeeds when ZSH_VERSION is 5.7.1" {
+  run shellac_run 'include "core/requires"; ZSH_VERSION="5.7.1"; requires ZSH57'
+  [ "${status}" -eq 0 ]
+}
+
+@test "requires: ZSH52 succeeds when ZSH_VERSION is 5.7.1 (older requirement)" {
+  run shellac_run 'include "core/requires"; ZSH_VERSION="5.7.1"; requires ZSH52'
+  [ "${status}" -eq 0 ]
+}
+
+@test "requires: ZSH60 fails when ZSH_VERSION is 5.7.1 (newer requirement)" {
+  run shellac_run 'include "core/requires"; ZSH_VERSION="5.7.1"; requires ZSH60'
+  [ "${status}" -eq 1 ]
+}
+
+# ---------------------------------------------------------------------------
+# KSH version check (injecting fake KSH_VERSION)
+# ---------------------------------------------------------------------------
+
+@test "requires: KSH57 succeeds when KSH_VERSION is mksh R57" {
+  run shellac_run 'include "core/requires"; KSH_VERSION="@(#)MIRBSD KSH R57 2019/09/30"; requires KSH57'
+  [ "${status}" -eq 0 ]
+}
+
+@test "requires: KSH50 succeeds when KSH_VERSION is mksh R57 (older requirement)" {
+  run shellac_run 'include "core/requires"; KSH_VERSION="@(#)MIRBSD KSH R57 2019/09/30"; requires KSH50'
+  [ "${status}" -eq 0 ]
+}
+
+@test "requires: KSH60 fails when KSH_VERSION is mksh R57 (newer requirement)" {
+  run shellac_run 'include "core/requires"; KSH_VERSION="@(#)MIRBSD KSH R57 2019/09/30"; requires KSH60'
+  [ "${status}" -eq 1 ]
+}
+
 # ---------------------------------------------------------------------------
 # Variable check (KEY=VALUE)
 # ---------------------------------------------------------------------------

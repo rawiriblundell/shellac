@@ -112,6 +112,7 @@ requires() {
     local _key
     local _val
     local _bashver
+    local _kshver
     local _target_lib
     local _found_lib
     local _failures
@@ -195,8 +196,7 @@ requires() {
 
             (BASH*)
             # Shell version check e.g. 'requires BASH32' = we check for bash 3.2 or newer
-            # To strictly require a specific version, you could use the keyval test above
-            # TODO: Expand the "is greater than" logic, add extra shells
+            # To strictly require a specific version, use the keyval test above
             if (( ${#BASH_VERSION} > 0 )); then
                 # Get first three chars e.g. '4.3'
                 _bashver="${BASH_VERSION%${BASH_VERSION#???}}"
@@ -210,18 +210,34 @@ requires() {
             ;;
 
             (KSH)
-            # At present we just check that we have one of the following env vars
+            # Bare KSH: presence check for any ksh variant
             (( ${#KSH_VERSION} > 0 )) && continue
             [ "${#.sh.version}" -gt 0 ] && continue
             ;;
 
+            (KSH*)
+            # Version check for ksh e.g. 'requires KSH57' (mksh/pdksh release 57)
+            # KSH_VERSION in mksh:  "@(#)MIRBSD KSH R57 2019/09/30"
+            # KSH_VERSION in pdksh: "@(#)PD KSH v5.2.14 99/07/13.2"
+            if (( ${#KSH_VERSION} > 0 )); then
+                # Extract R-number from mksh (R57 → 57), or leading integer from pdksh (v5 → 5)
+                _kshver=$(printf '%s' "${KSH_VERSION}" | grep -oE '\bR[0-9]+\b' | tr -d 'R')
+                [[ -z "${_kshver}" ]] && _kshver=$(printf '%s' "${KSH_VERSION}" | grep -oE '[0-9]+' | head -1)
+                if [[ -n "${_kshver}" ]]; then
+                    [ "${_item}" = "KSH${_kshver}" ] && continue
+                    (( _kshver >= ${_item/KSH/} )) && continue
+                fi
+            fi
+            ;;
+
             (ZSH*)
             if (( ${#ZSH_VERSION} > 0 )); then
-                # ZSH_VERSION outputs a semantic number e.g. 5.7.1
-                # We use parameter expansion to pull out the dots e.g. ZSH571
-                # We do a string, then an int comparison just as with bash
-                [ "${_item}" = "ZSH${ZSH_VERSION//./}" ] && continue
-                (( ${_item/ZSH/} >= ${ZSH_VERSION//./} )) && continue
+                # Compare on major.minor only (e.g. "5.7.1" → ZSH57), mirroring the BASH approach
+                _bashver="ZSH${ZSH_VERSION%.*}"
+                _bashver="${_bashver/./}"
+                [ "${_item}" = "${_bashver}" ] && continue
+                # Installed version must be >= required (e.g. current ZSH57 >= required ZSH52)
+                (( ${_bashver/ZSH/} >= ${_item/ZSH/} )) && continue
             fi
             ;;
 

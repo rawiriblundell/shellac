@@ -36,7 +36,7 @@ secrets_genpasswd() {
   export LC_ALL=C LC_CTYPE=C
   # localise variables for safety
   local OPTIND _pwd_chars _pwd_digit _pwd_num _pwd_set _pwd_koremutake _pwd_upper \
-    _pwd_special _pwd_special_chars _pwd_syllables _n _t _u _v _tmp_array
+    _pwd_special _pwd_special_chars _pwd_syllables _n _t _u _v _tmp_array _raw_chars
 
   # Default the vars
   _pwd_chars=10
@@ -135,10 +135,13 @@ secrets_genpasswd() {
   else
     for (( i=0; i<_pwd_num; i++ )); do
       _n=0
-      while read -r; do
-        _tmp_array[_n]="${REPLY}"
+      # Read a bounded chunk from /dev/urandom so dd exits naturally — avoids
+      # the SIGPIPE propagation issue that can hang in CI pipeline environments.
+      _raw_chars=$(dd if=/dev/urandom bs=$(( _pwd_chars * 20 )) count=1 2>/dev/null | tr -dc "${_pwd_set}" | tr -d ' ')
+      while (( _n < _pwd_chars )); do
+        _tmp_array[_n]="${_raw_chars:_n:1}"
         (( _n++ ))
-      done < <(tr -dc "${_pwd_set}" < /dev/urandom | tr -d ' ' | fold -w 1 | head -n "${_pwd_chars}")
+      done
       read -r _t _u _v < <(random_int 3 0 $(( ${#_tmp_array[@]} - 1 )) | paste -s -)
       #pwdLower is effectively guaranteed, so we skip it and focus on the others
       if [[ "${_pwd_upper}" = "true" ]]; then

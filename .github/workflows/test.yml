@@ -31,8 +31,8 @@ jobs:
           sudo /tmp/bats-core/install.sh /usr/local
 
       - name: Run tests
-        run: bats test/bats/
+        run: bats --timeout 30 test/bats/
 
       - name: Run tests (verbose on failure)
         if: failure()
-        run: bats --verbose-run test/bats/
+        run: bats --verbose-run --timeout 30 test/bats/

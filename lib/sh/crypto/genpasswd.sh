@@ -33,7 +33,7 @@ include "crypto/random"
 # @exitcode 0 Success
 # @exitcode 1 Invalid option or password length less than 4
 secrets_genpasswd() {
-  export LC_CTYPE=C
+  export LC_ALL=C LC_CTYPE=C
   # localise variables for safety
   local OPTIND _pwd_chars _pwd_digit _pwd_num _pwd_set _pwd_koremutake _pwd_upper \
     _pwd_special _pwd_special_chars _pwd_syllables _n _t _u _v _tmp_array

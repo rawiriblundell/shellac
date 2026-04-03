@@ -145,8 +145,8 @@ json_require() {
     # First try to determine if it's a command
     command -v "${_fsobj}" >/dev/null 2>&1 && continue
 
-    # TODO: This may require more smarts
-    [[ -x ./"${_fsobj}" ]] && continue
+    # Check for an executable at an absolute or relative path (not PATH lookup)
+    [[ -x "${_fsobj}" ]] && continue
 
     # Next, let's see if it's a readable file
     [[ -r "${_fsobj}" ]] && continue
@@ -574,6 +574,7 @@ json_append_auto() {
 #
 # @stdout '"key" "value"'
 # @exitcode 0 Always
+# @exitcode 1 Line has no recognised delimiter (': ' or '=')
 json_from_dkvp() {
   local _line _key _value
   _line="${*}"
@@ -587,8 +588,8 @@ json_from_dkvp() {
       _value="${_line##*=}"
     ;;
     (*)
-      # TODO: figure out a desired behaviour for this instance
-      :
+      printf -- 'json_from_dkvp: unrecognised format (no : or = delimiter): %s\n' "${_line}" >&2
+      return 1
     ;;
   esac
   _key="$(json_sanitise "${_key}")"

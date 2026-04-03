@@ -566,8 +566,25 @@ net_nics() {
   fi
 }
 
-# @description Find the next available local port by scanning with 'ss'.
-#   Starts from a given port and increments until a free port is found.
+# @internal Return 0 if ${1} is in use (listening), non-zero if free, 2 if no tool found.
+#   Selected at load time: ss (iproute2/Linux) -> netstat (portable) -> lsof (macOS/Linux).
+#   Note: the bash /dev/tcp pseudo-device was not used here — it was unreliable in WSL2
+#   and is not available in all shells or sandbox environments.
+if command -v ss >/dev/null 2>&1; then
+    _net_port_in_use() { ss -ltn 2>/dev/null | awk '{print $4}' | grep -q ":${1}$"; }
+elif command -v netstat >/dev/null 2>&1; then
+    _net_port_in_use() { netstat -ltn 2>/dev/null | awk '{print $4}' | grep -q ":${1}$"; }
+elif command -v lsof >/dev/null 2>&1; then
+    _net_port_in_use() { lsof -iTCP:"${1}" -sTCP:LISTEN 2>/dev/null | grep -q .; }
+else
+    _net_port_in_use() {
+        printf -- 'net_next_port: no supported port-check tool found (ss, netstat, lsof)\n' >&2
+        return 2
+    }
+fi
+
+# @description Find the next available local port starting from a given number.
+#   Uses the best available port-check tool (ss, netstat, or lsof).
 #
 # @arg $1 int Starting port number (default: 9000)
 # @arg $2 int Number of ports to scan before giving up (default: 100)
@@ -578,23 +595,25 @@ net_nics() {
 #
 # @stdout The first available port number
 # @exitcode 0 An available port was found
-# @exitcode 1 No available port found within the scan range
+# @exitcode 1 No available port found within the scan range, or no tool available
 net_next_port() {
-  local test_port max_port
-  test_port="${1:-9000}"
+  local _test_port _max_port _in_use
+  _test_port="${1:-9000}"
   # Set an upper bound.  100 cycles should be plenty.
-  max_port="$(( test_port + "${2:-100}" ))"
+  _max_port="$(( _test_port + "${2:-100}" ))"
   while true; do
-    if (( test_port == max_port )); then
+    if (( _test_port == _max_port )); then
       printf -- '%s\n' "net_next_port: no available port found in range" >&2
       return 1
     fi
-    # bash builtins weren't working in WSL2 for me, so I'm using 'ss' here
-    # TODO: figure out a more portable way to do this, or multiple methods failing over?
-    if ! ss 2>&1 | grep -q "127.0.0.1:${test_port}"; then
-      printf -- '%d\n' "${test_port}"
+    _net_port_in_use "${_test_port}"
+    _in_use=$?
+    if (( _in_use == 2 )); then
+      return 1
+    elif (( _in_use != 0 )); then
+      printf -- '%d\n' "${_test_port}"
       break
     fi
-    (( test_port++ ))
+    (( _test_port++ ))
   done
 }

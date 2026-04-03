@@ -23,14 +23,17 @@ _SHELLAC_LOADED_text_replace=1
 
 # @description Replace occurrences of a pattern in a string.
 #   Replaces all occurrences by default; pass a count to limit replacements.
+#   The '/' sed delimiter is automatically escaped in match and replacement,
+#   so literal '/' characters in either argument are handled correctly.
 #
 # @arg $1 string The input string
-# @arg $2 string The pattern to search for (sed-compatible)
+# @arg $2 string The pattern to search for (sed-compatible regex)
 # @arg $3 string The replacement string
 # @arg $4 int Optional: maximum number of replacements (default: all)
 #
 # @stdout String with replacements applied
-# @exitcode 0 Always
+# @exitcode 0 Success
+# @exitcode 1 Count is not a positive integer
 str_replace() {
   local _str_replace_string _str_replace_match
   local _str_replace_replacement _str_replace_count _str_replace_i
@@ -39,8 +42,22 @@ str_replace() {
   _str_replace_replacement="${3}"
   _str_replace_count="${4}"
 
-  # TODO: escape all sed special chars in the vars
-  # TODO: validate that _str_replace_count is a legit integer
+  # Validate count before escaping so the error shows the original value
+  case "${_str_replace_count}" in
+    ('') : ;;
+    (*[!0-9]* | 0)
+      printf -- 'str_replace: count must be a positive integer, got: %s\n' "${_str_replace_count}" >&2
+      return 1
+    ;;
+  esac
+
+  # Escape the sed delimiter in match; other metacharacters are intentional regex
+  _str_replace_match="${_str_replace_match//\//\\/}"
+
+  # Escape \, &, and / in replacement — in that order to avoid double-escaping
+  _str_replace_replacement="${_str_replace_replacement//\\/\\\\}"
+  _str_replace_replacement="${_str_replace_replacement//&/\\&}"
+  _str_replace_replacement="${_str_replace_replacement//\//\\/}"
 
   case "${_str_replace_count}" in
     ('')

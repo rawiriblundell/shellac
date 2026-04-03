@@ -35,12 +35,12 @@ include core/open
 #
 # @exitcode 0 Opened; 1 Invalid URL or no opener; 2 Missing argument
 net_open_link() {
-  local url
-  url="${1:?net_open_link: missing URL argument}"
-  case "${url}" in
-    (*://*) open "${url}" ;;
+  local _url
+  _url="${1:?net_open_link: missing URL argument}"
+  case "${_url}" in
+    (*://*) open "${_url}" ;;
     (*)
-      printf -- '%s\n' "net_open_link: not a URL (no scheme): ${url}" >&2
+      printf -- '%s\n' "net_open_link: not a URL (no scheme): ${_url}" >&2
       return 1
     ;;
   esac

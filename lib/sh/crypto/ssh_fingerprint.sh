@@ -35,25 +35,25 @@ _SHELLAC_LOADED_crypto_ssh_fingerprint=1
 # @exitcode 0 Success
 # @exitcode 1 No host resolved or empty keyscan result
 ssh_fingerprint() {
-  local fingerprint keyscanargs
-  fingerprint=$(mktemp)
+  local _fingerprint _keyscanargs
+  _fingerprint=$(mktemp)
 
-  trap 'rm -f "${fingerprint:?}" 2>/dev/null' RETURN
+  trap 'rm -f "${_fingerprint:?}" 2>/dev/null' RETURN
 
   # Test if the local host supports ed25519
   # Older versions of ssh don't have '-Q' so also likely won't have ed25519
   # If you wanted a more portable test: 'man ssh | grep ed25519' might be it
-  ssh -Q key 2>/dev/null | grep -q ed25519 && keyscanargs=( -t "ed25519,rsa,ecdsa" )
+  ssh -Q key 2>/dev/null | grep -q ed25519 && _keyscanargs=( -t "ed25519,rsa,ecdsa" )
 
   # If we have an arg "-a" or "--append", we add our findings to known_hosts
   case "${1}" in
     (-a|--append)
       shift 1
-      ssh-keyscan "${keyscanargs[@]}" "${*}" > "${fingerprint}" 2> /dev/null
+      ssh-keyscan "${_keyscanargs[@]}" "${*}" > "${_fingerprint}" 2> /dev/null
       # If the fingerprint file is empty, then quietly fail
-      [[ -s "${fingerprint}" ]] || return 1
+      [[ -s "${_fingerprint}" ]] || return 1
       cp "${HOME}"/.ssh/known_hosts{,."$(date +%Y%m%d)"}
-      cat "${fingerprint}" ~/.ssh/known_hosts."$(date +%Y%m%d)" |
+      cat "${_fingerprint}" ~/.ssh/known_hosts."$(date +%Y%m%d)" |
         sort | 
         uniq > "${HOME}"/.ssh/known_hosts
     ;;
@@ -62,9 +62,9 @@ ssh_fingerprint() {
       return 1
     ;;
     (*)
-      ssh-keyscan "${keyscanargs[@]}" "${*}" > "${fingerprint}" 2> /dev/null
-      [[ -s "${fingerprint}" ]] || return 1
-      ssh-keygen -l -f "${fingerprint}"
+      ssh-keyscan "${_keyscanargs[@]}" "${*}" > "${_fingerprint}" 2> /dev/null
+      [[ -s "${_fingerprint}" ]] || return 1
+      ssh-keygen -l -f "${_fingerprint}"
     ;;
   esac
 }

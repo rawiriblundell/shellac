@@ -28,38 +28,38 @@ _SHELLAC_LOADED_args_arg_count=1
 # @exitcode 0 Correct number of parameters
 # @exitcode 1 Wrong count or non-integer argument
 arg_count() {
-    local desired_count
-    local actual_count
+    local _desired_count
+    local _actual_count
 
     if (( "${#}" != 2 )); then
         printf -- 'arg_count: %s\n' "requires exactly 2 arguments" >&2
         return 1
     fi
 
-    desired_count="${1}"
-    actual_count="${2}"
+    _desired_count="${1}"
+    _actual_count="${2}"
 
-    case "${desired_count}" in
+    case "${_desired_count}" in
         (*[!0-9]*|'')
-            printf -- 'arg_count: %s\n' "desired count '${desired_count}' is not a non-negative integer" >&2
+            printf -- 'arg_count: %s\n' "desired count '${_desired_count}' is not a non-negative integer" >&2
             return 1
         ;;
     esac
 
-    case "${actual_count}" in
+    case "${_actual_count}" in
         (*[!0-9]*|'')
-            printf -- 'arg_count: %s\n' "actual count '${actual_count}' is not a non-negative integer" >&2
+            printf -- 'arg_count: %s\n' "actual count '${_actual_count}' is not a non-negative integer" >&2
             return 1
         ;;
     esac
 
-    if (( actual_count < desired_count )); then
-        printf -- 'arg_count: %s\n' "not enough parameters supplied (got ${actual_count}, need ${desired_count})" >&2
+    if (( _actual_count < _desired_count )); then
+        printf -- 'arg_count: %s\n' "not enough parameters supplied (got ${_actual_count}, need ${_desired_count})" >&2
         return 1
     fi
 
-    if (( actual_count > desired_count )); then
-        printf -- 'arg_count: %s\n' "too many parameters supplied (got ${actual_count}, need ${desired_count})" >&2
+    if (( _actual_count > _desired_count )); then
+        printf -- 'arg_count: %s\n' "too many parameters supplied (got ${_actual_count}, need ${_desired_count})" >&2
         return 1
     fi
 }

@@ -24,58 +24,58 @@ _SHELLAC_LOADED_fs_hash=1
 # Compute the hash of a single file (or /dev/stdin) using the named algorithm.
 # Tries native *sum tools first, then shasum, then openssl as a fallback.
 _fs_hash_compute() {
-  local algo file
-  algo="${1}"
-  file="${2:?_fs_hash_compute: no file given}"
+  local _algo _file
+  _algo="${1}"
+  _file="${2:?_fs_hash_compute: no _file given}"
 
-  if [[ "${file}" != "/dev/stdin" ]] && [[ ! -r "${file}" ]]; then
-    printf -- 'fs_hash: not readable: %s\n' "${file}" >&2
+  if [[ "${_file}" != "/dev/stdin" ]] && [[ ! -r "${_file}" ]]; then
+    printf -- 'fs_hash: not readable: %s\n' "${_file}" >&2
     return 1
   fi
 
-  case "${algo}" in
+  case "${_algo}" in
     (sha512)
       if command -v sha512sum >/dev/null 2>&1; then
-        sha512sum -- "${file}" | awk '{print $1}'
+        sha512sum -- "${_file}" | awk '{print $1}'
       elif command -v shasum >/dev/null 2>&1; then
-        shasum -a 512 -- "${file}" | awk '{print $1}'
+        shasum -a 512 -- "${_file}" | awk '{print $1}'
       elif command -v openssl >/dev/null 2>&1; then
-        openssl dgst -sha512 -- "${file}" | awk '{print $NF}'
+        openssl dgst -sha512 -- "${_file}" | awk '{print $NF}'
       else
         printf -- 'fs_hash: no sha512 tool found\n' >&2; return 1
       fi ;;
     (sha256)
       if command -v sha256sum >/dev/null 2>&1; then
-        sha256sum -- "${file}" | awk '{print $1}'
+        sha256sum -- "${_file}" | awk '{print $1}'
       elif command -v shasum >/dev/null 2>&1; then
-        shasum -a 256 -- "${file}" | awk '{print $1}'
+        shasum -a 256 -- "${_file}" | awk '{print $1}'
       elif command -v openssl >/dev/null 2>&1; then
-        openssl dgst -sha256 -- "${file}" | awk '{print $NF}'
+        openssl dgst -sha256 -- "${_file}" | awk '{print $NF}'
       else
         printf -- 'fs_hash: no sha256 tool found\n' >&2; return 1
       fi ;;
     (sha1)
       if command -v sha1sum >/dev/null 2>&1; then
-        sha1sum -- "${file}" | awk '{print $1}'
+        sha1sum -- "${_file}" | awk '{print $1}'
       elif command -v shasum >/dev/null 2>&1; then
-        shasum -a 1 -- "${file}" | awk '{print $1}'
+        shasum -a 1 -- "${_file}" | awk '{print $1}'
       elif command -v openssl >/dev/null 2>&1; then
-        openssl dgst -sha1 -- "${file}" | awk '{print $NF}'
+        openssl dgst -sha1 -- "${_file}" | awk '{print $NF}'
       else
         printf -- 'fs_hash: no sha1 tool found\n' >&2; return 1
       fi ;;
     (md5)
       if command -v md5sum >/dev/null 2>&1; then
-        md5sum -- "${file}" | awk '{print $1}'
+        md5sum -- "${_file}" | awk '{print $1}'
       elif command -v md5 >/dev/null 2>&1; then
-        md5 -- "${file}" | awk '{print $NF}'
+        md5 -- "${_file}" | awk '{print $NF}'
       elif command -v openssl >/dev/null 2>&1; then
-        openssl dgst -md5 -- "${file}" | awk '{print $NF}'
+        openssl dgst -md5 -- "${_file}" | awk '{print $NF}'
       else
         printf -- 'fs_hash: no md5 tool found\n' >&2; return 1
       fi ;;
     (*)
-      printf -- 'fs_hash: unknown algorithm: %s\n' "${algo}" >&2; return 1 ;;
+      printf -- 'fs_hash: unknown algorithm: %s\n' "${_algo}" >&2; return 1 ;;
   esac
 }
 
@@ -97,38 +97,38 @@ _fs_hash_compute() {
 # @exitcode 0 Success
 # @exitcode 1 Path not found, not readable, or no suitable tool available
 fs_hash() {
-  local algo tree target
-  algo="sha256"
-  tree=0
+  local _algo _tree _target
+  _algo="sha256"
+  _tree=0
 
   while (( $# > 0 )); do
     case "${1}" in
-      (--algo|-a)  algo="${2}"; shift 2 ;;
-      (--tree|-R)  tree=1; shift ;;
-      (--)         shift; target="${1}"; break ;;
+      (--algo|-a)  _algo="${2}"; shift 2 ;;
+      (--tree|-R)  _tree=1; shift ;;
+      (--)         shift; _target="${1}"; break ;;
       (-*)
         printf -- 'Usage: fs_hash [--algo <algo>] [--tree|-R] <path>\n' >&2
         return 1
       ;;
-      (*)          target="${1}"; shift ;;
+      (*)          _target="${1}"; shift ;;
     esac
   done
 
-  target="${target:?No path given}"
+  _target="${_target:?No path given}"
 
-  if (( tree == 1 )); then
-    [[ -d "${target}" ]] || {
-      printf -- 'fs_hash: not a directory: %s\n' "${target}" >&2
+  if (( _tree == 1 )); then
+    [[ -d "${_target}" ]] || {
+      printf -- 'fs_hash: not a directory: %s\n' "${_target}" >&2
       return 1
     }
     # Hash each file sorted by name for stability, then hash the concatenated result
     (
-      cd -- "${target}" || return 1
+      cd -- "${_target}" || return 1
       find '.' -type f | sort | while IFS= read -r _file; do
-        printf -- '%s  %s\n' "$(_fs_hash_compute "${algo}" "${_file}")" "${_file}"
+        printf -- '%s  %s\n' "$(_fs_hash_compute "${_algo}" "${_file}")" "${_file}"
       done
-    ) | _fs_hash_compute "${algo}" /dev/stdin
+    ) | _fs_hash_compute "${_algo}" /dev/stdin
   else
-    _fs_hash_compute "${algo}" "${target}"
+    _fs_hash_compute "${_algo}" "${_target}"
   fi
 }

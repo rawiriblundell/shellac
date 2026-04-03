@@ -30,7 +30,7 @@ _SHELLAC_LOADED_fs_ini_val=1
 #
 # @arg $1 string Path to .ini file
 # @arg $2 string Key in "section.key" form (or just "key" for the default section)
-# @arg $3 string Value to set (omit to read the current value)
+# @arg $3 string Value to set (omit to read the _current value)
 # @arg $4 string Optional inline comment for a new entry
 #
 # @example
@@ -40,65 +40,65 @@ _SHELLAC_LOADED_fs_ini_val=1
 # @stdout Current value when reading
 # @exitcode 0 Success; 2 Missing arguments
 fs_ini_val() {
-  local file sectionkey val comment delim comment_delim section key
-  local current current_comment ret_str
+  local _file _sectionkey _val _comment _delim _comment_delim _section _key
+  local _current _current_comment _ret_str
 
   (( ${#} < 2 )) && {
-    printf -- '%s\n' "fs_ini_val: requires at least 2 arguments (file, section.key)" >&2
+    printf -- '%s\n' "fs_ini_val: requires at least 2 arguments (_file, _section._key)" >&2
     return 2
   }
 
-  file="${1}"
-  sectionkey="${2}"
-  val="${3:-}"
-  comment="${4:-}"
-  delim="="
-  comment_delim=";"
+  _file="${1}"
+  _sectionkey="${2}"
+  _val="${3:-}"
+  _comment="${4:-}"
+  _delim="="
+  _comment_delim=";"
 
-  [[ -f "${file}" ]] || touch "${file}"
+  [[ -f "${_file}" ]] || touch "${_file}"
 
   # Split section.key — if no dot, treat input as key in the default section
-  IFS='.' read -r section key <<< "${sectionkey}"
-  if [[ -z "${key}" ]]; then
-    key="${section}"
-    section="default"
+  IFS='.' read -r _section _key <<< "${_sectionkey}"
+  if [[ -z "${_key}" ]]; then
+    _key="${_section}"
+    _section="default"
   fi
 
-  current="$(sed -En "/^\[/{h;d;};G;s/^${key}([[:blank:]]*)${delim}(.*)\n\[${section}\]$/\2/p" \
-    "${file}" | awk '{$1=$1};1')"
-  current_comment="$(sed -En \
-    "/^\[${section}\]/,/^\[.*\]/ s|^(${comment_delim}\[${key}\])(.*)|\2|p" \
-    "${file}" | awk '{$1=$1};1')"
+  _current="$(sed -En "/^\[/{h;d;};G;s/^${_key}([[:blank:]]*)${_delim}(.*)\n\[${_section}\]$/\2/p" \
+    "${_file}" | awk '{$1=$1};1')"
+  _current_comment="$(sed -En \
+    "/^\[${_section}\]/,/^\[.*\]/ s|^(${_comment_delim}\[${_key}\])(.*)|\2|p" \
+    "${_file}" | awk '{$1=$1};1')"
 
-  if ! grep -q "\[${section}\]" "${file}"; then
-    printf -- '\n[%s]\n' "${section}" >> "${file}"
+  if ! grep -q "\[${_section}\]" "${_file}"; then
+    printf -- '\n[%s]\n' "${_section}" >> "${_file}"
   fi
 
-  if [[ -z "${val}" ]]; then
-    printf -- '%s\n' "${current}"
+  if [[ -z "${_val}" ]]; then
+    printf -- '%s\n' "${_current}"
     return 0
   fi
 
-  [[ -z "${comment}" ]] && comment="${current_comment}"
+  [[ -z "${_comment}" ]] && _comment="${_current_comment}"
 
   # Remove old comment and value for this key in this section, then strip blank lines
   sed -i.bak \
-    "/^\[${section}\]/,/^\[.*\]/ s|^\(${comment_delim}\[${key}\] \).*$||" "${file}"
+    "/^\[${_section}\]/,/^\[.*\]/ s|^\(${_comment_delim}\[${_key}\] \).*$||" "${_file}"
   sed -i.bak \
-    "/^\[${section}\]/,/^\[.*\]/ s|^\(${key}=\).*$||" "${file}"
-  sed -i.bak '/^[[:space:]]*$/d' "${file}"
+    "/^\[${_section}\]/,/^\[.*\]/ s|^\(${_key}=\).*$||" "${_file}"
+  sed -i.bak '/^[[:space:]]*$/d' "${_file}"
   # Add a blank line before each section header for readability
-  sed -i.bak $'s/^\\[/\\\n\\[/g' "${file}"
+  sed -i.bak $'s/^\\[/\\\n\\[/g' "${_file}"
 
-  if [[ -z "${comment}" ]]; then
-    ret_str="/\\[${section}\\]/a\\
-${key}${delim}${val}"
+  if [[ -z "${_comment}" ]]; then
+    _ret_str="/\\[${_section}\\]/a\\
+${_key}${_delim}${_val}"
   else
-    ret_str="/\\[${section}\\]/a\\
-${comment_delim}[${key}] ${comment}\\
-${key}${delim}${val}"
+    _ret_str="/\\[${_section}\\]/a\\
+${_comment_delim}[${_key}] ${_comment}\\
+${_key}${_delim}${_val}"
   fi
 
-  sed -i.bak -e "${ret_str}" "${file}"
-  rm -f "${file}.bak"
+  sed -i.bak -e "${_ret_str}" "${_file}"
+  rm -f "${_file}.bak"
 }

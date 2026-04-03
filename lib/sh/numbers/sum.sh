@@ -32,7 +32,7 @@ _SHELLAC_LOADED_numbers_sum=1
 # @stdout Integer sum
 # @exitcode 0 Always
 sum() {
-  local param sum
+  local _param _total
   case "${1}" in
     (-h|--help|--usage)
       {
@@ -47,19 +47,19 @@ sum() {
     while read -r; do
       case "${REPLY}" in
         (*[!0-9]*) : ;;
-        (*) sum=$(( sum + REPLY )) ;;
+        (*) _total=$(( _total + REPLY )) ;;
       esac
     done < "${1:-/dev/stdin}"
-    printf -- '%d\n' "${sum}"
+    printf -- '%d\n' "${_total}"
     return 0
   fi
-  for param in "${@}"; do
-    case "${param}" in
+  for _param in "${@}"; do
+    case "${_param}" in
       (*[!0-9]*) : ;;
-      (*) sum=$(( sum + param )) ;;
+      (*) _total=$(( _total + _param )) ;;
     esac
   done
-  printf -- '%d\n' "${sum}"
+  printf -- '%d\n' "${_total}"
 }
 
 # @description Compute the arithmetic mean of numbers from stdin, a file, or positional parameters.

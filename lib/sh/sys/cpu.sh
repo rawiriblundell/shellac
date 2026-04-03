@@ -49,8 +49,8 @@ sys_cpu_cores() {
     lscpu | awk '/^Core\(s\) per socket:/ { print $NF; exit }'
   elif dmidecode --type processor 2>/dev/null | grep -q "Core Count"; then
     dmidecode --type processor | awk '/Core Count/ { print $NF; exit }'
-  elif grep -q "cpu cores" /proc/cpuinfo; then
-    awk '/cpu cores/ { print $NF; exit }' /proc/cpuinfo
+  elif grep -q "cpu _cores" /proc/cpuinfo; then
+    awk '/cpu _cores/ { print $NF; exit }' /proc/cpuinfo
   elif grep -q "^core id" /proc/cpuinfo; then
     grep "^core id" /proc/cpuinfo | sort -u | wc -l
   else
@@ -79,26 +79,26 @@ sys_cpu_cores_enabled() {
 # @stdout Number of threads per core
 # @exitcode 0 Always
 sys_cpu_threads() {
-  local sibling_count
-  local core_count
+  local _sibling_count
+  local _core_count
 
   if command -v lscpu >/dev/null 2>&1 && lscpu 2>/dev/null | grep -q "^Thread(s) per core"; then
     lscpu | awk '/^Thread\(s\) per core:/ { print $NF; exit }'
   elif grep -q "Thread(s) per core:" /proc/cpuinfo; then
     awk '/Thread\(s\) per core:/ { print $NF; exit }' /proc/cpuinfo
   elif grep -q "siblings" /proc/cpuinfo; then
-    sibling_count="$(awk '/siblings/ { print $NF; exit }' /proc/cpuinfo)"
-    core_count="$(sys_cpu_cores)"
-    if (( sibling_count > core_count )); then
-      printf -- '%s\n' "$(( sibling_count / core_count ))"
+    _sibling_count="$(awk '/siblings/ { print $NF; exit }' /proc/cpuinfo)"
+    _core_count="$(sys_cpu_cores)"
+    if (( _sibling_count > _core_count )); then
+      printf -- '%s\n' "$(( _sibling_count / _core_count ))"
     else
       printf -- '1\n'
     fi
   elif [[ -r /sys/devices/system/cpu/cpu0/topology/thread_siblings ]]; then
-    sibling_count="$(awk -F ',' '{ printf NF; exit }' /sys/devices/system/cpu/cpu0/topology/thread_siblings)"
-    core_count="$(sys_cpu_cores)"
-    if (( sibling_count > core_count )); then
-      printf -- '%s\n' "$(( sibling_count / core_count ))"
+    _sibling_count="$(awk -F ',' '{ printf NF; exit }' /sys/devices/system/cpu/cpu0/topology/thread_siblings)"
+    _core_count="$(sys_cpu_cores)"
+    if (( _sibling_count > _core_count )); then
+      printf -- '%s\n' "$(( _sibling_count / _core_count ))"
     else
       printf -- '1\n'
     fi
@@ -112,13 +112,13 @@ sys_cpu_threads() {
 # @stdout Total vCPU count
 # @exitcode 0 Always
 sys_cpu_count() {
-  local slots
-  local cores
-  local threads
-  slots="$(sys_cpu_slots)"
-  cores="$(sys_cpu_cores)"
-  threads="$(sys_cpu_threads)"
-  printf -- '%s\n' "$(( slots * cores * threads ))"
+  local _slots
+  local _cores
+  local _threads
+  _slots="$(sys_cpu_slots)"
+  _cores="$(sys_cpu_cores)"
+  _threads="$(sys_cpu_threads)"
+  printf -- '%s\n' "$(( _slots * _cores * _threads ))"
 }
 
 # @description Print the CPU clock speed in MHz.
@@ -175,10 +175,10 @@ sys_cpu_model() {
 # @exitcode 0 Always
 sys_cpu() {
   case "${1:-}" in
-    (slots)         sys_cpu_slots ;;
-    (cores)         sys_cpu_cores ;;
-    (cores-enabled) sys_cpu_cores_enabled ;;
-    (threads)       sys_cpu_threads ;;
+    (_slots)         sys_cpu_slots ;;
+    (_cores)         sys_cpu_cores ;;
+    (_cores-enabled) sys_cpu_cores_enabled ;;
+    (_threads)       sys_cpu_threads ;;
     (count)         sys_cpu_count ;;
     (mhz)           sys_cpu_mhz ;;
     (manufacturer)  sys_cpu_manufacturer ;;

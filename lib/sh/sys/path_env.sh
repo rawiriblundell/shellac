@@ -31,10 +31,10 @@ _SHELLAC_LOADED_sys_path_env=1
 #
 # @exitcode 0 Present; 1 Not present
 sys_path_contains() {
-  local dir
-  dir="${1:?sys_path_contains: missing directory}"
+  local _dir
+  _dir="${1:?sys_path_contains: missing directory}"
   case ":${PATH}:" in
-    (*":${dir}:"*) return 0 ;;
+    (*":${_dir}:"*) return 0 ;;
     (*)            return 1 ;;
   esac
 }
@@ -45,10 +45,10 @@ sys_path_contains() {
 #
 # @exitcode 0 Always
 sys_path_prepend() {
-  local dir
-  dir="${1:?sys_path_prepend: missing directory}"
-  sys_path_contains "${dir}" && return 0
-  PATH="${dir}:${PATH}"
+  local _dir
+  _dir="${1:?sys_path_prepend: missing directory}"
+  sys_path_contains "${_dir}" && return 0
+  PATH="${_dir}:${PATH}"
   export PATH
 }
 
@@ -58,10 +58,10 @@ sys_path_prepend() {
 #
 # @exitcode 0 Always
 sys_path_append() {
-  local dir
-  dir="${1:?sys_path_append: missing directory}"
-  sys_path_contains "${dir}" && return 0
-  PATH="${PATH}:${dir}"
+  local _dir
+  _dir="${1:?sys_path_append: missing directory}"
+  sys_path_contains "${_dir}" && return 0
+  PATH="${PATH}:${_dir}"
   export PATH
 }
 
@@ -71,15 +71,15 @@ sys_path_append() {
 #
 # @exitcode 0 Always
 sys_path_remove() {
-  local dir new_path old_path component
-  dir="${1:?sys_path_remove: missing directory}"
-  old_path="${PATH}"
-  new_path=
-  while IFS= read -r -d ':' component; do
-    [[ "${component}" == "${dir}" ]] && continue
-    [[ -z "${new_path}" ]] && new_path="${component}" || new_path="${new_path}:${component}"
-  done <<< "${old_path}:"
-  PATH="${new_path}"
+  local _dir _new_path _old_path _component
+  _dir="${1:?sys_path_remove: missing directory}"
+  _old_path="${PATH}"
+  _new_path=
+  while IFS= read -r -d ':' _component; do
+    [[ "${_component}" == "${_dir}" ]] && continue
+    [[ -z "${_new_path}" ]] && _new_path="${_component}" || _new_path="${_new_path}:${_component}"
+  done <<< "${_old_path}:"
+  PATH="${_new_path}"
   export PATH
 }
 
@@ -87,16 +87,16 @@ sys_path_remove() {
 #
 # @exitcode 0 Always
 sys_path_dedup() {
-  local new_path seen component
-  new_path=
-  declare -A seen
-  while IFS= read -r -d ':' component; do
-    [[ -z "${component}" ]] && continue
-    [[ -n "${seen[${component}]+x}" ]] && continue
-    seen["${component}"]=1
-    [[ -z "${new_path}" ]] && new_path="${component}" || new_path="${new_path}:${component}"
+  local _new_path _seen _component
+  _new_path=
+  declare -A _seen
+  while IFS= read -r -d ':' _component; do
+    [[ -z "${_component}" ]] && continue
+    [[ -n "${_seen[${_component}]+x}" ]] && continue
+    _seen["${_component}"]=1
+    [[ -z "${_new_path}" ]] && _new_path="${_component}" || _new_path="${_new_path}:${_component}"
   done <<< "${PATH}:"
-  PATH="${new_path}"
+  PATH="${_new_path}"
   export PATH
 }
 
@@ -108,11 +108,11 @@ sys_path_dedup() {
 # @stdout One directory per line
 # @exitcode 0 Always
 sys_path_print() {
-  local dir
+  local _dir
   local -a dirs
   IFS=: read -r -a dirs <<< "${PATH}"
-  for dir in "${dirs[@]}"; do
-    printf -- '%s\n' "${dir}"
+  for _dir in "${dirs[@]}"; do
+    printf -- '%s\n' "${_dir}"
   done
 }
 
@@ -121,16 +121,16 @@ sys_path_print() {
 #
 # @exitcode 0 Always
 sys_path_derecurse() {
-  local curdir
+  local _curdir
   local _element
   local _new_path
   local _old_ifs
-  curdir=$(cd -P -- "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && printf -- '%s' "${PWD}")
+  _curdir=$(cd -P -- "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && printf -- '%s' "${PWD}")
   _new_path=
   _old_ifs="${IFS}"
   IFS=:
   for _element in ${PATH}; do
-    [ "${_element}" = "${curdir}" ] && continue
+    [ "${_element}" = "${_curdir}" ] && continue
     _new_path="${_new_path:+${_new_path}:}${_element}"
   done
   IFS="${_old_ifs}"

@@ -121,9 +121,9 @@ array_entries() {
 # @exitcode 0 Always; 1 Missing argument
 array_print() {
   local -n _ap_arr="${1:?array_print: missing array name argument}"
-  local key
-  for key in "${!_ap_arr[@]}"; do
-    printf -- '%s: %s\n' "${key}" "${_ap_arr[${key}]}"
+  local _key
+  for _key in "${!_ap_arr[@]}"; do
+    printf -- '%s: %s\n' "${_key}" "${_ap_arr[${_key}]}"
   done
 }
 
@@ -141,7 +141,7 @@ array_print() {
 # @exitcode 0 Key present; 1 Key absent; 2 Missing argument
 array_has_key() {
   local -n _ahk_arr="${1:?array_has_key: missing array name argument}"
-  local key
-  key="${2:?array_has_key: missing key argument}"
-  [[ -n "${_ahk_arr[${key}]+x}" ]]
+  local _key
+  _key="${2:?array_has_key: missing key argument}"
+  [[ -n "${_ahk_arr[${_key}]+x}" ]]
 }

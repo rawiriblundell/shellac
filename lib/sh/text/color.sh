@@ -33,15 +33,15 @@ mapfile -t ALLOWED_COLORS < <(printf -- '%d\n' {0..255} "${BLOCKED_COLORS[@]}" |
 # @stdout A 256-color terminal color number (integer)
 # @exitcode 0 Always
 text_COLOR_FG_random() {
-  local color
+  local _color
   # Define our initial color code
-  color=$(( RANDOM % 255 ))
+  _color=$(( RANDOM % 255 ))
   # Ensure that our color code is an allowed one.  If not, regenerate until it is.
-  until printf -- '%d\n' "${ALLOWED_COLORS[@]}" | grep -xq "${color}"; do
-    color=$(( RANDOM % 255 ))
+  until printf -- '%d\n' "${ALLOWED_COLORS[@]}" | grep -xq "${_color}"; do
+    _color=$(( RANDOM % 255 ))
   done
   # Emit our selected color number
-  printf -- '%d\n' "${color}"
+  printf -- '%d\n' "${_color}"
 }
 
 # For true color, we give rgb values in the 0-255 range

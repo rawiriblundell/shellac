@@ -163,12 +163,12 @@ str_match() {
 #
 # @exitcode 0 Match found and array populated; 1 No match; 2 Missing argument
 str_match_captures() {
-  local str pattern
+  local _str _pattern
   local -n _str_match_out="${3:?str_match_captures: missing array name argument}"
-  str="${1:-}"
-  pattern="${2:-}"
+  _str="${1:-}"
+  _pattern="${2:-}"
   _str_match_out=()
-  [[ "${str}" =~ ${pattern} ]] || return 1
+  [[ "${_str}" =~ ${_pattern} ]] || return 1
   _str_match_out=( "${BASH_REMATCH[@]}" )
 }
 
@@ -187,12 +187,12 @@ str_match_captures() {
 # @exitcode 0 String contains only characters from the set (or is empty)
 # @exitcode 1 String contains characters outside the set, or non-empty with empty set
 str_contains_only() {
-  local str set
-  str="${1:-}"
-  set="${2:-}"
-  [[ -z "${str}" ]] && return 0
-  [[ -n "${str}" && -z "${set}" ]] && return 1
-  case "${str}" in (*[!${set}]*) return 1 ;; esac
+  local _str _set
+  _str="${1:-}"
+  _set="${2:-}"
+  [[ -z "${_str}" ]] && return 0
+  [[ -n "${_str}" && -z "${_set}" ]] && return 1
+  case "${_str}" in (*[!${_set}]*) return 1 ;; esac
 }
 
 # @description Return 0 if the string contains only ASCII alphabetic characters (non-empty).
@@ -403,7 +403,7 @@ str_is_lower() {
 # @exitcode 2 Missing argument
 # Adapted from labbots/bash-utility (MIT) https://github.com/labbots/bash-utility
 str_is_email() {
-  local email_re _str
+  local _email_re _str
   if (( ${#} == 0 )); then
     if [[ ! -t 0 ]]; then
       IFS= read -r _str
@@ -414,6 +414,6 @@ str_is_email() {
   else
     _str="${1}"
   fi
-  email_re="^([A-Za-z]+[A-Za-z0-9]*\+?((\.|\-|\_)?[A-Za-z]+[A-Za-z0-9]*)*)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
-  [[ "${_str}" =~ ${email_re} ]]
+  _email_re="^([A-Za-z]+[A-Za-z0-9]*\+?((\.|\-|\_)?[A-Za-z]+[A-Za-z0-9]*)*)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
+  [[ "${_str}" =~ ${_email_re} ]]
 }

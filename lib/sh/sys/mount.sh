@@ -30,11 +30,11 @@ fi
 # @stdout Output of 'mount', or a warning to stderr if mount returns nothing
 # @exitcode 0 Always
 sys_mounts() {
-  local output
-  output="$(mount)"
-  if [[ -n "${output}" ]]; then
-    printf -- '%s\n' "${output}"
+  local _output
+  _output="$(mount)"
+  if [[ -n "${_output}" ]]; then
+    printf -- '%s\n' "${_output}"
   else
-    printf -- "sys_mounts: 'mount' returned no output\n" >&2
+    printf -- "sys_mounts: 'mount' returned no _output\n" >&2
   fi
 }

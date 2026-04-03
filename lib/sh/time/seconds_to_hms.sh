@@ -27,15 +27,15 @@ _SHELLAC_LOADED_time_seconds_to_hms=1
 # @stdout HH:MM:SS string, e.g. "01:23:45"
 # @exitcode 0 Success; 1 Invalid input
 time_seconds_to_hms() {
-  local seconds
+  local _seconds
   (( ${#} == 0 )) && { printf -- '%s\n' "time_seconds_to_hms: missing argument" >&2; return 1; }
-  seconds="${1}"
-  if ! printf -- '%d' "${seconds}" >/dev/null 2>&1 || (( seconds < 0 )); then
-    printf -- 'time_seconds_to_hms: expected non-negative integer, got: %s\n' "${seconds}" >&2
+  _seconds="${1}"
+  if ! printf -- '%d' "${_seconds}" >/dev/null 2>&1 || (( _seconds < 0 )); then
+    printf -- 'time_seconds_to_hms: expected non-negative integer, got: %s\n' "${_seconds}" >&2
     return 1
   fi
   printf -- '%02d:%02d:%02d\n' \
-    "$(( seconds / 3600 ))" \
-    "$(( seconds % 3600 / 60 ))" \
-    "$(( seconds % 60 ))"
+    "$(( _seconds / 3600 ))" \
+    "$(( _seconds % 3600 / 60 ))" \
+    "$(( _seconds % 60 ))"
 }

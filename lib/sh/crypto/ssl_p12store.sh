@@ -43,68 +43,68 @@ fi
 # @exitcode 0 Success
 # @exitcode 1 Missing arguments, invalid input files, or openssl failure
 ssl_create_p12() {
-  local key password outfile alias workdir chain_file cert
+  local _key _password _outfile _alias _workdir _chain_file _cert
 
   while (( $# > 0 )); do
     case "${1}" in
-      (-k) key="${2:?ssl_create_p12: -k requires a key file}";        shift 2 ;;
-      (-p) password="${2:?ssl_create_p12: -p requires a password}";   shift 2 ;;
-      (-o) outfile="${2:?ssl_create_p12: -o requires an output path}"; shift 2 ;;
-      (-a) alias="${2:?ssl_create_p12: -a requires an alias}";         shift 2 ;;
+      (-k) _key="${2:?ssl_create_p12: -k requires a _key file}";        shift 2 ;;
+      (-p) _password="${2:?ssl_create_p12: -p requires a _password}";   shift 2 ;;
+      (-o) _outfile="${2:?ssl_create_p12: -o requires an output path}"; shift 2 ;;
+      (-a) _alias="${2:?ssl_create_p12: -a requires an _alias}";         shift 2 ;;
       (--) shift; break ;;
       (-*) printf -- '%s\n' "ssl_create_p12: unknown option: ${1}" >&2; return 1 ;;
       (*)  break ;;
     esac
   done
 
-  if [[ -z "${key}" ]];      then printf -- '%s\n' "ssl_create_p12: -k <key file> is required" >&2;    return 1; fi
-  if [[ -z "${password}" ]]; then printf -- '%s\n' "ssl_create_p12: -p <password> is required" >&2;    return 1; fi
-  if [[ -z "${outfile}" ]];  then printf -- '%s\n' "ssl_create_p12: -o <output.p12> is required" >&2;  return 1; fi
+  if [[ -z "${_key}" ]];      then printf -- '%s\n' "ssl_create_p12: -k <_key file> is required" >&2;    return 1; fi
+  if [[ -z "${_password}" ]]; then printf -- '%s\n' "ssl_create_p12: -p <_password> is required" >&2;    return 1; fi
+  if [[ -z "${_outfile}" ]];  then printf -- '%s\n' "ssl_create_p12: -o <output._p12> is required" >&2;  return 1; fi
   if (( $# == 0 )); then         printf -- '%s\n' "ssl_create_p12: at least one certificate file required" >&2; return 1; fi
 
   # Default alias to CN of first (leaf) cert
-  if [[ -z "${alias}" ]]; then
-    alias=$(openssl x509 -noout -subject -in "${1}" -nameopt multiline 2>/dev/null |
+  if [[ -z "${_alias}" ]]; then
+    _alias=$(openssl x509 -noout -subject -in "${1}" -nameopt multiline 2>/dev/null |
       awk -F' = ' '/commonName/{print $2; exit}')
-    : "${alias:="${outfile##*/}"; alias="${alias%.*}"}"
+    : "${_alias:="${_outfile##*/}"; _alias="${_alias%.*}"}"
   fi
 
-  if [[ ! -f "${key}" ]]; then
-    printf -- '%s\n' "ssl_create_p12: not a file: ${key}" >&2; return 1
+  if [[ ! -f "${_key}" ]]; then
+    printf -- '%s\n' "ssl_create_p12: not a file: ${_key}" >&2; return 1
   fi
-  if [[ ! -r "${key}" ]]; then
-    printf -- '%s\n' "ssl_create_p12: permission denied: ${key}" >&2; return 1
+  if [[ ! -r "${_key}" ]]; then
+    printf -- '%s\n' "ssl_create_p12: permission denied: ${_key}" >&2; return 1
   fi
 
-  for cert in "${@}"; do
-    if [[ ! -f "${cert}" ]]; then
-      printf -- '%s\n' "ssl_create_p12: not a file: ${cert}" >&2; return 1
+  for _cert in "${@}"; do
+    if [[ ! -f "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_create_p12: not a file: ${_cert}" >&2; return 1
     fi
-    if [[ ! -r "${cert}" ]]; then
-      printf -- '%s\n' "ssl_create_p12: permission denied: ${cert}" >&2; return 1
+    if [[ ! -r "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_create_p12: permission denied: ${_cert}" >&2; return 1
     fi
-    if ! openssl x509 -noout -in "${cert}" 2>/dev/null; then
-      printf -- '%s\n' "ssl_create_p12: not a valid PEM certificate: ${cert}" >&2; return 1
+    if ! openssl x509 -noout -in "${_cert}" 2>/dev/null; then
+      printf -- '%s\n' "ssl_create_p12: not a valid PEM certificate: ${_cert}" >&2; return 1
     fi
   done
 
-  local outdir
-  outdir="${outfile%/*}"
-  if [[ -n "${outdir}" ]] && [[ "${outdir}" != "${outfile}" ]] && [[ ! -d "${outdir}" ]]; then
-    mkdir -p "${outdir}" || { printf -- '%s\n' "ssl_create_p12: could not create directory: ${outdir}" >&2; return 1; }
+  local _outdir
+  _outdir="${_outfile%/*}"
+  if [[ -n "${_outdir}" ]] && [[ "${_outdir}" != "${_outfile}" ]] && [[ ! -d "${_outdir}" ]]; then
+    mkdir -p "${_outdir}" || { printf -- '%s\n' "ssl_create_p12: could not create directory: ${_outdir}" >&2; return 1; }
   fi
 
-  workdir=$(mktemp -d) || { printf -- '%s\n' "ssl_create_p12: failed to create temp directory" >&2; return 1; }
-  trap 'rm -rf "${workdir}"' RETURN
-  chain_file="${workdir}/chain.crt"
-  cat -- "${@}" > "${chain_file}"
+  _workdir=$(mktemp -d) || { printf -- '%s\n' "ssl_create_p12: failed to create temp directory" >&2; return 1; }
+  trap 'rm -rf "${_workdir}"' RETURN
+  _chain_file="${_workdir}/chain.crt"
+  cat -- "${@}" > "${_chain_file}"
 
   if ! openssl pkcs12 -export \
-      -in "${chain_file}" \
-      -inkey "${key}" \
-      -name "${alias}" \
-      -passout "pass:${password}" \
-      -out "${outfile}" 2>/dev/null; then
+      -in "${_chain_file}" \
+      -inkey "${_key}" \
+      -name "${_alias}" \
+      -passout "pass:${_password}" \
+      -out "${_outfile}" 2>/dev/null; then
     printf -- '%s\n' "ssl_create_p12: openssl pkcs12 export failed" >&2
     return 1
   fi
@@ -124,10 +124,10 @@ ssl_create_p12() {
 # @exitcode 0 Success
 # @exitcode 1 Missing arguments, invalid cert, or openssl failure
 ssl_create_p12_truststore() {
-  local outfile password cert workdir chain_file tmpstore count
+  local _outfile _password _cert _workdir _chain_file _tmpstore _count
 
-  outfile="${1:?ssl_create_p12_truststore: output file argument required}"
-  password="${2:?ssl_create_p12_truststore: password argument required}"
+  _outfile="${1:?ssl_create_p12_truststore: output file argument required}"
+  _password="${2:?ssl_create_p12_truststore: _password argument required}"
   shift 2
 
   if (( $# == 0 )); then
@@ -135,43 +135,43 @@ ssl_create_p12_truststore() {
     return 1
   fi
 
-  local outdir
-  outdir="${outfile%/*}"
-  if [[ -n "${outdir}" ]] && [[ "${outdir}" != "${outfile}" ]] && [[ ! -d "${outdir}" ]]; then
-    mkdir -p "${outdir}" || { printf -- '%s\n' "ssl_create_p12_truststore: could not create directory: ${outdir}" >&2; return 1; }
+  local _outdir
+  _outdir="${_outfile%/*}"
+  if [[ -n "${_outdir}" ]] && [[ "${_outdir}" != "${_outfile}" ]] && [[ ! -d "${_outdir}" ]]; then
+    mkdir -p "${_outdir}" || { printf -- '%s\n' "ssl_create_p12_truststore: could not create directory: ${_outdir}" >&2; return 1; }
   fi
 
-  for cert in "${@}"; do
-    if [[ ! -f "${cert}" ]]; then
-      printf -- '%s\n' "ssl_create_p12_truststore: not a file: ${cert}" >&2; return 1
+  for _cert in "${@}"; do
+    if [[ ! -f "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_create_p12_truststore: not a file: ${_cert}" >&2; return 1
     fi
-    if [[ ! -r "${cert}" ]]; then
-      printf -- '%s\n' "ssl_create_p12_truststore: permission denied: ${cert}" >&2; return 1
+    if [[ ! -r "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_create_p12_truststore: permission denied: ${_cert}" >&2; return 1
     fi
-    if ! openssl x509 -noout -in "${cert}" 2>/dev/null; then
-      printf -- '%s\n' "ssl_create_p12_truststore: not a valid PEM certificate: ${cert}" >&2; return 1
+    if ! openssl x509 -noout -in "${_cert}" 2>/dev/null; then
+      printf -- '%s\n' "ssl_create_p12_truststore: not a valid PEM certificate: ${_cert}" >&2; return 1
     fi
   done
 
-  workdir=$(mktemp -d) || { printf -- '%s\n' "ssl_create_p12_truststore: failed to create temp directory" >&2; return 1; }
-  trap 'rm -rf "${workdir}"' RETURN
+  _workdir=$(mktemp -d) || { printf -- '%s\n' "ssl_create_p12_truststore: failed to create temp directory" >&2; return 1; }
+  trap 'rm -rf "${_workdir}"' RETURN
 
-  chain_file="${workdir}/chain.pem"
-  tmpstore="${workdir}/truststore.p12"
-  cat -- "${@}" > "${chain_file}"
-  count=$(grep -c -- '-BEGIN CERTIFICATE-' "${chain_file}")
+  _chain_file="${_workdir}/chain.pem"
+  _tmpstore="${_workdir}/truststore._p12"
+  cat -- "${@}" > "${_chain_file}"
+  _count=$(grep -c -- '-BEGIN CERTIFICATE-' "${_chain_file}")
 
   if ! openssl pkcs12 -export \
       -nokeys \
-      -in "${chain_file}" \
-      -passout "pass:${password}" \
-      -out "${tmpstore}" 2>/dev/null; then
+      -in "${_chain_file}" \
+      -passout "pass:${_password}" \
+      -out "${_tmpstore}" 2>/dev/null; then
     printf -- '%s\n' "ssl_create_p12_truststore: openssl pkcs12 export failed" >&2
     return 1
   fi
 
-  mv "${tmpstore}" "${outfile}"
-  printf -- '%d certificates imported\n' "${count}"
+  mv "${_tmpstore}" "${_outfile}"
+  printf -- '%d certificates imported\n' "${_count}"
 }
 
 # @description Split a PKCS#12 file into individual PEM certificate files.
@@ -190,64 +190,64 @@ ssl_create_p12_truststore() {
 # @exitcode 0 Success
 # @exitcode 1 File not found, no certs found, or extraction failure
 ssl_split_p12() {
-  local p12 password outdir workdir bundle cert_count cn filename i
+  local _p12 _password _outdir _workdir _bundle _cert_count _cn _filename _i
 
-  p12="${1:?ssl_split_p12: .p12 file argument required}"
-  password="${2?ssl_split_p12: password argument required}"
-  outdir="${3:-.}"
+  _p12="${1:?ssl_split_p12: ._p12 file argument required}"
+  _password="${2?ssl_split_p12: _password argument required}"
+  _outdir="${3:-.}"
 
-  if [[ ! -f "${p12}" ]]; then
-    printf -- '%s\n' "ssl_split_p12: not a file: ${p12}" >&2; return 1
+  if [[ ! -f "${_p12}" ]]; then
+    printf -- '%s\n' "ssl_split_p12: not a file: ${_p12}" >&2; return 1
   fi
-  if [[ ! -r "${p12}" ]]; then
-    printf -- '%s\n' "ssl_split_p12: permission denied: ${p12}" >&2; return 1
-  fi
-
-  if [[ ! -d "${outdir}" ]]; then
-    mkdir -p "${outdir}" || { printf -- '%s\n' "ssl_split_p12: could not create output directory: ${outdir}" >&2; return 1; }
+  if [[ ! -r "${_p12}" ]]; then
+    printf -- '%s\n' "ssl_split_p12: permission denied: ${_p12}" >&2; return 1
   fi
 
-  workdir=$(mktemp -d) || { printf -- '%s\n' "ssl_split_p12: failed to create temp directory" >&2; return 1; }
-  trap 'rm -rf "${workdir}"' RETURN
+  if [[ ! -d "${_outdir}" ]]; then
+    mkdir -p "${_outdir}" || { printf -- '%s\n' "ssl_split_p12: could not create output directory: ${_outdir}" >&2; return 1; }
+  fi
 
-  bundle="${workdir}/bundle.pem"
+  _workdir=$(mktemp -d) || { printf -- '%s\n' "ssl_split_p12: failed to create temp directory" >&2; return 1; }
+  trap 'rm -rf "${_workdir}"' RETURN
+
+  _bundle="${_workdir}/_bundle.pem"
 
   # Extract all certs (no key material)
   if ! openssl pkcs12 \
-      -in "${p12}" \
-      -passin "pass:${password}" \
+      -in "${_p12}" \
+      -passin "pass:${_password}" \
       -nokeys \
-      -out "${bundle}" 2>/dev/null; then
-    printf -- '%s\n' "ssl_split_p12: failed to extract certificates from ${p12}" >&2
+      -out "${_bundle}" 2>/dev/null; then
+    printf -- '%s\n' "ssl_split_p12: failed to extract certificates from ${_p12}" >&2
     return 1
   fi
 
-  cert_count=$(grep -c -- '-BEGIN CERTIFICATE-' "${bundle}" 2>/dev/null)
-  if (( cert_count == 0 )); then
-    printf -- '%s\n' "ssl_split_p12: no certificates found in ${p12}" >&2
+  _cert_count=$(grep -c -- '-BEGIN CERTIFICATE-' "${_bundle}" 2>/dev/null)
+  if (( _cert_count == 0 )); then
+    printf -- '%s\n' "ssl_split_p12: no certificates found in ${_p12}" >&2
     return 1
   fi
 
   # Split bundle into numbered temp files, then rename by CN
-  awk -v prefix="${workdir}/cert" \
+  awk -v prefix="${_workdir}/_cert" \
     '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/{
        if (/BEGIN/) { n++ }
        out = sprintf("%s%02d.pem", prefix, n)
        print > out
-     }' "${bundle}"
+     }' "${_bundle}"
 
-  i=0
-  local tmpfile
-  for tmpfile in "${workdir}"/cert*.pem; do
-    cn=$(openssl x509 -noout -subject -in "${tmpfile}" -nameopt multiline 2>/dev/null |
+  _i=0
+  local _tmpfile
+  for _tmpfile in "${_workdir}"/_cert*.pem; do
+    _cn=$(openssl x509 -noout -subject -in "${_tmpfile}" -nameopt multiline 2>/dev/null |
       awk -F' = ' '/commonName/{print $2; exit}')
     # Sanitise: replace spaces and slashes with underscores
-    cn="${cn// /_}"
-    cn="${cn//\//_}"
-    (( i++ ))
-    filename="${cn:-$(printf 'cert%02d' "${i}")}"
-    mv "${tmpfile}" "${outdir}/${filename}.pem"
+    _cn="${_cn// /_}"
+    _cn="${_cn//\//_}"
+    (( _i++ ))
+    _filename="${_cn:-$(printf '_cert%02d' "${_i}")}"
+    mv "${_tmpfile}" "${_outdir}/${_filename}.pem"
   done
 
-  printf -- '%d certificates extracted\n' "${cert_count}"
+  printf -- '%d certificates extracted\n' "${_cert_count}"
 }

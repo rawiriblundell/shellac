@@ -31,8 +31,8 @@ _SHELLAC_LOADED_utils_mkcd=1
 #
 # @exitcode 0 Success; 1 mkdir or cd failed; 2 Missing argument
 mkcd() {
-  local dir
-  dir="${1:?mkcd: missing directory argument}"
-  mkdir -p -- "${dir}" || return 1
-  cd -- "${dir}" || return 1
+  local _dir
+  _dir="${1:?mkcd: missing directory argument}"
+  mkdir -p -- "${_dir}" || return 1
+  cd -- "${_dir}" || return 1
 }

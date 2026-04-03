@@ -82,41 +82,41 @@ sys_info_model() {
 # @stdout Serial number string
 # @exitcode 0 Always
 sys_info_serial() {
-  local serial_number
+  local _serial_number
 
   case "${OSSTR:-$(uname -s)}" in
     ([lL]inux)
       if [[ -s /sys/devices/virtual/dmi/id/product_serial ]]; then
-        serial_number="$(< /sys/devices/virtual/dmi/id/product_serial)"
+        _serial_number="$(< /sys/devices/virtual/dmi/id/product_serial)"
       elif command -v dmidecode >/dev/null 2>&1; then
-        serial_number="$(dmidecode 2>/dev/null | awk -F ': ' '/Serial Number/ { print $2; exit }')"
+        _serial_number="$(dmidecode 2>/dev/null | awk -F ': ' '/Serial Number/ { print $2; exit }')"
       elif command -v lshw >/dev/null 2>&1; then
-        serial_number="$(lshw 2>/dev/null | awk -F ': ' '/serial/ { print $2; exit }')"
+        _serial_number="$(lshw 2>/dev/null | awk -F ': ' '/serial/ { print $2; exit }')"
       elif command -v facter >/dev/null 2>&1; then
-        serial_number="$(facter 2>/dev/null | awk '/serialnumber/ { print $3 }')"
+        _serial_number="$(facter 2>/dev/null | awk '/serialnumber/ { print $3 }')"
       fi
 
-      if [[ -z "${serial_number}" ]] || [[ "${serial_number}" = "0" ]]; then
-        serial_number="$(dmidecode 2>/dev/null | awk -F ': ' '/UUID/ { print $2; exit }')"
-        if [[ -z "${serial_number}" ]] || [[ "${serial_number}" = "0" ]]; then
+      if [[ -z "${_serial_number}" ]] || [[ "${_serial_number}" = "0" ]]; then
+        _serial_number="$(dmidecode 2>/dev/null | awk -F ': ' '/UUID/ { print $2; exit }')"
+        if [[ -z "${_serial_number}" ]] || [[ "${_serial_number}" = "0" ]]; then
           if command -v hostid >/dev/null 2>&1; then
-            serial_number="$(hostid)"
+            _serial_number="$(hostid)"
           fi
         fi
       fi
     ;;
     (SunOS|solaris)
       if command -v sneep >/dev/null 2>&1; then
-        serial_number="$(sneep)"
+        _serial_number="$(sneep)"
       elif smbios -t SMB_TYPE_SYSTEM >/dev/null 2>&1; then
-        serial_number="$(smbios -t SMB_TYPE_SYSTEM | awk '/Serial/ { print $3 }')"
-        if [[ "${serial_number}" = "0" ]] || [[ -z "${serial_number}" ]]; then
-          serial_number="$(smbios -t SMB_TYPE_SYSTEM | awk '/UUID/ { print $2 }')"
+        _serial_number="$(smbios -t SMB_TYPE_SYSTEM | awk '/Serial/ { print $3 }')"
+        if [[ "${_serial_number}" = "0" ]] || [[ -z "${_serial_number}" ]]; then
+          _serial_number="$(smbios -t SMB_TYPE_SYSTEM | awk '/UUID/ { print $2 }')"
         fi
       elif eeprom 2>/dev/null | grep -q ChassisSerialNumber; then
-        serial_number="$(eeprom | awk '/ChassisSerialNumber/ { print $3 }')"
+        _serial_number="$(eeprom | awk '/ChassisSerialNumber/ { print $3 }')"
       elif ipmitool fru >/dev/null 2>&1; then
-        serial_number="$(
+        _serial_number="$(
           ipmitool fru print |
             grep -E 'Mainboard|/SYS' |
             awk '{ print $7 }' |
@@ -124,14 +124,14 @@ sys_info_serial() {
             awk '/Product Serial/ { print $4 }'
         )"
       elif command -v prtfru >/dev/null 2>&1; then
-        serial_number="sneep not found"
+        _serial_number="sneep not found"
       else
-        serial_number="$(hostid)"
+        _serial_number="$(hostid)"
       fi
     ;;
   esac
 
-  printf -- '%s\n' "${serial_number:-Unknown}"
+  printf -- '%s\n' "${_serial_number:-Unknown}"
 }
 
 # @description Print BIOS vendor, version, and release date as a single line.

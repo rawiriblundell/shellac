@@ -383,44 +383,44 @@ uuid_v5() {
 # @stdout A version 6 UUID string
 # @exitcode 0 Always
 uuid_v6() {
-  local ts_raw
-  local time_high
-  local time_mid
-  local time_low_bits
-  local clock_seq_hi
-  local clock_seq_lo
-  local node
+  local _ts_raw
+  local _time_high
+  local _time_mid
+  local _time_low_bits
+  local _clock_seq_hi
+  local _clock_seq_lo
+  local _node
   local _clock_int
 
   # _uuid_gettime returns printf '1%x' of the raw 60-bit timestamp integer.
   # That integer is MSB-first, which is exactly the field order v6 needs for
   # lexicographic sorting — so we just strip the literal '1' prefix and
   # zero-pad to 15 hex chars to get the three timestamp fields directly.
-  ts_raw="$(_uuid_gettime)"
-  ts_raw="${ts_raw#1}"
-  ts_raw="$(printf -- '%015s' "${ts_raw}" | tr ' ' '0')"
+  _ts_raw="$(_uuid_gettime)"
+  _ts_raw="${_ts_raw#1}"
+  _ts_raw="$(printf -- '%015s' "${_ts_raw}" | tr ' ' '0')"
 
-  time_high="${ts_raw:0:8}"
-  time_mid="${ts_raw:8:4}"
-  time_low_bits="${ts_raw:12:3}"
+  _time_high="${_ts_raw:0:8}"
+  _time_mid="${_ts_raw:8:4}"
+  _time_low_bits="${_ts_raw:12:3}"
 
   _uuid_clockseq
   # Apply RFC 4122 variant bits (10xxxxxx) to clock_seq_hi by arithmetic,
   # avoiding fragile positional slicing of UUID_CLOCK
   _clock_int=$(( 16#${UUID_CLOCK} ))
-  clock_seq_hi="$(printf -- '%02x' $(( 0x80 | (_clock_int >> 8) & 0x3f )))"
-  clock_seq_lo="$(printf -- '%02x' $(( _clock_int & 0xff )))"
+  _clock_seq_hi="$(printf -- '%02x' $(( 0x80 | (_clock_int >> 8) & 0x3f )))"
+  _clock_seq_lo="$(printf -- '%02x' $(( _clock_int & 0xff )))"
 
   [[ -z "${UUID_NODE}" ]] && _uuid_getnode
-  node="${UUID_NODE}"
+  _node="${UUID_NODE}"
 
   printf -- '%s-%s-6%s-%s%s-%s\n' \
-    "${time_high}" \
-    "${time_mid}" \
-    "${time_low_bits}" \
-    "${clock_seq_hi}" \
-    "${clock_seq_lo}" \
-    "${node}"
+    "${_time_high}" \
+    "${_time_mid}" \
+    "${_time_low_bits}" \
+    "${_clock_seq_hi}" \
+    "${_clock_seq_lo}" \
+    "${_node}"
 }
 
 # @description Generate a version 7 (Unix timestamp + random) UUID.
@@ -431,34 +431,34 @@ uuid_v6() {
 # @stdout A version 7 UUID string
 # @exitcode 0 Always
 uuid_v7() {
-  local ms_hex
-  local ms_high
-  local ms_low
-  local rand_a
-  local rand_b_hi
-  local rand_b_lo
+  local _ms_hex
+  local _ms_high
+  local _ms_low
+  local _rand_a
+  local _rand_b_hi
+  local _rand_b_lo
   local _uuid_9th_byte
 
   # Derive milliseconds from the atomic nanosecond capture
   _uuid_now_ns
-  ms_hex="$(printf -- '%012x' "$(( UUID_EPOCH_NS / 1000000 ))")"
-  ms_high="${ms_hex:0:8}"
-  ms_low="${ms_hex:8:4}"
+  _ms_hex="$(printf -- '%012x' "$(( UUID_EPOCH_NS / 1000000 ))")"
+  _ms_high="${_ms_hex:0:8}"
+  _ms_low="${_ms_hex:8:4}"
 
   # rand_a: 12 random bits (3 hex chars) filling the lower nibbles of field 3
-  rand_a="$(_uuid_randchars 3 | paste -sd '' -)"
+  _rand_a="$(_uuid_randchars 3 | paste -sd '' -)"
 
   # rand_b: variant nibble + 62 random bits across fields 4 and 5
   _uuid_9th_byte=( 8 9 a b )
-  rand_b_hi="${_uuid_9th_byte[$((${SRANDOM:-$RANDOM}%4))]}$(_uuid_randchars 3 | paste -sd '' -)"
-  rand_b_lo="$(_uuid_randchars 12 | paste -sd '' -)"
+  _rand_b_hi="${_uuid_9th_byte[$((${SRANDOM:-$RANDOM}%4))]}$(_uuid_randchars 3 | paste -sd '' -)"
+  _rand_b_lo="$(_uuid_randchars 12 | paste -sd '' -)"
 
   printf -- '%s-%s-7%s-%s-%s\n' \
-    "${ms_high}" \
-    "${ms_low}" \
-    "${rand_a}" \
-    "${rand_b_hi}" \
-    "${rand_b_lo}"
+    "${_ms_high}" \
+    "${_ms_low}" \
+    "${_rand_a}" \
+    "${_rand_b_hi}" \
+    "${_rand_b_lo}"
 }
 
 # @description Generate a version 8 (custom) UUID.
@@ -477,27 +477,27 @@ uuid_v7() {
 # @exitcode 0 Success
 # @exitcode 1 Invalid arguments
 uuid_v8() {
-  local custom_a
-  local custom_b
-  local custom_c
-  local custom_a_hi
-  local custom_a_lo
-  local custom_c_hi
-  local custom_c_lo
+  local _custom_a
+  local _custom_b
+  local _custom_c
+  local _custom_a_hi
+  local _custom_a_lo
+  local _custom_c_hi
+  local _custom_c_lo
   local _uuid_9th_byte
 
   while (( "${#}" > 0 )); do
     case "${1}" in
       (--custom-a)
-        custom_a="${2:?uuid_v8: --custom-a requires a hex value}"
+        _custom_a="${2:?uuid_v8: --custom-a requires a hex value}"
         shift
       ;;
       (--custom-b)
-        custom_b="${2:?uuid_v8: --custom-b requires a hex value}"
+        _custom_b="${2:?uuid_v8: --custom-b requires a hex value}"
         shift
       ;;
       (--custom-c)
-        custom_c="${2:?uuid_v8: --custom-c requires a hex value}"
+        _custom_c="${2:?uuid_v8: --custom-c requires a hex value}"
         shift
       ;;
       (*)
@@ -509,27 +509,27 @@ uuid_v8() {
   done
 
   # Pad or truncate each custom field to its correct width, randomising if absent
-  : "${custom_a:=$(_uuid_randchars 12 | paste -sd '' -)}"
-  : "${custom_b:=$(_uuid_randchars 3  | paste -sd '' -)}"
-  : "${custom_c:=$(_uuid_randchars 15 | paste -sd '' -)}"
-  custom_a="$(printf -- '%012s' "${custom_a:0:12}" | tr ' ' '0')"
-  custom_b="$(printf -- '%03s'  "${custom_b:0:3}"  | tr ' ' '0')"
-  custom_c="$(printf -- '%015s' "${custom_c:0:15}" | tr ' ' '0')"
+  : "${_custom_a:=$(_uuid_randchars 12 | paste -sd '' -)}"
+  : "${_custom_b:=$(_uuid_randchars 3  | paste -sd '' -)}"
+  : "${_custom_c:=$(_uuid_randchars 15 | paste -sd '' -)}"
+  _custom_a="$(printf -- '%012s' "${_custom_a:0:12}" | tr ' ' '0')"
+  _custom_b="$(printf -- '%03s'  "${_custom_b:0:3}"  | tr ' ' '0')"
+  _custom_c="$(printf -- '%015s' "${_custom_c:0:15}" | tr ' ' '0')"
 
-  custom_a_hi="${custom_a:0:8}"
-  custom_a_lo="${custom_a:8:4}"
+  _custom_a_hi="${_custom_a:0:8}"
+  _custom_a_lo="${_custom_a:8:4}"
 
   # custom_c spans fields 4 and 5; field 4's first nibble carries the variant
   _uuid_9th_byte=( 8 9 a b )
-  custom_c_hi="${_uuid_9th_byte[$((${SRANDOM:-$RANDOM}%4))]}${custom_c:0:3}"
-  custom_c_lo="${custom_c:3:12}"
+  _custom_c_hi="${_uuid_9th_byte[$((${SRANDOM:-$RANDOM}%4))]}${_custom_c:0:3}"
+  _custom_c_lo="${_custom_c:3:12}"
 
   printf -- '%s-%s-8%s-%s-%s\n' \
-    "${custom_a_hi}" \
-    "${custom_a_lo}" \
-    "${custom_b}" \
-    "${custom_c_hi}" \
-    "${custom_c_lo}"
+    "${_custom_a_hi}" \
+    "${_custom_a_lo}" \
+    "${_custom_b}" \
+    "${_custom_c_hi}" \
+    "${_custom_c_lo}"
 }
 
 # @description Generate a pseudo-UUID using od and /dev/urandom.
@@ -550,34 +550,34 @@ uuid_pseudo() {
 # @exitcode 0 Success
 # @exitcode 1 Invalid arguments or unsupported version
 uuid_gen() {
-  local uuid_stdout
+  local _uuid_stdout
   case "${1}" in
-    (-0|-nil|-null)  uuid_stdout="$(uuid_nil)" ;;
-    (-1|--time)      uuid_stdout="$(uuid_v1)" ;;
+    (-0|-nil|-null)  _uuid_stdout="$(uuid_nil)" ;;
+    (-1|--time)      _uuid_stdout="$(uuid_v1)" ;;
     (-2)             uuid_v2; return "${?}" ;;
     (-3|--md5)
       shift 1
-      uuid_stdout="$(uuid_v3 "${@}")"
+      _uuid_stdout="$(uuid_v3 "${@}")"
     ;;
-    (-4|-r|--random) uuid_stdout="$(uuid_v4)" ;;
+    (-4|-r|--random) _uuid_stdout="$(uuid_v4)" ;;
     (-5|--sha1)
       shift 1
-      uuid_stdout="$(uuid_v5 "${@}")"
+      _uuid_stdout="$(uuid_v5 "${@}")"
     ;;
-    (-6|--sortable)  uuid_stdout="$(uuid_v6)" ;;
-    (-7|--ms-time)   uuid_stdout="$(uuid_v7)" ;;
+    (-6|--sortable)  _uuid_stdout="$(uuid_v6)" ;;
+    (-7|--ms-time)   _uuid_stdout="$(uuid_v7)" ;;
     (-8|--custom)
       shift 1
-      uuid_stdout="$(uuid_v8 "${@}")"
+      _uuid_stdout="$(uuid_v8 "${@}")"
     ;;
-    (--pseudo)       uuid_stdout="$(uuid_pseudo)" ;;
-    ('')             uuid_stdout="$(uuid_v4)" ;;
+    (--pseudo)       _uuid_stdout="$(uuid_pseudo)" ;;
+    ('')             _uuid_stdout="$(uuid_v4)" ;;
     (*)
       printf -- 'uuid_gen: unrecognised option: %s\n' "${1}" >&2
       return 1
     ;;
   esac
-  printf -- '%s\n' "${uuid_stdout}"
+  printf -- '%s\n' "${_uuid_stdout}"
 }
 
 # @description Blindly convert a UUID between little-endian and mixed-endian (Microsoft) byte order.

@@ -37,10 +37,10 @@ _SHELLAC_LOADED_time_is_leap_year=1
 # @exitcode 1 Not a leap year
 # @exitcode 2 Missing argument
 time_is_leap_year() {
-  local year
+  local _year
   (( ${#} == 0 )) && { printf -- '%s\n' "time_is_leap_year: missing argument" >&2; return 2; }
-  year="$(( 10#${1} ))"
-  if (( year % 4 == 0 && ( year % 100 != 0 || year % 400 == 0 ) )); then
+  _year="$(( 10#${1} ))"
+  if (( _year % 4 == 0 && ( _year % 100 != 0 || _year % 400 == 0 ) )); then
     return 0
   fi
   return 1

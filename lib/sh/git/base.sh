@@ -47,14 +47,14 @@ git_root() {
 # @exitcode 0 Success
 # @exitcode 1 Not in a git repo or remote not found
 git_remote_get() {
-  local remote
-  remote="${1:-origin}"
+  local _remote
+  _remote="${1:-origin}"
   if ! git_is_repo; then
     printf -- '%s\n' "git_remote_get: not in a git repository" >&2
     return 1
   fi
-  command git remote get-url "${remote}" 2>/dev/null || {
-    printf -- '%s\n' "git_remote_get: remote '${remote}' not found" >&2
+  command git remote get-url "${_remote}" 2>/dev/null || {
+    printf -- '%s\n' "git_remote_get: remote '${_remote}' not found" >&2
     return 1
   }
 }
@@ -65,13 +65,13 @@ git_remote_get() {
 # @stdout Repository name (without .git suffix)
 # @exitcode 0 Always
 git_repo_name() {
-  local remote name
-  remote="$(git remote get-url origin 2>/dev/null)"
-  if [[ -n "${remote}" ]]; then
+  local _remote _name
+  _remote="$(git remote get-url origin 2>/dev/null)"
+  if [[ -n "${_remote}" ]]; then
     # Strip trailing .git and take the basename
-    name="${remote##*/}"
-    name="${name%.git}"
-    printf -- '%s\n' "${name}"
+    _name="${_remote##*/}"
+    _name="${_name%.git}"
+    printf -- '%s\n' "${_name}"
   else
     # Fall back to directory name
     basename "$(git_root 2>/dev/null || pwd)"
@@ -83,9 +83,9 @@ git_repo_name() {
 # @stdout Branch name
 # @exitcode 0 Success; 1 Not in a git repo or detached HEAD
 git_current_branch() {
-  local branch
-  branch="$(git symbolic-ref --short HEAD 2>/dev/null)" || return 1
-  printf -- '%s\n' "${branch}"
+  local _branch
+  _branch="$(git symbolic-ref --short HEAD 2>/dev/null)" || return 1
+  printf -- '%s\n' "${_branch}"
 }
 
 # @description Get the default branch name (main or master) for the repo.
@@ -94,18 +94,18 @@ git_current_branch() {
 # @stdout Default branch name (e.g. "main" or "master")
 # @exitcode 0 Found; 1 Unable to determine
 git_default_branch() {
-  local branch
+  local _branch
   # Try remote HEAD symbolic ref
-  branch="$(git remote show origin 2>/dev/null | awk '/HEAD branch/{print $NF}')"
-  if [[ -n "${branch}" && "${branch}" != "(unknown)" ]]; then
-    printf -- '%s\n' "${branch}"
+  _branch="$(git remote show origin 2>/dev/null | awk '/HEAD branch/{print $NF}')"
+  if [[ -n "${_branch}" && "${_branch}" != "(unknown)" ]]; then
+    printf -- '%s\n' "${_branch}"
     return 0
   fi
   # Probe common names in local refs
-  local candidate
-  for candidate in main master trunk develop; do
-    if git show-ref --verify --quiet "refs/heads/${candidate}" 2>/dev/null; then
-      printf -- '%s\n' "${candidate}"
+  local _candidate
+  for _candidate in main master trunk develop; do
+    if git show-ref --verify --quiet "refs/heads/${_candidate}" 2>/dev/null; then
+      printf -- '%s\n' "${_candidate}"
       return 0
     fi
   done
@@ -126,9 +126,9 @@ git_short_sha() {
 #
 # @exitcode 0 Tracked; 1 Not tracked or not in repo
 git_is_tracked() {
-  local file
-  file="${1:?git_is_tracked: missing file argument}"
-  git ls-files --error-unmatch -- "${file}" >/dev/null 2>&1
+  local _file
+  _file="${1:?git_is_tracked: missing _file argument}"
+  git ls-files --error-unmatch -- "${_file}" >/dev/null 2>&1
 }
 
 # @description Print the commit date of the most recent commit that touched a file,
@@ -142,7 +142,7 @@ git_is_tracked() {
 # @stdout Epoch time and relative date, e.g. "1710000000 (3 weeks ago)"
 # @exitcode 0 Always
 git_newest_commit_date() {
-    git --no-pager log -1 --pretty=format:'%ct (%cr)' -- "${1:?No file specified}"
+    git --no-pager log -1 --pretty=format:'%ct (%cr)' -- "${1:?No _file specified}"
 }
 
 # @description Change directory to the top of the current git repository tree,
@@ -170,45 +170,45 @@ gcd() { git_cd "${@}"; }
 #
 # @exitcode 0 Always (individual git commands may fail silently)
 git_delete_branch() {
-  local unwanted_branches current_branch mode
-  current_branch="$(git symbolic-ref -q HEAD)"
-  current_branch="${current_branch##refs/heads/}"
-  current_branch="${current_branch:-HEAD}"
+  local _unwanted_branches _current_branch _mode
+  _current_branch="$(git symbolic-ref -q HEAD)"
+  _current_branch="${_current_branch##refs/heads/}"
+  _current_branch="${_current_branch:-HEAD}"
 
   case "${1}" in
-    (--local)  shift 1; mode=local ;;
-    (--remote) shift 1; mode=remote ;;
-    (--both)   shift 1; mode=both ;;
-    (*)        mode=local ;;
+    (--local)  shift 1; _mode=local ;;
+    (--_remote) shift 1; _mode=_remote ;;
+    (--both)   shift 1; _mode=both ;;
+    (*)        _mode=local ;;
   esac
 
   case "${1}"  in
     ('')
-      unwanted_branches=$(
+      _unwanted_branches=$(
         git branch |
           grep --invert-match '^\*' |
           cut -c 3- |
           fzf --multi --preview="git log {}"
       )
     ;;
-    (*)  unwanted_branches="${*}" ;;
+    (*)  _unwanted_branches="${*}" ;;
   esac
 
-  case "${mode}" in
+  case "${_mode}" in
     (local)
-      for branch in ${unwanted_branches}; do
-        git branch --delete --force "${branch}"
+      for _branch in ${_unwanted_branches}; do
+        git branch --delete --force "${_branch}"
       done
     ;;
-    (remote)
-      for branch in ${unwanted_branches}; do
-        git push origin --delete "${branch}"
+    (_remote)
+      for _branch in ${_unwanted_branches}; do
+        git push origin --delete "${_branch}"
       done
     ;;
     (both)
-      for branch in ${unwanted_branches}; do
-        git branch --delete --force "${branch}"
-        git push origin --delete "${branch}"
+      for _branch in ${_unwanted_branches}; do
+        git branch --delete --force "${_branch}"
+        git push origin --delete "${_branch}"
       done
     ;;
   esac

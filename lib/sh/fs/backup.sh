@@ -32,18 +32,18 @@ _SHELLAC_LOADED_fs_backup=1
 # @stdout Path of the backup file
 # @exitcode 0 Success; 1 Source file not found; 2 Missing argument
 file_backup() {
-  local src dst ts backup_dir
-  src="${1:?file_backup: missing file argument}"
-  [[ -f "${src}" ]] || { printf -- '%s\n' "file_backup: not a file: ${src}" >&2; return 1; }
-  ts="$(date +%Y%m%d-%H%M%S)"
+  local _src _dst _ts _backup_dir
+  _src="${1:?file_backup: missing file argument}"
+  [[ -f "${_src}" ]] || { printf -- '%s\n' "file_backup: not a file: ${_src}" >&2; return 1; }
+  _ts="$(date +%Y%m%d-%H%M%S)"
   if [[ -n "${SHELLAC_BACKUP_DIR:-}" ]]; then
-    backup_dir="${SHELLAC_BACKUP_DIR}"
-    dst="${backup_dir}/$(basename "${src}").bak.${ts}"
+    _backup_dir="${SHELLAC_BACKUP_DIR}"
+    _dst="${_backup_dir}/$(basename "${_src}").bak.${_ts}"
   else
-    dst="${src}.bak.${ts}"
+    _dst="${_src}.bak.${_ts}"
   fi
-  cp -- "${src}" "${dst}" || return 1
-  printf -- '%s\n' "${dst}"
+  cp -- "${_src}" "${_dst}" || return 1
+  printf -- '%s\n' "${_dst}"
 }
 
 # @description Restore a file from its most recent .bak.* backup.
@@ -56,25 +56,25 @@ file_backup() {
 #
 # @exitcode 0 Restored; 1 No backup found; 2 Missing argument
 file_restore() {
-  local src latest backup_dir pattern
-  src="${1:?file_restore: missing file argument}"
+  local _src _latest _backup_dir _pattern
+  _src="${1:?file_restore: missing file argument}"
   if [[ -n "${SHELLAC_BACKUP_DIR:-}" ]]; then
-    backup_dir="${SHELLAC_BACKUP_DIR}"
-    pattern="${backup_dir}/$(basename "${src}").bak.*"
+    _backup_dir="${SHELLAC_BACKUP_DIR}"
+    _pattern="${_backup_dir}/$(basename "${_src}").bak.*"
   else
-    pattern="${src}.bak.*"
+    _pattern="${_src}.bak.*"
   fi
 
   # Sort by modification time, take newest
-  latest=
+  _latest=
   while IFS= read -r -d '' f; do
-    latest="${f}"
-  done < <(find "$(dirname "${pattern}")" -maxdepth 1 \
-    -name "$(basename "${pattern}")" -print0 2>/dev/null | sort -z)
+    _latest="${f}"
+  done < <(find "$(dirname "${_pattern}")" -maxdepth 1 \
+    -name "$(basename "${_pattern}")" -print0 2>/dev/null | sort -z)
 
-  [[ -z "${latest}" ]] && { printf -- '%s\n' "file_restore: no backup found for: ${src}" >&2; return 1; }
-  cp -- "${latest}" "${src}" || return 1
-  printf -- '%s\n' "Restored ${src} from ${latest}"
+  [[ -z "${_latest}" ]] && { printf -- '%s\n' "file_restore: no backup found for: ${_src}" >&2; return 1; }
+  cp -- "${_latest}" "${_src}" || return 1
+  printf -- '%s\n' "Restored ${_src} from ${_latest}"
 }
 
 # @description Return 0 if a backup (.bak.*) exists for the given file.
@@ -83,16 +83,16 @@ file_restore() {
 #
 # @exitcode 0 Backup exists; 1 No backup; 2 Missing argument
 file_is_backed_up() {
-  local src pattern backup_dir
-  src="${1:?file_is_backed_up: missing file argument}"
+  local _src _pattern _backup_dir
+  _src="${1:?file_is_backed_up: missing file argument}"
   if [[ -n "${SHELLAC_BACKUP_DIR:-}" ]]; then
-    backup_dir="${SHELLAC_BACKUP_DIR}"
-    pattern="${backup_dir}/$(basename "${src}").bak.*"
+    _backup_dir="${SHELLAC_BACKUP_DIR}"
+    _pattern="${_backup_dir}/$(basename "${_src}").bak.*"
   else
-    pattern="${src}.bak.*"
+    _pattern="${_src}.bak.*"
   fi
   local _backup_file
-  for _backup_file in ${pattern}; do
+  for _backup_file in ${_pattern}; do
     [[ -f "${_backup_file}" ]] && return 0
   done
   return 1

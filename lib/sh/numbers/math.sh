@@ -125,15 +125,15 @@ num_modulo() {
 # @stdout Clamped value
 # @exitcode 0 Always; 1 Missing argument
 num_clamp() {
-  local val lo hi
-  val="${1:?num_clamp: missing value}"
-  lo="${2:?num_clamp: missing minimum}"
-  hi="${3:?num_clamp: missing maximum}"
-  if (( val < lo )); then
-    printf -- '%d\n' "${lo}"
-  elif (( val > hi )); then
-    printf -- '%d\n' "${hi}"
+  local _val _lo _hi
+  _val="${1:?num_clamp: missing value}"
+  _lo="${2:?num_clamp: missing minimum}"
+  _hi="${3:?num_clamp: missing maximum}"
+  if (( _val < _lo )); then
+    printf -- '%d\n' "${_lo}"
+  elif (( _val > _hi )); then
+    printf -- '%d\n' "${_hi}"
   else
-    printf -- '%d\n' "${val}"
+    printf -- '%d\n' "${_val}"
   fi
 }

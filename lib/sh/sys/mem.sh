@@ -27,13 +27,13 @@ _SHELLAC_LOADED_sys_mem=1
 # @exitcode 0 Field found
 # @exitcode 1 /proc/meminfo not readable
 _mem_read() {
-  local field
-  field="${1:?No field specified}"
+  local _field
+  _field="${1:?No _field specified}"
   if [[ ! -r /proc/meminfo ]]; then
     printf -- 'mem: /proc/meminfo not readable\n' >&2
     return 1
   fi
-  awk -v f="${field}:" '$1 == f { print $2; exit }' /proc/meminfo
+  awk -v f="${_field}:" '$1 == f { print $2; exit }' /proc/meminfo
 }
 
 # @description Convert a kB value to the requested unit and print it.
@@ -43,15 +43,15 @@ _mem_read() {
 # @arg $2 string  Optional unit flag: -K/--kb, -M/--mb, -G/--gb
 # @stdout Converted integer value
 _mem_convert_kb() {
-  local value
-  local flag
-  value="${1:?No value provided}"
-  flag="${2:-}"
-  case "${flag}" in
-    (-K|--kb) printf -- '%s\n' "${value}" ;;
-    (-M|--mb) printf -- '%s\n' "$(( value / 1024 ))" ;;
-    (-G|--gb) printf -- '%s\n' "$(( value / 1024 / 1024 ))" ;;
-    (*)       printf -- '%s\n' "${value}" ;;
+  local _value
+  local _flag
+  _value="${1:?No _value provided}"
+  _flag="${2:-}"
+  case "${_flag}" in
+    (-K|--kb) printf -- '%s\n' "${_value}" ;;
+    (-M|--mb) printf -- '%s\n' "$(( _value / 1024 ))" ;;
+    (-G|--gb) printf -- '%s\n' "$(( _value / 1024 / 1024 ))" ;;
+    (*)       printf -- '%s\n' "${_value}" ;;
   esac
 }
 
@@ -62,9 +62,9 @@ _mem_convert_kb() {
 # @exitcode 0 Success
 # @exitcode 1 /proc/meminfo not readable
 sys_mem_total() {
-  local value
-  value="$(_mem_read MemTotal)" || return 1
-  _mem_convert_kb "${value}" "${1:-}"
+  local _value
+  _value="$(_mem_read MemTotal)" || return 1
+  _mem_convert_kb "${_value}" "${1:-}"
 }
 
 # @description Print available RAM. Uses MemAvailable (kernel 3.14+), which
@@ -76,12 +76,12 @@ sys_mem_total() {
 # @exitcode 0 Success
 # @exitcode 1 /proc/meminfo not readable
 sys_mem_available() {
-  local value
-  value="$(_mem_read MemAvailable)"
-  if [[ -z "${value}" ]]; then
-    value="$(_mem_read MemFree)" || return 1
+  local _value
+  _value="$(_mem_read MemAvailable)"
+  if [[ -z "${_value}" ]]; then
+    _value="$(_mem_read MemFree)" || return 1
   fi
-  _mem_convert_kb "${value}" "${1:-}"
+  _mem_convert_kb "${_value}" "${1:-}"
 }
 
 # @description Print used RAM (MemTotal - MemAvailable).
@@ -91,14 +91,14 @@ sys_mem_available() {
 # @exitcode 0 Success
 # @exitcode 1 /proc/meminfo not readable
 sys_mem_used() {
-  local total
-  local available
-  total="$(_mem_read MemTotal)" || return 1
-  available="$(_mem_read MemAvailable)"
-  if [[ -z "${available}" ]]; then
-    available="$(_mem_read MemFree)" || return 1
+  local _total
+  local _available
+  _total="$(_mem_read MemTotal)" || return 1
+  _available="$(_mem_read MemAvailable)"
+  if [[ -z "${_available}" ]]; then
+    _available="$(_mem_read MemFree)" || return 1
   fi
-  _mem_convert_kb "$(( total - available ))" "${1:-}"
+  _mem_convert_kb "$(( _total - _available ))" "${1:-}"
 }
 
 # @description Print free RAM (MemFree — genuinely unused pages).
@@ -109,9 +109,9 @@ sys_mem_used() {
 # @exitcode 0 Success
 # @exitcode 1 /proc/meminfo not readable
 sys_mem_free() {
-  local value
-  value="$(_mem_read MemFree)" || return 1
-  _mem_convert_kb "${value}" "${1:-}"
+  local _value
+  _value="$(_mem_read MemFree)" || return 1
+  _mem_convert_kb "${_value}" "${1:-}"
 }
 
 # @description Print RAM usage as a percentage (used / total * 100).
@@ -120,15 +120,15 @@ sys_mem_free() {
 # @exitcode 0 Success
 # @exitcode 1 /proc/meminfo not readable
 sys_mem_percent() {
-  local total
-  local available
-  total="$(_mem_read MemTotal)" || return 1
-  available="$(_mem_read MemAvailable)"
-  if [[ -z "${available}" ]]; then
-    available="$(_mem_read MemFree)" || return 1
+  local _total
+  local _available
+  _total="$(_mem_read MemTotal)" || return 1
+  _available="$(_mem_read MemAvailable)"
+  if [[ -z "${_available}" ]]; then
+    _available="$(_mem_read MemFree)" || return 1
   fi
-  awk -v total="${total}" -v available="${available}" \
-    'BEGIN { printf "%.1f\n", (total - available) / total * 100 }'
+  awk -v _total="${_total}" -v _available="${_available}" \
+    'BEGIN { printf "%.1f\n", (_total - _available) / _total * 100 }'
 }
 
 # @description Dispatcher for RAM information sub-commands.
@@ -140,13 +140,13 @@ sys_mem_percent() {
 # @exitcode 0 Always
 sys_mem() {
   case "${1:-}" in
-    (total)     sys_mem_total     "${2:-}" ;;
-    (available) sys_mem_available "${2:-}" ;;
+    (_total)     sys_mem_total     "${2:-}" ;;
+    (_available) sys_mem_available "${2:-}" ;;
     (used)      sys_mem_used      "${2:-}" ;;
-    (free)      sys_mem_free      "${2:-}" ;;
+    (_free)      sys_mem_free      "${2:-}" ;;
     (percent)   sys_mem_percent ;;
     (*)
-      printf -- 'RAM: %sM total, %sM available (%s%% used)\n' \
+      printf -- 'RAM: %sM _total, %sM _available (%s%% used)\n' \
         "$(sys_mem_total -M)" \
         "$(sys_mem_available -M)" \
         "$(sys_mem_percent)"
@@ -161,9 +161,9 @@ sys_mem() {
 # @exitcode 0 Success
 # @exitcode 1 /proc/meminfo not readable
 sys_swap_total() {
-  local value
-  value="$(_mem_read SwapTotal)" || return 1
-  _mem_convert_kb "${value}" "${1:-}"
+  local _value
+  _value="$(_mem_read SwapTotal)" || return 1
+  _mem_convert_kb "${_value}" "${1:-}"
 }
 
 # @description Print used swap space (SwapTotal - SwapFree).
@@ -173,11 +173,11 @@ sys_swap_total() {
 # @exitcode 0 Success
 # @exitcode 1 /proc/meminfo not readable
 sys_swap_used() {
-  local total
-  local free
-  total="$(_mem_read SwapTotal)" || return 1
-  free="$(_mem_read SwapFree)" || return 1
-  _mem_convert_kb "$(( total - free ))" "${1:-}"
+  local _total
+  local _free
+  _total="$(_mem_read SwapTotal)" || return 1
+  _free="$(_mem_read SwapFree)" || return 1
+  _mem_convert_kb "$(( _total - _free ))" "${1:-}"
 }
 
 # @description Print free swap space.
@@ -187,9 +187,9 @@ sys_swap_used() {
 # @exitcode 0 Success
 # @exitcode 1 /proc/meminfo not readable
 sys_swap_free() {
-  local value
-  value="$(_mem_read SwapFree)" || return 1
-  _mem_convert_kb "${value}" "${1:-}"
+  local _value
+  _value="$(_mem_read SwapFree)" || return 1
+  _mem_convert_kb "${_value}" "${1:-}"
 }
 
 # @description Print swap usage as a percentage (used / total * 100).
@@ -199,16 +199,16 @@ sys_swap_free() {
 # @exitcode 0 Always
 # @exitcode 1 /proc/meminfo not readable
 sys_swap_percent() {
-  local total
-  local free
-  total="$(_mem_read SwapTotal)" || return 1
-  free="$(_mem_read SwapFree)" || return 1
-  if (( total == 0 )); then
+  local _total
+  local _free
+  _total="$(_mem_read SwapTotal)" || return 1
+  _free="$(_mem_read SwapFree)" || return 1
+  if (( _total == 0 )); then
     printf -- '0.0\n'
     return 0
   fi
-  awk -v total="${total}" -v free="${free}" \
-    'BEGIN { printf "%.1f\n", (total - free) / total * 100 }'
+  awk -v _total="${_total}" -v _free="${_free}" \
+    'BEGIN { printf "%.1f\n", (_total - _free) / _total * 100 }'
 }
 
 # @description Dispatcher for swap information sub-commands.
@@ -220,12 +220,12 @@ sys_swap_percent() {
 # @exitcode 0 Always
 sys_swap() {
   case "${1:-}" in
-    (total)   sys_swap_total   "${2:-}" ;;
+    (_total)   sys_swap_total   "${2:-}" ;;
     (used)    sys_swap_used    "${2:-}" ;;
-    (free)    sys_swap_free    "${2:-}" ;;
+    (_free)    sys_swap_free    "${2:-}" ;;
     (percent) sys_swap_percent ;;
     (*)
-      printf -- 'Swap: %sM total, %sM used (%s%%)\n' \
+      printf -- 'Swap: %sM _total, %sM used (%s%%)\n' \
         "$(sys_swap_total -M)" \
         "$(sys_swap_used -M)" \
         "$(sys_swap_percent)"

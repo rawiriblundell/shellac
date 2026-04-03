@@ -30,27 +30,27 @@ _SHELLAC_LOADED_text_chr=1
 # @exitcode 0 Success
 # @exitcode 1 Input is not an integer
 chr() {
-  local int
-  int="${1:?No integer supplied}"
+  local _int
+  _int="${1:?No integer supplied}"
   # Ensure that we have an integer
-  case "${int}" in
+  case "${_int}" in
     (*[!0-9]*) return 1 ;;
   esac
   
   # Ensure int is within the range 32-126
   # If it's less than 32, add 32 to bring it up into range
-  (( int < 32 )) && int=$(( int + 32 ))
+  (( _int < 32 )) && _int=$(( _int + 32 ))
   
   # If it's greater than 126, divide until it's in range
-  if (( int > 126 )); then
-    until (( int <= 126 )); do
-      int=$(( int / 2 ))
+  if (( _int > 126 )); then
+    until (( _int <= 126 )); do
+      _int=$(( _int / 2 ))
     done
   fi
 
   # Finally, print our character
   # shellcheck disable=SC2059
-  printf "\\$(printf -- '%03o' "${int}")"
+  printf "\\$(printf -- '%03o' "${_int}")"
 }
 
 # @description Convert an ASCII character to its decimal value.

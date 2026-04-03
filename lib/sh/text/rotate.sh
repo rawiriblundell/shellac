@@ -38,22 +38,22 @@ _SHELLAC_LOADED_text_rotate=1
 # @stdout Rotated string
 # @exitcode 0 Always; 1 Non-integer shift value
 str_rotate() {
-  local str n len idx
-  str="${1:-}"
-  n="${2:-0}"
-  [[ -z "${n}" ]] && n=0
-  if ! printf -- '%d' "${n}" >/dev/null 2>&1; then
+  local _str _n _len _idx
+  _str="${1:-}"
+  _n="${2:-0}"
+  [[ -z "${_n}" ]] && _n=0
+  if ! printf -- '%d' "${_n}" >/dev/null 2>&1; then
     printf -- '%s\n' "str_rotate: shift must be an integer" >&2
     return 1
   fi
-  len="${#str}"
-  (( len == 0 )) && return 0
-  n=$(( n % len ))
-  (( n < 0 )) && n=$(( n + len ))
-  if (( n == 0 )); then
-    printf -- '%s\n' "${str}"
+  _len="${#_str}"
+  (( _len == 0 )) && return 0
+  _n=$(( _n % _len ))
+  (( _n < 0 )) && _n=$(( _n + _len ))
+  if (( _n == 0 )); then
+    printf -- '%s\n' "${_str}"
   else
-    idx=$(( len - n ))
-    printf -- '%s\n' "${str:${idx}}${str:0:${idx}}"
+    _idx=$(( _len - _n ))
+    printf -- '%s\n' "${_str:${_idx}}${_str:0:${_idx}}"
   fi
 }

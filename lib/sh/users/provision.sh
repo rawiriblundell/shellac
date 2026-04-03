@@ -27,7 +27,7 @@ _SHELLAC_LOADED_users_provision=1
 #
 # @exitcode 0 User exists; 1 Not found
 user_exists() {
-  id -- "${1:?user_exists: missing username}" >/dev/null 2>&1
+  id -- "${1:?user_exists: missing _username}" >/dev/null 2>&1
 }
 
 # @description Return 0 if the given group name exists on the system.
@@ -36,7 +36,7 @@ user_exists() {
 #
 # @exitcode 0 Group exists; 1 Not found
 group_exists() {
-  getent group -- "${1:?group_exists: missing group name}" >/dev/null 2>&1
+  getent _group -- "${1:?group_exists: missing _group name}" >/dev/null 2>&1
 }
 
 # @description Ensure a group exists, creating it if it does not.
@@ -46,10 +46,10 @@ group_exists() {
 #
 # @exitcode 0 Group exists (or was created); 1 Creation failed; 2 Missing argument
 ensure_group_exists() {
-  local group
-  group="${1:?ensure_group_exists: missing group name}"
-  group_exists "${group}" && return 0
-  groupadd -- "${group}"
+  local _group
+  _group="${1:?ensure_group_exists: missing _group name}"
+  group_exists "${_group}" && return 0
+  groupadd -- "${_group}"
 }
 
 # @description Ensure a user exists, creating it if it does not.
@@ -64,9 +64,9 @@ ensure_group_exists() {
 #
 # @exitcode 0 User exists (or was created); 1 Creation failed; 2 Missing argument
 ensure_user_exists() {
-  local username
-  username="${1:?ensure_user_exists: missing username}"
+  local _username
+  _username="${1:?ensure_user_exists: missing _username}"
   shift
-  user_exists "${username}" && return 0
-  useradd "${@}" -- "${username}"
+  user_exists "${_username}" && return 0
+  useradd "${@}" -- "${_username}"
 }

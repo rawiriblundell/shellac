@@ -37,21 +37,21 @@ _SHELLAC_LOADED_core_save_function=1
 #
 # @exitcode 0 Success; 1 Source function does not exist; 2 Missing argument
 save_function() {
-  local src dst body
-  src="${1:?save_function: missing source function name}"
-  dst="${2:?save_function: missing destination function name}"
+  local _src _dst _body
+  _src="${1:?save_function: missing source function name}"
+  _dst="${2:?save_function: missing destination function name}"
 
   # Verify source exists
-  if ! declare -f "${src}" >/dev/null 2>&1; then
-    printf -- '%s\n' "save_function: function not found: ${src}" >&2
+  if ! declare -f "${_src}" >/dev/null 2>&1; then
+    printf -- '%s\n' "save_function: function not found: ${_src}" >&2
     return 1
   fi
 
   # Extract the function body and rewrite with new name via eval.
   # This is intentional metaprogramming — no alternative exists in bash
   # for runtime function renaming without eval.
-  body="$(declare -f "${src}")"
+  _body="$(declare -f "${_src}")"
   # Replace only the first occurrence of the function name (the definition line)
   # shellcheck disable=SC2086
-  eval "${dst}${body#${src}}"
+  eval "${_dst}${_body#${_src}}"
 }

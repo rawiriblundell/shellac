@@ -33,7 +33,7 @@ _SHELLAC_LOADED_hash_hash=1
 hash_set() {
   local -n _hash_set_ref="${1:?hash_set: array name required}"
   # shellcheck disable=SC2034
-  _hash_set_ref["${2:?hash_set: key required}"]="${3?hash_set: value required}"
+  _hash_set_ref["${2:?hash_set: _key required}"]="${3?hash_set: value required}"
 }
 
 # @description Print the value for a key in a named associative array.
@@ -47,12 +47,12 @@ hash_set() {
 # @exitcode 1 Key not found
 hash_get() {
   local -n _hash_get_ref="${1:?hash_get: array name required}"
-  local key
-  key="${2:?hash_get: key required}"
-  if [[ ! -v _hash_get_ref["${key}"] ]]; then
+  local _key
+  _key="${2:?hash_get: _key required}"
+  if [[ ! -v _hash_get_ref["${_key}"] ]]; then
     return 1
   fi
-  printf -- '%s\n' "${_hash_get_ref["${key}"]}"
+  printf -- '%s\n' "${_hash_get_ref["${_key}"]}"
 }
 
 # @description Return 0 if a key exists in a named associative array.
@@ -64,7 +64,7 @@ hash_get() {
 # @exitcode 1 Key not found
 hash_has() {
   local -n _hash_has_ref="${1:?hash_has: array name required}"
-  [[ -v _hash_has_ref["${2:?hash_has: key required}"] ]]
+  [[ -v _hash_has_ref["${2:?hash_has: _key required}"] ]]
 }
 
 # @description Delete a key from a named associative array.
@@ -76,7 +76,7 @@ hash_has() {
 # @exitcode 0 Always
 hash_del() {
   local -n _hash_del_ref="${1:?hash_del: array name required}"
-  unset '_hash_del_ref['"${2:?hash_del: key required}"']'
+  unset '_hash_del_ref['"${2:?hash_del: _key required}"']'
 }
 
 # @description Print all keys of a named associative array, one per line.
@@ -118,9 +118,9 @@ hash_values() {
 # @exitcode 1 Missing argument
 hash_each() {
   local -n _hash_each_ref="${1:?hash_each: array name required}"
-  local func key
-  func="${2:?hash_each: function name required}"
-  for key in "${!_hash_each_ref[@]}"; do
-    "${func}" "${key}" "${_hash_each_ref["${key}"]}"
+  local _func _key
+  _func="${2:?hash_each: function name required}"
+  for _key in "${!_hash_each_ref[@]}"; do
+    "${_func}" "${_key}" "${_hash_each_ref["${_key}"]}"
   done
 }

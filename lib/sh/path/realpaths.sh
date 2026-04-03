@@ -24,13 +24,13 @@ realpath_basename(){ REPLY=/; ! [[ $1 =~ /*([^/]+)/*$ ]] || REPLY="${BASH_REMATC
 #   Detects symlink loops and stops. Result is written to REPLY.
 # @arg $1 string Path to follow
 realpath_follow() {
-	local target
-	while [[ -L "$1" ]] && target=$(readlink -- "$1"); do
+	local _target
+	while [[ -L "$1" ]] && _target=$(readlink -- "$1"); do
 		realpath_dirname "$1"
 		# Resolve relative to symlink's directory
-		[[ $REPLY != . && $target != /* ]] && REPLY=$REPLY/$target || REPLY=$target
+		[[ $REPLY != . && $_target != /* ]] && REPLY=$REPLY/$_target || REPLY=$_target
 		# Break out if we found a symlink loop
-		for target; do [[ $REPLY == "$target" ]] && break 2; done
+		for _target; do [[ $REPLY == "$_target" ]] && break 2; done
 		# Add to the loop-detect list and tail-recurse
 		set -- "$REPLY" "$@"
 	done
@@ -68,12 +68,12 @@ realpath_canonical() {
 # @arg $1 string Target path
 # @arg $2 string Optional: base directory (default: PWD)
 realpath_relative() {
-	local target=""
+	local _target=""
 	realpath_absolute "$1"; set -- "$REPLY" "${@:2}"; realpath_absolute "${2-$PWD}" X
 	while realpath_dirname "$REPLY"; [[ "$1" != "$REPLY" && "$1" == "${1#${REPLY%/}/}" ]]; do
-		target=../$target
+		_target=../$_target
 	done
-	[[ $1 == "$REPLY" ]] && REPLY=${target%/} || REPLY="$target${1#${REPLY%/}/}"
+	[[ $1 == "$REPLY" ]] && REPLY=${_target%/} || REPLY="$_target${1#${REPLY%/}/}"
 	REPLY=${REPLY:-.}
 }
 
@@ -88,36 +88,36 @@ realpath_relative() {
 # @exitcode 1 Path not found, too many symlinks, or cd failed
 realpath_portable_follow() {
   local CDPATH
-  local max_symlinks
-  local target
-  local link
+  local _max_symlinks
+  local _target
+  local _link
 
   [ -n "${1:-}" ] || return 1
   CDPATH=''  # shadow env CDPATH to prevent cd from changing to unexpected dirs
-  max_symlinks=40
+  _max_symlinks=40
 
-  target="${1}"
-  [ -e "${target%/}" ] || target="${1%"${1##*[!/]}"}"  # strip trailing slashes
-  [ -d "${target:-/}" ] && target="${target}/"
+  _target="${1}"
+  [ -e "${_target%/}" ] || _target="${1%"${1##*[!/]}"}"  # strip trailing slashes
+  [ -d "${_target:-/}" ] && _target="${_target}/"
 
-  cd -P -- "$(dirname -- "${target}")" 2>/dev/null || return 1
-  target="$(basename -- "${target}")"
+  cd -P -- "$(dirname -- "${_target}")" 2>/dev/null || return 1
+  _target="$(basename -- "${_target}")"
 
-  while [ "${max_symlinks}" -ge 0 ] && max_symlinks=$(( max_symlinks - 1 )); do
-    if [ "${target}" != "${target%/*}" ]; then
+  while [ "${_max_symlinks}" -ge 0 ] && _max_symlinks=$(( _max_symlinks - 1 )); do
+    if [ "${_target}" != "${_target%/*}" ]; then
       # shellcheck disable=SC2164
-      cd -P -- "${target%/*}" 2>/dev/null || break
-      target="${target##*/}"
+      cd -P -- "${_target%/*}" 2>/dev/null || break
+      _target="${_target##*/}"
     fi
 
-    if [ ! -L "${target}" ]; then
-      printf -- '%s\n' "${PWD%/}/${target}"
+    if [ ! -L "${_target}" ]; then
+      printf -- '%s\n' "${PWD%/}/${_target}"
       return 0
     fi
 
     # ls -dl output format: "lrwxrwxrwx ... filename -> link_target"
-    link="$(ls -dl -- "${target}" 2>/dev/null)" || break
-    target="${link#*" ${target} -> "}"
+    _link="$(ls -dl -- "${_target}" 2>/dev/null)" || break
+    _target="${_link#*" ${_target} -> "}"
   done
   return 1
 }

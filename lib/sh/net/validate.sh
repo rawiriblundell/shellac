@@ -30,26 +30,26 @@ _net_validate_ipv4() {
   # shellcheck disable=SC2086
   (
     IFS=.; set -f; set -- ${*//\"/}; set -- ${*%/*}
-    local octet count errcount
-    count=0
-    errcount=0
+    local _octet _count _errcount
+    _count=0
+    _errcount=0
     if (( "${#}" == 4 )); then
-      for octet in "${@}"; do
-        (( ++count ))
-        case "${octet}" in
+      for _octet in "${@}"; do
+        (( ++_count ))
+        case "${_octet}" in
           (""|*[!0-9]*)
-            printf -- '%s\n' "Octet ${count} appears to be empty or non-numeric" >&2
-            (( ++errcount ))
+            printf -- '%s\n' "Octet ${_count} appears to be empty or non-numeric" >&2
+            (( ++_errcount ))
           ;;
           (*)
-            if (( octet > 255 )); then
-              printf -- '%s\n' "Octet ${count} appears to be invalid (>255)" >&2
-              (( ++errcount ))
+            if (( _octet > 255 )); then
+              printf -- '%s\n' "Octet ${_count} appears to be invalid (>255)" >&2
+              (( ++_errcount ))
             fi
           ;;
         esac
       done
-      (( errcount > 0 )) && return 1
+      (( _errcount > 0 )) && return 1
     else
       printf -- '%s\n' "Input does not appear to be a valid IPv4 address" >&2
       return 1
@@ -112,24 +112,24 @@ _net_validate_subnet() {
 # @internal Validate an IPv6 address string via regex.
 #   Handles full, compressed (::), link-local, IPv4-mapped, and zone-ID (%eth0) forms.
 _net_validate_ipv6() {
-  local re
-  re="^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|"
-  re+="([0-9a-fA-F]{1,4}:){1,7}:|"
-  re+="([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|"
-  re+="([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|"
-  re+="([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|"
-  re+="([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|"
-  re+="([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|"
-  re+="[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|"
-  re+=":((:[0-9a-fA-F]{1,4}){1,7}|:)|"
-  re+="fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|"
-  re+="::(ffff(:0{1,4}){0,1}:){0,1}"
-  re+="((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}"
-  re+="(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|"
-  re+="([0-9a-fA-F]{1,4}:){1,4}:"
-  re+="((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}"
-  re+="(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$"
-  [[ "${1}" =~ ${re} ]]
+  local _re
+  _re="^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|"
+  _re+="([0-9a-fA-F]{1,4}:){1,7}:|"
+  _re+="([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|"
+  _re+="([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|"
+  _re+="([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|"
+  _re+="([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|"
+  _re+="([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|"
+  _re+="[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|"
+  _re+=":((:[0-9a-fA-F]{1,4}){1,7}|:)|"
+  _re+="fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|"
+  _re+="::(ffff(:0{1,4}){0,1}:){0,1}"
+  _re+="((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}"
+  _re+="(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|"
+  _re+="([0-9a-fA-F]{1,4}:){1,4}:"
+  _re+="((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}"
+  _re+="(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$"
+  [[ "${1}" =~ ${_re} ]]
 }
 
 # @description Validate a string as an IPv4 address, IPv6 address, CIDR prefix/notation,

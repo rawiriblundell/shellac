@@ -49,15 +49,15 @@ fi
 # @exitcode 0 Success
 # @exitcode 1 Missing arguments, invalid input files, or openssl/keytool failure
 ssl_create_jks() {
-  local key password outfile alias workdir p12_file chain_file cert
+  local _key _password _outfile _alias _workdir _p12_file _chain_file _cert
 
   # Parse flags
   while (( $# > 0 )); do
     case "${1}" in
-      (-k) key="${2:?ssl_create_jks: -k requires a key file}";        shift 2 ;;
-      (-p) password="${2:?ssl_create_jks: -p requires a password}";   shift 2 ;;
-      (-o) outfile="${2:?ssl_create_jks: -o requires an output path}"; shift 2 ;;
-      (-a) alias="${2:?ssl_create_jks: -a requires an alias}";         shift 2 ;;
+      (-k) _key="${2:?ssl_create_jks: -k requires a _key file}";        shift 2 ;;
+      (-p) _password="${2:?ssl_create_jks: -p requires a _password}";   shift 2 ;;
+      (-o) _outfile="${2:?ssl_create_jks: -o requires an output path}"; shift 2 ;;
+      (-a) _alias="${2:?ssl_create_jks: -a requires an _alias}";         shift 2 ;;
       (--) shift; break ;;
       (-*) printf -- '%s\n' "ssl_create_jks: unknown option: ${1}" >&2; return 1 ;;
       (*)  break ;;
@@ -65,15 +65,15 @@ ssl_create_jks() {
   done
 
   # Validate required flags
-  if [[ -z "${key}" ]]; then
-    printf -- '%s\n' "ssl_create_jks: -k <key file> is required" >&2
+  if [[ -z "${_key}" ]]; then
+    printf -- '%s\n' "ssl_create_jks: -k <_key file> is required" >&2
     return 1
   fi
-  if [[ -z "${password}" ]]; then
-    printf -- '%s\n' "ssl_create_jks: -p <password> is required" >&2
+  if [[ -z "${_password}" ]]; then
+    printf -- '%s\n' "ssl_create_jks: -p <_password> is required" >&2
     return 1
   fi
-  if [[ -z "${outfile}" ]]; then
+  if [[ -z "${_outfile}" ]]; then
     printf -- '%s\n' "ssl_create_jks: -o <output.jks> is required" >&2
     return 1
   fi
@@ -83,78 +83,78 @@ ssl_create_jks() {
   fi
 
   # Default alias to the CN of the first (leaf) certificate
-  if [[ -z "${alias}" ]]; then
-    alias=$(openssl x509 -noout -subject -in "${1}" -nameopt multiline 2>/dev/null |
+  if [[ -z "${_alias}" ]]; then
+    _alias=$(openssl x509 -noout -subject -in "${1}" -nameopt multiline 2>/dev/null |
       awk -F' = ' '/commonName/{print $2; exit}')
     # Fall back to output basename if CN extraction fails
-    : "${alias:="${outfile##*/}"; alias="${alias%.*}"}"
+    : "${_alias:="${_outfile##*/}"; _alias="${_alias%.*}"}"
   fi
 
   # Validate key file
-  if [[ ! -f "${key}" ]]; then
-    printf -- '%s\n' "ssl_create_jks: not a file: ${key}" >&2
+  if [[ ! -f "${_key}" ]]; then
+    printf -- '%s\n' "ssl_create_jks: not a file: ${_key}" >&2
     return 1
   fi
-  if [[ ! -r "${key}" ]]; then
-    printf -- '%s\n' "ssl_create_jks: permission denied: ${key}" >&2
+  if [[ ! -r "${_key}" ]]; then
+    printf -- '%s\n' "ssl_create_jks: permission denied: ${_key}" >&2
     return 1
   fi
 
   # Validate all cert files before doing any work
-  for cert in "${@}"; do
-    if [[ ! -f "${cert}" ]]; then
-      printf -- '%s\n' "ssl_create_jks: not a file: ${cert}" >&2
+  for _cert in "${@}"; do
+    if [[ ! -f "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_create_jks: not a file: ${_cert}" >&2
       return 1
     fi
-    if [[ ! -r "${cert}" ]]; then
-      printf -- '%s\n' "ssl_create_jks: permission denied: ${cert}" >&2
+    if [[ ! -r "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_create_jks: permission denied: ${_cert}" >&2
       return 1
     fi
-    if ! openssl x509 -noout -in "${cert}" 2>/dev/null; then
-      printf -- '%s\n' "ssl_create_jks: not a valid PEM certificate: ${cert}" >&2
+    if ! openssl x509 -noout -in "${_cert}" 2>/dev/null; then
+      printf -- '%s\n' "ssl_create_jks: not a valid PEM certificate: ${_cert}" >&2
       return 1
     fi
   done
 
   # Set up temp working directory
-  workdir=$(mktemp -d) || { printf -- '%s\n' "ssl_create_jks: failed to create temp directory" >&2; return 1; }
-  trap 'rm -rf "${workdir}"' RETURN
+  _workdir=$(mktemp -d) || { printf -- '%s\n' "ssl_create_jks: failed to create temp directory" >&2; return 1; }
+  trap 'rm -rf "${_workdir}"' RETURN
 
-  chain_file="${workdir}/chain.crt"
-  p12_file="${workdir}/keystore.p12"
+  _chain_file="${_workdir}/chain.crt"
+  _p12_file="${_workdir}/_keystore.p12"
 
   # Assemble certificate chain
-  cat -- "${@}" > "${chain_file}"
+  cat -- "${@}" > "${_chain_file}"
 
   # PEM chain + key → PKCS12
   if ! openssl pkcs12 -export \
-      -in "${chain_file}" \
-      -inkey "${key}" \
-      -name "${alias}" \
-      -passout "pass:${password}" \
-      -out "${p12_file}" 2>/dev/null; then
+      -in "${_chain_file}" \
+      -inkey "${_key}" \
+      -name "${_alias}" \
+      -passout "pass:${_password}" \
+      -out "${_p12_file}" 2>/dev/null; then
     printf -- '%s\n' "ssl_create_jks: openssl pkcs12 export failed" >&2
     return 1
   fi
 
   # Ensure output parent directory exists
-  local outdir
-  outdir="${outfile%/*}"
-  if [[ -n "${outdir}" ]] && [[ ! -d "${outdir}" ]]; then
-    if ! mkdir -p "${outdir}"; then
-      printf -- '%s\n' "ssl_create_jks: could not create output directory: ${outdir}" >&2
+  local _outdir
+  _outdir="${_outfile%/*}"
+  if [[ -n "${_outdir}" ]] && [[ ! -d "${_outdir}" ]]; then
+    if ! mkdir -p "${_outdir}"; then
+      printf -- '%s\n' "ssl_create_jks: could not create output directory: ${_outdir}" >&2
       return 1
     fi
   fi
 
   # PKCS12 → JKS
   if ! keytool -importkeystore \
-      -srckeystore "${p12_file}" \
+      -srckeystore "${_p12_file}" \
       -srcstoretype PKCS12 \
-      -srcstorepass "${password}" \
-      -destkeystore "${outfile}" \
+      -srcstorepass "${_password}" \
+      -destkeystore "${_outfile}" \
       -deststoretype JKS \
-      -deststorepass "${password}" \
+      -deststorepass "${_password}" \
       -noprompt 2>/dev/null; then
     printf -- '%s\n' "ssl_create_jks: keytool importkeystore failed" >&2
     return 1
@@ -178,10 +178,10 @@ ssl_create_jks() {
 # @exitcode 0 Success
 # @exitcode 1 Missing arguments, invalid cert, or keytool failure
 ssl_create_truststore() {
-  local outfile password cert alias cn filename count
+  local _outfile _password _cert _alias _cn _filename _count
 
-  outfile="${1:?ssl_create_truststore: output file argument required}"
-  password="${2:?ssl_create_truststore: password argument required}"
+  _outfile="${1:?ssl_create_truststore: output file argument required}"
+  _password="${2:?ssl_create_truststore: _password argument required}"
   shift 2
 
   if (( $# == 0 )); then
@@ -190,69 +190,69 @@ ssl_create_truststore() {
   fi
 
   # Ensure output parent directory exists
-  local outdir
-  outdir="${outfile%/*}"
-  if [[ -n "${outdir}" ]] && [[ "${outdir}" != "${outfile}" ]] && [[ ! -d "${outdir}" ]]; then
-    if ! mkdir -p "${outdir}"; then
-      printf -- '%s\n' "ssl_create_truststore: could not create output directory: ${outdir}" >&2
+  local _outdir
+  _outdir="${_outfile%/*}"
+  if [[ -n "${_outdir}" ]] && [[ "${_outdir}" != "${_outfile}" ]] && [[ ! -d "${_outdir}" ]]; then
+    if ! mkdir -p "${_outdir}"; then
+      printf -- '%s\n' "ssl_create_truststore: could not create output directory: ${_outdir}" >&2
       return 1
     fi
   fi
 
   # Validate all inputs before importing any
-  for cert in "${@}"; do
-    if [[ ! -f "${cert}" ]]; then
-      printf -- '%s\n' "ssl_create_truststore: not a file: ${cert}" >&2
+  for _cert in "${@}"; do
+    if [[ ! -f "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_create_truststore: not a file: ${_cert}" >&2
       return 1
     fi
-    if [[ ! -r "${cert}" ]]; then
-      printf -- '%s\n' "ssl_create_truststore: permission denied: ${cert}" >&2
+    if [[ ! -r "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_create_truststore: permission denied: ${_cert}" >&2
       return 1
     fi
-    if ! openssl x509 -noout -in "${cert}" 2>/dev/null; then
-      printf -- '%s\n' "ssl_create_truststore: not a valid PEM certificate: ${cert}" >&2
+    if ! openssl x509 -noout -in "${_cert}" 2>/dev/null; then
+      printf -- '%s\n' "ssl_create_truststore: not a valid PEM certificate: ${_cert}" >&2
       return 1
     fi
   done
 
   # Build into a temp file; only move to destination on full success
-  local tmpstore
-  tmpstore=$(mktemp --suffix=.jks) || {
+  local _tmpstore
+  _tmpstore=$(mktemp --suffix=.jks) || {
     printf -- '%s\n' "ssl_create_truststore: failed to create temp file" >&2
     return 1
   }
-  trap 'rm -f "${tmpstore}"' RETURN
+  trap 'rm -f "${_tmpstore}"' RETURN
   # mktemp creates an empty file; keytool needs it absent to create a new store
-  rm -f "${tmpstore}"
+  rm -f "${_tmpstore}"
 
-  count=0
-  for cert in "${@}"; do
+  _count=0
+  for _cert in "${@}"; do
     # Derive alias from filename stem; fall back to CN
-    filename="${cert##*/}"
-    filename="${filename%.pem}"
-    if [[ -n "${filename}" ]]; then
-      alias="${filename}"
+    _filename="${_cert##*/}"
+    _filename="${_filename%.pem}"
+    if [[ -n "${_filename}" ]]; then
+      _alias="${_filename}"
     else
-      alias=$(openssl x509 -noout -subject -in "${cert}" -nameopt multiline 2>/dev/null |
+      _alias=$(openssl x509 -noout -subject -in "${_cert}" -nameopt multiline 2>/dev/null |
         awk -F' = ' '/commonName/{print $2; exit}')
     fi
 
     if ! keytool -importcert \
         -trustcacerts \
         -storetype JKS \
-        -alias "${alias}" \
-        -file "${cert}" \
-        -keystore "${tmpstore}" \
-        -storepass "${password}" \
+        -alias "${_alias}" \
+        -file "${_cert}" \
+        -keystore "${_tmpstore}" \
+        -storepass "${_password}" \
         -noprompt 2>/dev/null; then
-      printf -- '%s\n' "ssl_create_truststore: failed to import '${cert}' (alias: ${alias})" >&2
+      printf -- '%s\n' "ssl_create_truststore: failed to import '${_cert}' (_alias: ${_alias})" >&2
       return 1
     fi
-    (( count++ ))
+    (( _count++ ))
   done
 
-  mv "${tmpstore}" "${outfile}"
-  printf -- '%d certificates imported\n' "${count}"
+  mv "${_tmpstore}" "${_outfile}"
+  printf -- '%d certificates imported\n' "${_count}"
 }
 
 # @description Split a JKS keystore or truststore into individual PEM files,
@@ -271,56 +271,56 @@ ssl_create_truststore() {
 # @exitcode 0 Success
 # @exitcode 1 File not found, no aliases found, or export failure
 ssl_split_jks() {
-  local keystore password outdir alias count
+  local _keystore _password _outdir _alias _count
 
-  keystore="${1:?ssl_split_jks: keystore file argument required}"
-  password="${2:-}"
-  outdir="${3:-.}"
+  _keystore="${1:?ssl_split_jks: _keystore file argument required}"
+  _password="${2:-}"
+  _outdir="${3:-.}"
 
-  if [[ ! -f "${keystore}" ]]; then
-    printf -- '%s\n' "ssl_split_jks: not a file: ${keystore}" >&2
+  if [[ ! -f "${_keystore}" ]]; then
+    printf -- '%s\n' "ssl_split_jks: not a file: ${_keystore}" >&2
     return 1
   fi
-  if [[ ! -r "${keystore}" ]]; then
-    printf -- '%s\n' "ssl_split_jks: permission denied: ${keystore}" >&2
+  if [[ ! -r "${_keystore}" ]]; then
+    printf -- '%s\n' "ssl_split_jks: permission denied: ${_keystore}" >&2
     return 1
   fi
 
-  if [[ ! -d "${outdir}" ]]; then
-    if ! mkdir -p "${outdir}"; then
-      printf -- '%s\n' "ssl_split_jks: could not create output directory: ${outdir}" >&2
+  if [[ ! -d "${_outdir}" ]]; then
+    if ! mkdir -p "${_outdir}"; then
+      printf -- '%s\n' "ssl_split_jks: could not create output directory: ${_outdir}" >&2
       return 1
     fi
   fi
 
-  count=0
-  while IFS= read -r alias; do
+  _count=0
+  while IFS= read -r _alias; do
     # Sanitise alias for use as a filename: replace ':' with '_', strip .pem suffix
-    local filename
-    filename="${alias//:/_}"
-    filename="${filename%.pem}"
+    local _filename
+    _filename="${_alias//:/_}"
+    _filename="${_filename%.pem}"
     if ! keytool -exportcert \
-        -alias "${alias}" \
-        -keystore "${keystore}" \
-        -storepass "${password}" \
+        -alias "${_alias}" \
+        -keystore "${_keystore}" \
+        -storepass "${_password}" \
         -rfc \
-        -file "${outdir}/${filename}.pem" 2>/dev/null; then
-      printf -- '%s\n' "ssl_split_jks: failed to export alias '${alias}'" >&2
+        -file "${_outdir}/${_filename}.pem" 2>/dev/null; then
+      printf -- '%s\n' "ssl_split_jks: failed to export _alias '${_alias}'" >&2
       return 1
     fi
-    (( count++ ))
+    (( _count++ ))
   done < <(
     keytool -list -v \
-      -keystore "${keystore}" \
-      -storepass "${password}" \
+      -keystore "${_keystore}" \
+      -storepass "${_password}" \
       </dev/null 2>/dev/null |
       awk '/^Alias name:/{print $NF}'
   )
 
-  if (( count == 0 )); then
-    printf -- '%s\n' "ssl_split_jks: no aliases found in ${keystore}" >&2
+  if (( _count == 0 )); then
+    printf -- '%s\n' "ssl_split_jks: no aliases found in ${_keystore}" >&2
     return 1
   fi
 
-  printf -- '%d certificates extracted\n' "${count}"
+  printf -- '%d certificates extracted\n' "${_count}"
 }

@@ -94,24 +94,24 @@ text_c2n() { str_c2n "${@}"; }
 # @stdout Each line centered within the terminal width
 # @exitcode 0 Always
 text_center() {
-  local width
-  width="${COLUMNS:-$(tput cols)}"
+  local _width
+  _width="${COLUMNS:-$(tput cols)}"
   while IFS= read -r; do
-    # If, by luck, REPLY is the same as width, then just dump it
-    (( ${#REPLY} == width )) && printf -- '%s\n' "${REPLY}" && continue
+    # If, by luck, REPLY is the same as _width, then just dump it
+    (( ${#REPLY} == _width )) && printf -- '%s\n' "${REPLY}" && continue
 
-    # Handle lines of any length longer than width
+    # Handle lines of any length longer than _width
     # this ensures that wrapped overflow is centered
-    if (( ${#REPLY} > width )); then
+    if (( ${#REPLY} > _width )); then
       while read -r subreply; do
-        (( ${#subreply} == width )) && printf -- '%s\n' "${subreply}" && continue
-        printf -- '%*s\n' $(( (${#subreply} + width) / 2 )) "${subreply}"
-      done < <(fold -w "${width}" <<< "${REPLY}")
+        (( ${#subreply} == _width )) && printf -- '%s\n' "${subreply}" && continue
+        printf -- '%*s\n' $(( (${#subreply} + _width) / 2 )) "${subreply}"
+      done < <(fold -w "${_width}" <<< "${REPLY}")
       continue
     fi
 
     # Otherwise, print centered
-    printf -- '%*s\n' $(( (${#REPLY} + width) / 2 )) "${REPLY}"
+    printf -- '%*s\n' $(( (${#REPLY} + _width) / 2 )) "${REPLY}"
   done < "${1:-/dev/stdin}"
   [[ -n "${REPLY}" ]] && printf -- '%s\n' "${REPLY}"
 }
@@ -313,34 +313,34 @@ text_wordwrap() {
 # @exitcode 0 Always
 text_fg() {
   local LC_CTYPE
-  local fg_colour
+  local _fg_colour
   LC_CTYPE=C
   case "${1}" in
-    (b|B|black|Black)        fg_colour='\033[38;5;0m';;
-    (r|R|red|Red)            fg_colour='\033[1;31m';;
-    (g|G|green|Green)        fg_colour='\033[0;32m';;
-    (y|Y|yellow|Yellow)      fg_colour='\033[1;33m';;
-    (bl|Bl|blue|Blue)        fg_colour='\033[38;5;32m';;
-    (m|M|magenta|Magenta)    fg_colour='\033[1;35m';;
-    (c|C|cyan|Cyan)          fg_colour='\033[1;36m';;
-    (w|W|white|White|safe)   fg_colour='\033[1;37m';;
-    (o|O|orange|Orange)      fg_colour='\033[38;5;208m';;
-    ('_'|'-'|'null'|''|rand) fg_colour="\033[38;5;$((RANDOM%255))m";;
+    (b|B|black|Black)        _fg_colour='\033[38;5;0m';;
+    (r|R|red|Red)            _fg_colour='\033[1;31m';;
+    (g|G|green|Green)        _fg_colour='\033[0;32m';;
+    (y|Y|yellow|Yellow)      _fg_colour='\033[1;33m';;
+    (bl|Bl|blue|Blue)        _fg_colour='\033[38;5;32m';;
+    (m|M|magenta|Magenta)    _fg_colour='\033[1;35m';;
+    (c|C|cyan|Cyan)          _fg_colour='\033[1;36m';;
+    (w|W|white|White|safe)   _fg_colour='\033[1;37m';;
+    (o|O|orange|Orange)      _fg_colour='\033[38;5;208m';;
+    ('_'|'-'|'null'|''|rand) _fg_colour="\033[38;5;$((RANDOM%255))m";;
     (*[0-9]*)
-      fg_colour="${1//[^0-9]/}"
-      while (( fg_colour > 255 )); do
-        fg_colour=$(( fg_colour / 2 ))
+      _fg_colour="${1//[^0-9]/}"
+      while (( _fg_colour > 255 )); do
+        _fg_colour=$(( _fg_colour / 2 ))
       done
-      fg_colour="\033[38;5;${fg_colour}m"
+      _fg_colour="\033[38;5;${_fg_colour}m"
     ;;
   esac
   shift
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
-      printf -- "${fg_colour}%s\033[0m\n" "${REPLY}"
+      printf -- "${_fg_colour}%s\033[0m\n" "${REPLY}"
     done < "${1:-/dev/stdin}"
   else
-    printf -- "${fg_colour}%s\033[0m\n" "${*}"
+    printf -- "${_fg_colour}%s\033[0m\n" "${*}"
   fi
 }
 
@@ -355,34 +355,34 @@ text_fg() {
 # @exitcode 0 Always
 text_bg() {
   local LC_CTYPE
-  local bg_colour
+  local _bg_colour
   LC_CTYPE=C
   case "${1}" in
-    (b|B|black|Black)        bg_colour='\033[48;5;0m';;
-    (r|R|red|Red)            bg_colour='\033[0;41m';;
-    (g|G|green|Green)        bg_colour='\033[0;42m';;
-    (y|Y|yellow|Yellow)      bg_colour='\033[0;43m';;
-    (bl|Bl|blue|Blue)        bg_colour='\033[48;5;32m';;
-    (m|M|magenta|Magenta)    bg_colour='\033[0;45m';;
-    (c|C|cyan|Cyan)          bg_colour='\033[0;46m';;
-    (w|W|white|White|safe)   bg_colour='\033[0;47m';;
-    (o|O|orange|Orange)      bg_colour='\033[48;5;208m';;
-    ('_'|'-'|'null'|''|rand) bg_colour="\033[48;5;$((RANDOM%255))m";;
+    (b|B|black|Black)        _bg_colour='\033[48;5;0m';;
+    (r|R|red|Red)            _bg_colour='\033[0;41m';;
+    (g|G|green|Green)        _bg_colour='\033[0;42m';;
+    (y|Y|yellow|Yellow)      _bg_colour='\033[0;43m';;
+    (bl|Bl|blue|Blue)        _bg_colour='\033[48;5;32m';;
+    (m|M|magenta|Magenta)    _bg_colour='\033[0;45m';;
+    (c|C|cyan|Cyan)          _bg_colour='\033[0;46m';;
+    (w|W|white|White|safe)   _bg_colour='\033[0;47m';;
+    (o|O|orange|Orange)      _bg_colour='\033[48;5;208m';;
+    ('_'|'-'|'null'|''|rand) _bg_colour="\033[48;5;$((RANDOM%255))m";;
     (*[0-9]*)
-      bg_colour="${1//[^0-9]/}"
-      while (( bg_colour > 255 )); do
-        bg_colour=$(( bg_colour / 2 ))
+      _bg_colour="${1//[^0-9]/}"
+      while (( _bg_colour > 255 )); do
+        _bg_colour=$(( _bg_colour / 2 ))
       done
-      bg_colour="\033[48;5;${bg_colour}m"
+      _bg_colour="\033[48;5;${_bg_colour}m"
     ;;
   esac
   shift
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
-      printf -- "${bg_colour}%s\033[0m\n" "${REPLY}"
+      printf -- "${_bg_colour}%s\033[0m\n" "${REPLY}"
     done < "${1:-/dev/stdin}"
   else
-    printf -- "${bg_colour}%s\033[0m\n" "${*}"
+    printf -- "${_bg_colour}%s\033[0m\n" "${*}"
   fi
 }
 
@@ -398,42 +398,42 @@ text_bg() {
 # @stdout Truecolor foreground-formatted text
 # @exitcode 0 Always
 text_rgb.fg() {
-  local fg_red fg_green fg_blue fg_colour
+  local _fg_red _fg_green _fg_blue _fg_colour
   case "${1}" in
     (*[0-9]*)
-      fg_red="${1//[^0-9]/}"
-      while (( fg_red > 255 )); do
-        fg_red=$(( fg_red / 2 ))
+      _fg_red="${1//[^0-9]/}"
+      while (( _fg_red > 255 )); do
+        _fg_red=$(( _fg_red / 2 ))
       done
     ;;
-    ('_'|'-'|'null'|''|*) fg_red=$((RANDOM%255))
+    ('_'|'-'|'null'|''|*) _fg_red=$((RANDOM%255))
   esac
   case "${2}" in
     (*[0-9]*)
-      fg_green="${2//[^0-9]/}"
-      while (( fg_green > 255 )); do
-        fg_green=$(( fg_green / 2 ))
+      _fg_green="${2//[^0-9]/}"
+      while (( _fg_green > 255 )); do
+        _fg_green=$(( _fg_green / 2 ))
       done
     ;;
-    ('_'|'-'|'null'|''|*) fg_green=$((RANDOM%255))
+    ('_'|'-'|'null'|''|*) _fg_green=$((RANDOM%255))
   esac
   case "${3}" in
     (*[0-9]*)
-      fg_blue="${3//[^0-9]/}"
-      while (( fg_blue > 255 )); do
-        fg_blue=$(( fg_blue / 2 ))
+      _fg_blue="${3//[^0-9]/}"
+      while (( _fg_blue > 255 )); do
+        _fg_blue=$(( _fg_blue / 2 ))
       done
     ;;
-    ('_'|'-'|'null'|''|*) fg_blue=$((RANDOM%255))
+    ('_'|'-'|'null'|''|*) _fg_blue=$((RANDOM%255))
   esac
   shift 3
-  fg_colour="\033[38;2;${fg_red};${fg_green};${fg_blue}m"
+  _fg_colour="\033[38;2;${_fg_red};${_fg_green};${_fg_blue}m"
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
-      printf -- "${fg_colour}%s\033[0m\n" "${REPLY}"
+      printf -- "${_fg_colour}%s\033[0m\n" "${REPLY}"
     done < "${1:-/dev/stdin}"
   else
-    printf -- "${fg_colour}%s\033[0m\n" "${*}"
+    printf -- "${_fg_colour}%s\033[0m\n" "${*}"
   fi
 }
 
@@ -449,42 +449,42 @@ text_rgb.fg() {
 # @stdout Truecolor background-formatted text
 # @exitcode 0 Always
 text_rgb.bg() {
-  local bg_red bg_green bg_blue bg_colour
+  local _bg_red _bg_green _bg_blue _bg_colour
   case "${1}" in
     (*[0-9]*)
-      bg_red="${1//[^0-9]/}"
-      while (( bg_red > 255 )); do
-        bg_red=$(( bg_red / 2 ))
+      _bg_red="${1//[^0-9]/}"
+      while (( _bg_red > 255 )); do
+        _bg_red=$(( _bg_red / 2 ))
       done
     ;;
-    ('_'|'-'|'null'|''|*) bg_red=$((RANDOM%255))
+    ('_'|'-'|'null'|''|*) _bg_red=$((RANDOM%255))
   esac
   case "${2}" in
     (*[0-9]*)
-      bg_green="${2//[^0-9]/}"
-      while (( bg_green > 255 )); do
-        bg_green=$(( bg_green / 2 ))
+      _bg_green="${2//[^0-9]/}"
+      while (( _bg_green > 255 )); do
+        _bg_green=$(( _bg_green / 2 ))
       done
     ;;
-    ('_'|'-'|'null'|''|*) bg_green=$((RANDOM%255))
+    ('_'|'-'|'null'|''|*) _bg_green=$((RANDOM%255))
   esac
   case "${3}" in
     (*[0-9]*)
-      bg_blue="${3//[^0-9]/}"
-      while (( bg_blue > 255 )); do
-        bg_blue=$(( bg_blue / 2 ))
+      _bg_blue="${3//[^0-9]/}"
+      while (( _bg_blue > 255 )); do
+        _bg_blue=$(( _bg_blue / 2 ))
       done
     ;;
-    ('_'|'-'|'null'|''|*) bg_blue=$((RANDOM%255))
+    ('_'|'-'|'null'|''|*) _bg_blue=$((RANDOM%255))
   esac
   shift 3
-  bg_colour="\033[48;2;${bg_red};${bg_green};${bg_blue}m"
+  _bg_colour="\033[48;2;${_bg_red};${_bg_green};${_bg_blue}m"
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
-      printf -- "${bg_colour}%s\033[0m\n" "${REPLY}"
+      printf -- "${_bg_colour}%s\033[0m\n" "${REPLY}"
     done < "${1:-/dev/stdin}"
   else
-    printf -- "${bg_colour}%s\033[0m\n" "${*}"
+    printf -- "${_bg_colour}%s\033[0m\n" "${*}"
   fi
 }
 

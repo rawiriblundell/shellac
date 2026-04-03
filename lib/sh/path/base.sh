@@ -212,12 +212,12 @@ path_dirname() {
 # @stdout Extension string, e.g. "sh", "txt"
 # @exitcode 0 Success; 1 No extension found; 2 Missing argument
 path_extension() {
-  local file extension
+  local _file _extension
   (( ${#} == 0 )) && { printf -- '%s\n' "path_extension: missing argument" >&2; return 2; }
-  file="${1##*/}"
-  extension="${file##*.}"
-  [[ "${file}" = "${extension}" ]] && return 1
-  printf -- '%s\n' "${extension}"
+  _file="${1##*/}"
+  _extension="${_file##*.}"
+  [[ "${_file}" = "${_extension}" ]] && return 1
+  printf -- '%s\n' "${_extension}"
 }
 
 # @description Get the filename without its extension from a path (the stem).
@@ -232,10 +232,10 @@ path_extension() {
 # @stdout Filename without extension
 # @exitcode 0 Success; 2 Missing argument
 path_stem() {
-  local file
+  local _file
   (( ${#} == 0 )) && { printf -- '%s\n' "path_stem: missing argument" >&2; return 2; }
-  file="${1##*/}"
-  printf -- '%s\n' "${file%.*}"
+  _file="${1##*/}"
+  printf -- '%s\n' "${_file%.*}"
 }
 
 # @description Remove the file extension from a path (returns full path minus .ext).
@@ -251,10 +251,10 @@ path_stem() {
 # @stdout Path without final extension
 # @exitcode 0 Success; 2 Missing argument
 path_strip_extension() {
-  local path
+  local _path
   (( ${#} == 0 )) && { printf -- '%s\n' "path_strip_extension: missing argument" >&2; return 2; }
-  path="${1}"
-  printf -- '%s\n' "${path%.*}"
+  _path="${1}"
+  printf -- '%s\n' "${_path%.*}"
 }
 
 # @description Replace the file extension of a path.
@@ -270,11 +270,11 @@ path_strip_extension() {
 # @stdout Path with replaced extension
 # @exitcode 0 Success; 2 Missing argument
 path_replace_extension() {
-  local path ext
+  local _path _ext
   (( ${#} < 2 )) && { printf -- '%s\n' "path_replace_extension: missing argument(s)" >&2; return 2; }
-  path="${1}"
-  ext="${2}"
-  printf -- '%s\n' "${path%.*}${ext}"
+  _path="${1}"
+  _ext="${2}"
+  printf -- '%s\n' "${_path%.*}${_ext}"
 }
 
 # @description Normalize a path by resolving . and .. components purely as a
@@ -293,35 +293,35 @@ path_replace_extension() {
 # @stdout Normalized path
 # @exitcode 0 Success; 2 Missing argument
 path_normalize() {
-  local path part result is_abs
-  path="${1:?path_normalize: missing path argument}"
+  local _path _part _result _is_abs
+  _path="${1:?path_normalize: missing _path argument}"
 
   # Preserve absolute/relative
-  is_abs=0
-  [[ "${path}" == /* ]] && is_abs=1
+  _is_abs=0
+  [[ "${_path}" == /* ]] && _is_abs=1
 
   # Split on /
-  result=()
+  _result=()
   # Temporarily use IFS to split
   local IFS='/'
-  for part in ${path}; do
-    [[ -z "${part}" || "${part}" == "." ]] && continue
-    if [[ "${part}" == ".." ]]; then
-      (( ${#result[@]} > 0 )) && unset 'result[${#result[@]}-1]'
+  for _part in ${_path}; do
+    [[ -z "${_part}" || "${_part}" == "." ]] && continue
+    if [[ "${_part}" == ".." ]]; then
+      (( ${#_result[@]} > 0 )) && unset '_result[${#_result[@]}-1]'
     else
-      result+=( "${part}" )
+      _result+=( "${_part}" )
     fi
   done
 
   # Reconstruct
-  local joined
-  joined="${result[*]}"   # IFS='/' still active
-  if (( is_abs )); then
-    printf -- '/%s\n' "${joined}"
-  elif [[ -z "${joined}" ]]; then
+  local _joined
+  _joined="${_result[*]}"   # IFS='/' still active
+  if (( _is_abs )); then
+    printf -- '/%s\n' "${_joined}"
+  elif [[ -z "${_joined}" ]]; then
     printf -- '.\n'
   else
-    printf -- '%s\n' "${joined}"
+    printf -- '%s\n' "${_joined}"
   fi
 }
 
@@ -340,39 +340,39 @@ path_normalize() {
 # @stdout Relative path
 # @exitcode 0 Success; 2 Missing argument
 path_relative() {
-  local from to from_norm to_norm common up rel
-  from="${1:?path_relative: missing base (from) argument}"
-  to="${2:?path_relative: missing target (to) argument}"
+  local _from _to _from_norm _to_norm _common _up _rel
+  _from="${1:?path_relative: missing base (_from) argument}"
+  _to="${2:?path_relative: missing target (_to) argument}"
 
-  from_norm="$(path_normalize "${from}")"
-  to_norm="$(path_normalize "${to}")"
+  _from_norm="$(path_normalize "${_from}")"
+  _to_norm="$(path_normalize "${_to}")"
 
   # Split into components
   local IFS='/'
-  local -a from_parts to_parts
-  read -r -a from_parts <<< "${from_norm}"
-  read -r -a to_parts  <<< "${to_norm}"
+  local -a _from_parts _to_parts
+  read -r -a _from_parts <<< "${_from_norm}"
+  read -r -a _to_parts  <<< "${_to_norm}"
 
   # Find common prefix length
-  common=0
-  while (( common < ${#from_parts[@]} )) && (( common < ${#to_parts[@]} )) &&
-        [[ "${from_parts[${common}]}" == "${to_parts[${common}]}" ]]; do
-    (( common += 1 ))
+  _common=0
+  while (( _common < ${#_from_parts[@]} )) && (( _common < ${#_to_parts[@]} )) &&
+        [[ "${_from_parts[${_common}]}" == "${_to_parts[${_common}]}" ]]; do
+    (( _common += 1 ))
   done
 
   # Build ../.. for remaining from components
-  up=$(( ${#from_parts[@]} - common ))
-  rel=
-  local i
-  for (( i = 0; i < up; i++ )); do
-    rel="${rel:+${rel}/}.."
+  _up=$(( ${#_from_parts[@]} - _common ))
+  _rel=
+  local _i
+  for (( _i = 0; _i < _up; _i++ )); do
+    _rel="${_rel:+${_rel}/}.."
   done
 
   # Append remaining to components
-  for (( i = common; i < ${#to_parts[@]}; i++ )); do
-    [[ -n "${to_parts[${i}]}" ]] || continue
-    rel="${rel:+${rel}/}${to_parts[${i}]}"
+  for (( _i = _common; _i < ${#_to_parts[@]}; _i++ )); do
+    [[ -n "${_to_parts[${_i}]}" ]] || continue
+    _rel="${_rel:+${_rel}/}${_to_parts[${_i}]}"
   done
 
-  printf -- '%s\n' "${rel:-.}"
+  printf -- '%s\n' "${_rel:-.}"
 }

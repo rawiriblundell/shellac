@@ -26,13 +26,13 @@ _SHELLAC_LOADED_misc_greet=1
 # @stdout "Good morning!", "Good afternoon!", or "Good evening!"
 # @exitcode 0 Always
 greet() {
-  local greet_moment
+  local _greet_moment
   if (( "${DayGreet:-$(date +%H)}" >= 18 )); then
-    greet_moment="evening"
+    _greet_moment="evening"
   elif (( "${DayGreet:-$(date +%H)}" >= 12 )); then
-    greet_moment="afternoon"
+    _greet_moment="afternoon"
   else
-    greet_moment="morning"
+    _greet_moment="morning"
   fi
-  printf -- 'Good %s!\n' "${greet_moment}"
+  printf -- 'Good %s!\n' "${_greet_moment}"
 }

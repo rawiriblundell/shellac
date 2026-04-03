@@ -32,9 +32,9 @@ _SHELLAC_LOADED_sys_signals=1
 # @stdout Signal name (e.g. TERM, INT, HUP)
 # @exitcode 0 Known signal; 1 Unknown signal number
 signame() {
-  local num
-  num="${1:?signame: missing signal number}"
-  case "${num}" in
+  local _num
+  _num="${1:?signame: missing signal number}"
+  case "${_num}" in
     (0)  printf -- 'EXIT\n' ;;
     (1)  printf -- 'HUP\n'  ;;
     (2)  printf -- 'INT\n'  ;;
@@ -58,7 +58,7 @@ signame() {
     (21) printf -- 'TTIN\n' ;;
     (22) printf -- 'TTOU\n' ;;
     (*)
-      printf -- '%s\n' "signame: unknown signal number: ${num}" >&2
+      printf -- '%s\n' "signame: unknown signal number: ${_num}" >&2
       return 1
     ;;
   esac
@@ -76,12 +76,12 @@ signame() {
 # @stdout Signal number
 # @exitcode 0 Known signal; 1 Unknown name
 signum() {
-  local name
-  name="${1:?signum: missing signal name}"
+  local _name
+  _name="${1:?signum: missing signal _name}"
   # Strip leading SIG (case-insensitive) and uppercase
-  name="${name#[Ss][Ii][Gg]}"
-  name="${name^^}"
-  case "${name}" in
+  _name="${_name#[Ss][Ii][Gg]}"
+  _name="${_name^^}"
+  case "${_name}" in
     (EXIT) printf -- '0\n'  ;;
     (HUP)  printf -- '1\n'  ;;
     (INT)  printf -- '2\n'  ;;
@@ -105,7 +105,7 @@ signum() {
     (TTIN) printf -- '21\n' ;;
     (TTOU) printf -- '22\n' ;;
     (*)
-      printf -- '%s\n' "signum: unknown signal name: ${1}" >&2
+      printf -- '%s\n' "signum: unknown signal _name: ${1}" >&2
       return 1
     ;;
   esac
@@ -123,12 +123,12 @@ signum() {
 # @stdout Exit code integer
 # @exitcode 0 Always; 1 Unknown signal
 sigexitcode() {
-  local num
+  local _num
   case "${1:-}" in
-    ([0-9]|[0-9][0-9]) num="${1}" ;;
+    ([0-9]|[0-9][0-9]) _num="${1}" ;;
     (*)
-      num="$(signum "${1}")" || return 1
+      _num="$(signum "${1}")" || return 1
     ;;
   esac
-  printf -- '%d\n' "$(( 128 + num ))"
+  printf -- '%d\n' "$(( 128 + _num ))"
 }

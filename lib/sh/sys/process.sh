@@ -33,13 +33,13 @@ _SHELLAC_LOADED_sys_process=1
 #
 # @exitcode 0 Running; 1 Not running
 proc_running() {
-  local name bracket_pattern
-  name="${1:?proc_running: missing process name}"
+  local _name _bracket_pattern
+  _name="${1:?proc_running: missing process _name}"
   if command -v pgrep >/dev/null 2>&1; then
-    pgrep -x "${name}" >/dev/null 2>&1
+    pgrep -x "${_name}" >/dev/null 2>&1
   else
-    bracket_pattern="[${name:0:1}]${name:1}"
-    ps -ef 2>/dev/null | awk -v pat="${bracket_pattern}" '$0 ~ pat' | grep -q .
+    _bracket_pattern="[${_name:0:1}]${_name:1}"
+    ps -ef 2>/dev/null | awk -v pat="${_bracket_pattern}" '$0 ~ pat' | grep -q .
   fi
 }
 
@@ -49,9 +49,9 @@ proc_running() {
 #
 # @exitcode 0 PID alive; 1 PID not found
 proc_alive() {
-  local pid
-  pid="${1:?proc_alive: missing PID}"
-  kill -0 "${pid}" 2>/dev/null
+  local _pid
+  _pid="${1:?proc_alive: missing PID}"
+  kill -0 "${_pid}" 2>/dev/null
 }
 
 # @description Stop a process by PID gracefully.
@@ -62,21 +62,21 @@ proc_alive() {
 #
 # @exitcode 0 Process stopped; 1 PID not found initially
 proc_stop() {
-  local pid grace waited
-  pid="${1:?proc_stop: missing PID}"
-  grace="${2:-10}"
-  waited=0
+  local _pid _grace _waited
+  _pid="${1:?proc_stop: missing PID}"
+  _grace="${2:-10}"
+  _waited=0
 
-  proc_alive "${pid}" || return 1
-  kill -TERM "${pid}" 2>/dev/null || true
+  proc_alive "${_pid}" || return 1
+  kill -TERM "${_pid}" 2>/dev/null || true
 
-  while proc_alive "${pid}" && (( waited < grace )); do
+  while proc_alive "${_pid}" && (( _waited < _grace )); do
     sleep 1
-    (( waited += 1 ))
+    (( _waited += 1 ))
   done
 
-  if proc_alive "${pid}"; then
-    kill -KILL "${pid}" 2>/dev/null || true
+  if proc_alive "${_pid}"; then
+    kill -KILL "${_pid}" 2>/dev/null || true
   fi
 
   return 0
@@ -93,14 +93,14 @@ proc_stop() {
 # @stdout PID list, one per line
 # @exitcode 0 At least one match; 1 No matches
 proc_pids_matching() {
-  local pattern bracket_pattern
-  pattern="${1:?proc_pids_matching: missing pattern}"
+  local _pattern _bracket_pattern
+  _pattern="${1:?proc_pids_matching: missing _pattern}"
   if command -v pgrep >/dev/null 2>&1; then
-    pgrep -f "${pattern}"
+    pgrep -f "${_pattern}"
   else
-    bracket_pattern="[${pattern:0:1}]${pattern:1}"
-    ps -eo pid,args 2>/dev/null |
-      awk -v pat="${bracket_pattern}" '$0 ~ pat {print $1}'
+    _bracket_pattern="[${_pattern:0:1}]${_pattern:1}"
+    ps -eo _pid,args 2>/dev/null |
+      awk -v pat="${_bracket_pattern}" '$0 ~ pat {print $1}'
   fi
 }
 
@@ -111,15 +111,15 @@ proc_pids_matching() {
 # @stdout Parent PID
 # @exitcode 0 Always; 1 PID not found
 proc_parent() {
-  local pid ppid
-  pid="${1:-$$}"
-  if [ -r "/proc/${pid}/status" ]; then
-    ppid="$(awk '/^PPid:/{print $2}' "/proc/${pid}/status")"
+  local _pid _ppid
+  _pid="${1:-$$}"
+  if [ -r "/proc/${_pid}/status" ]; then
+    _ppid="$(awk '/^PPid:/{print $2}' "/proc/${_pid}/status")"
   else
-    ppid="$(ps -o ppid= -p "${pid}" 2>/dev/null | tr -d ' ')"
+    _ppid="$(ps -o _ppid= -p "${_pid}" 2>/dev/null | tr -d ' ')"
   fi
-  [[ -n "${ppid}" ]] || return 1
-  printf -- '%d\n' "${ppid}"
+  [[ -n "${_ppid}" ]] || return 1
+  printf -- '%d\n' "${_ppid}"
 }
 
 # @description Show full ps output for processes matching a pattern.
@@ -139,14 +139,14 @@ proc_parent() {
 # @stdout ps header + matching process rows
 # @exitcode 0 At least one match; 1 No matches
 proc_grep() {
-  local term bracket_pattern header results
-  term="${1:?proc_grep: missing pattern}"
-  bracket_pattern="[${term:0:1}]${term:1}"
-  header="$(ps auxf 2>/dev/null | head -1)"
-  results="$(ps auxf 2>/dev/null | awk -v pat="${bracket_pattern}" '$0 ~ pat')"
-  [[ -z "${results}" ]] && return 1
-  printf -- '%s\n' "${header}"
-  printf -- '%s\n' "${results}"
+  local _term _bracket_pattern _header _results
+  _term="${1:?proc_grep: missing _pattern}"
+  _bracket_pattern="[${_term:0:1}]${_term:1}"
+  _header="$(ps auxf 2>/dev/null | head -1)"
+  _results="$(ps auxf 2>/dev/null | awk -v pat="${_bracket_pattern}" '$0 ~ pat')"
+  [[ -z "${_results}" ]] && return 1
+  printf -- '%s\n' "${_header}"
+  printf -- '%s\n' "${_results}"
 }
 
 # @description List the PIDs of all direct child processes of a given parent PID.
@@ -157,11 +157,11 @@ proc_grep() {
 # @stdout One PID per line
 # @exitcode 0 Always
 proc_children() {
-  local ppid
-  ppid="${1:-$$}"
+  local _ppid
+  _ppid="${1:-$$}"
   if command -v pgrep >/dev/null 2>&1; then
-    pgrep -P "${ppid}"
+    pgrep -P "${_ppid}"
   else
-    ps -e -o pid,ppid | awk -v ppid="${ppid}" '$2 == ppid {print $1}'
+    ps -e -o _pid,_ppid | awk -v _ppid="${_ppid}" '$2 == _ppid {print $1}'
   fi
 }

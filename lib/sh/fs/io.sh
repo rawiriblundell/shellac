@@ -28,17 +28,17 @@ _SHELLAC_LOADED_fs_io=1
 # @exitcode 0 Success
 # @exitcode 1 File not found or not readable
 fs_read_file() {
-  local path
-  path="${1:?fs_read_file: path argument required}"
-  if [[ ! -f "${path}" ]]; then
-    printf -- '%s\n' "fs_read_file: not a file: ${path}" >&2
+  local _path
+  _path="${1:?fs_read_file: _path argument required}"
+  if [[ ! -f "${_path}" ]]; then
+    printf -- '%s\n' "fs_read_file: not a file: ${_path}" >&2
     return 1
   fi
-  if [[ ! -r "${path}" ]]; then
-    printf -- '%s\n' "fs_read_file: permission denied: ${path}" >&2
+  if [[ ! -r "${_path}" ]]; then
+    printf -- '%s\n' "fs_read_file: permission denied: ${_path}" >&2
     return 1
   fi
-  printf -- '%s\n' "$(<"${path}")"
+  printf -- '%s\n' "$(<"${_path}")"
 }
 
 # @description Write content to a file, creating parent directories as needed.
@@ -51,26 +51,26 @@ fs_read_file() {
 # @exitcode 0 Success
 # @exitcode 1 Path is a directory, or parent directory could not be created
 fs_write_file() {
-  local path content parent
-  path="${1:?fs_write_file: path argument required}"
+  local _path _content _parent
+  _path="${1:?fs_write_file: _path argument required}"
 
-  if [[ -d "${path}" ]]; then
-    printf -- '%s\n' "fs_write_file: path is a directory: ${path}" >&2
+  if [[ -d "${_path}" ]]; then
+    printf -- '%s\n' "fs_write_file: _path is a directory: ${_path}" >&2
     return 1
   fi
 
-  parent="${path%/*}"
-  if [[ -n "${parent}" ]] && [[ ! -d "${parent}" ]]; then
-    if ! mkdir -p "${parent}"; then
-      printf -- '%s\n' "fs_write_file: could not create directory: ${parent}" >&2
+  _parent="${_path%/*}"
+  if [[ -n "${_parent}" ]] && [[ ! -d "${_parent}" ]]; then
+    if ! mkdir -p "${_parent}"; then
+      printf -- '%s\n' "fs_write_file: could not create directory: ${_parent}" >&2
       return 1
     fi
   fi
 
   if (( ${#} >= 2 )); then
-    printf -- '%s\n' "${2}" > "${path}"
+    printf -- '%s\n' "${2}" > "${_path}"
   else
-    cat > "${path}"
+    cat > "${_path}"
   fi
 }
 
@@ -83,22 +83,22 @@ fs_write_file() {
 # @exitcode 0 Success (line added or already present)
 # @exitcode 1 Missing arguments, or parent directory could not be created
 fs_append_line() {
-  local path line parent
-  path="${1:?fs_append_line: path argument required}"
-  line="${2:?fs_append_line: line argument required}"
+  local _path _line _parent
+  _path="${1:?fs_append_line: _path argument required}"
+  _line="${2:?fs_append_line: _line argument required}"
 
-  parent="${path%/*}"
-  if [[ -n "${parent}" ]] && [[ ! -d "${parent}" ]]; then
-    if ! mkdir -p "${parent}"; then
-      printf -- '%s\n' "fs_append_line: could not create directory: ${parent}" >&2
+  _parent="${_path%/*}"
+  if [[ -n "${_parent}" ]] && [[ ! -d "${_parent}" ]]; then
+    if ! mkdir -p "${_parent}"; then
+      printf -- '%s\n' "fs_append_line: could not create directory: ${_parent}" >&2
       return 1
     fi
   fi
 
-  if [[ -f "${path}" ]] && grep -qxF "${line}" "${path}" 2>/dev/null; then
+  if [[ -f "${_path}" ]] && grep -qxF "${_line}" "${_path}" 2>/dev/null; then
     return 0
   fi
-  printf -- '%s\n' "${line}" >> "${path}"
+  printf -- '%s\n' "${_line}" >> "${_path}"
 }
 
 # @description Read a file into an indexed array, one element per line.
@@ -118,26 +118,26 @@ fs_append_line() {
 # @exitcode 0 Success
 # @exitcode 1 File not found or not readable
 fs_read_lines() {
-  local arr_name path
-  arr_name="FS_LINES"
+  local _arr_name _path
+  _arr_name="FS_LINES"
 
   if [[ "${1}" = "-n" ]]; then
-    arr_name="${2:?fs_read_lines: -n requires an array name}"
+    _arr_name="${2:?fs_read_lines: -n requires an array name}"
     shift 2
   fi
 
-  path="${1:?fs_read_lines: path argument required}"
+  _path="${1:?fs_read_lines: _path argument required}"
 
-  if [[ ! -f "${path}" ]]; then
-    printf -- '%s\n' "fs_read_lines: not a file: ${path}" >&2
+  if [[ ! -f "${_path}" ]]; then
+    printf -- '%s\n' "fs_read_lines: not a file: ${_path}" >&2
     return 1
   fi
-  if [[ ! -r "${path}" ]]; then
-    printf -- '%s\n' "fs_read_lines: permission denied: ${path}" >&2
+  if [[ ! -r "${_path}" ]]; then
+    printf -- '%s\n' "fs_read_lines: permission denied: ${_path}" >&2
     return 1
   fi
 
-  local -n _fs_read_lines_target="${arr_name}"
+  local -n _fs_read_lines_target="${_arr_name}"
   # shellcheck disable=SC2034
-  mapfile -t _fs_read_lines_target < "${path}"
+  mapfile -t _fs_read_lines_target < "${_path}"
 }

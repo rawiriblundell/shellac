@@ -29,12 +29,12 @@ _SHELLAC_LOADED_net_download=1
 # @exitcode 0 Download succeeded
 # @exitcode 1 Download failed
 net_download() {
-  local remote_target local_target
-  remote_target="${1:?No target specified}"
-  remote_target="$(curl "${remote_target}" -s -L -I -o /dev/null -w '%{url_effective}')"
-  local_target="${remote_target##*/}"
-  printf -- '%s\n' "Attempting to download ${remote_target}..."
-  curl -- "${remote_target}" -o "${local_target}" || return 1
+  local _remote_target _local_target
+  _remote_target="${1:?No target specified}"
+  _remote_target="$(curl "${_remote_target}" -s -L -I -o /dev/null -w '%{url_effective}')"
+  _local_target="${_remote_target##*/}"
+  printf -- '%s\n' "Attempting to download ${_remote_target}..."
+  curl -- "${_remote_target}" -o "${_local_target}" || return 1
 }
 
 # @description Download the best release of a SourceForge project for the current
@@ -50,50 +50,50 @@ net_download() {
 # @exitcode 0 Success
 # @exitcode 1 Missing dependency or download failure
 net_download_sourceforge() {
-  local binary fail_count
-  fail_count=0
-  for binary in curl jq; do
-    if ! command -v "${binary}" >/dev/null 2>&1; then
-      printf -- '%s\n' "${binary} is required but was not found in PATH" >&2
-      (( fail_count++ ))
+  local _binary _fail_count
+  _fail_count=0
+  for _binary in curl jq; do
+    if ! command -v "${_binary}" >/dev/null 2>&1; then
+      printf -- '%s\n' "${_binary} is required but was not found in PATH" >&2
+      (( _fail_count++ ))
     fi
   done
-  (( fail_count > 0 )) && return 1
+  (( _fail_count > 0 )) && return 1
 
-  local sf_proj os_str curl_opts curl_target element remote_target
-  local linux_src mac_src win_src
-  sf_proj="${1:?No sourceforge project defined}"
-  os_str="${2:-auto}"
-  curl_opts=( -s -L -I -o /dev/null -w '%{url_effective}' )
+  local _sf_proj _os_str _curl_opts _curl_target _element _remote_target
+  local _linux_src _mac_src _win_src
+  _sf_proj="${1:?No sourceforge project defined}"
+  _os_str="${2:-auto}"
+  _curl_opts=( -s -L -I -o /dev/null -w '%{url_effective}' )
 
   mapfile -t < <(
-    curl -s "https://sourceforge.net/projects/${sf_proj}/best_release.json" |
+    curl -s "https://sourceforge.net/projects/${_sf_proj}/best_release.json" |
       jq -r '.platform_releases[].url'
   )
 
   # shellcheck disable=SC2068
-  for element in ${MAPFILE[@]}; do
-    case "${element}" in
-      (*[lL]inux*)           linux_src="${element}" ;;
-      (*[mM]ac*|*[dD]arwin*) mac_src="${element}" ;;
-      (*[wW]in*)             win_src="${element}" ;;
+  for _element in ${MAPFILE[@]}; do
+    case "${_element}" in
+      (*[lL]inux*)           _linux_src="${_element}" ;;
+      (*[mM]ac*|*[dD]arwin*) _mac_src="${_element}" ;;
+      (*[wW]in*)             _win_src="${_element}" ;;
     esac
   done
 
-  case "${os_str}" in
-    ([lL]inux) curl_target="${linux_src}" ;;
-    ([mM]ac*)  curl_target="${mac_src}" ;;
-    ([wW]in*)  curl_target="${win_src}" ;;
+  case "${_os_str}" in
+    ([lL]inux) _curl_target="${_linux_src}" ;;
+    ([mM]ac*)  _curl_target="${_mac_src}" ;;
+    ([wW]in*)  _curl_target="${_win_src}" ;;
     (auto)
       case "$(uname)" in
-        (Linux)      curl_target="${linux_src}" ;;
-        (Darwin)     curl_target="${mac_src}" ;;
-        (Win*|*WIN*) curl_target="${win_src}" ;;
+        (Linux)      _curl_target="${_linux_src}" ;;
+        (Darwin)     _curl_target="${_mac_src}" ;;
+        (Win*|*WIN*) _curl_target="${_win_src}" ;;
       esac
     ;;
   esac
 
-  remote_target="$(curl "${curl_opts[@]}" "${curl_target}")"
-  printf -- '%s\n' "Attempting to download ${remote_target}..."
-  curl -O "${remote_target}" || return 1
+  _remote_target="$(curl "${_curl_opts[@]}" "${_curl_target}")"
+  printf -- '%s\n' "Attempting to download ${_remote_target}..."
+  curl -O "${_remote_target}" || return 1
 }

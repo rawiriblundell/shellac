@@ -33,16 +33,16 @@ _SHELLAC_LOADED_goodies_tui_prompts=1
 # @stdout User's input (or default)
 # @exitcode 0 Always
 tui_input() {
-  local prompt default reply
-  prompt="${1:-Input}"
-  default="${2:-}"
-  if [[ -n "${default}" ]]; then
-    printf -- '%s [%s]: ' "${prompt}" "${default}" >&2
+  local _prompt _default _reply
+  _prompt="${1:-Input}"
+  _default="${2:-}"
+  if [[ -n "${_default}" ]]; then
+    printf -- '%s [%s]: ' "${_prompt}" "${_default}" >&2
   else
-    printf -- '%s: ' "${prompt}" >&2
+    printf -- '%s: ' "${_prompt}" >&2
   fi
-  read -r reply
-  printf -- '%s\n' "${reply:-${default}}"
+  read -r _reply
+  printf -- '%s\n' "${_reply:-${_default}}"
 }
 
 # @description Prompt the user for a yes/no confirmation.
@@ -58,17 +58,17 @@ tui_input() {
 #
 # @exitcode 0 Yes; 1 No
 tui_confirm() {
-  local question default prompt reply
-  question="${1:-Confirm?}"
-  default="${2:-n}"
-  case "${default,,}" in
-    (y|yes) prompt="${question} [Y/n]: " ;;
-    (*)     prompt="${question} [y/N]: " ;;
+  local _question _default _prompt _reply
+  _question="${1:-Confirm?}"
+  _default="${2:-n}"
+  case "${_default,,}" in
+    (y|yes) _prompt="${_question} [Y/n]: " ;;
+    (*)     _prompt="${_question} [y/N]: " ;;
   esac
-  printf -- '%s' "${prompt}" >&2
-  read -r reply
-  reply="${reply:-${default}}"
-  case "${reply,,}" in
+  printf -- '%s' "${_prompt}" >&2
+  read -r _reply
+  _reply="${_reply:-${_default}}"
+  case "${_reply,,}" in
     (y|yes) return 0 ;;
     (*)     return 1 ;;
   esac
@@ -85,27 +85,27 @@ tui_confirm() {
 # @stdout The chosen item
 # @exitcode 0 Valid choice made; 1 No items provided
 tui_list() {
-  local prompt choice num i
-  prompt="${1:-Choose}"
+  local _prompt _choice _num _i
+  _prompt="${1:-Choose}"
   shift
   (( ${#} == 0 )) && { printf -- '%s\n' "tui_list: no items provided" >&2; return 1; }
 
   local -a items
   items=( "${@}" )
-  local count="${#items[@]}"
+  local _count="${#items[@]}"
 
-  i=1
+  _i=1
   for item in "${items[@]}"; do
-    printf -- '  %d) %s\n' "${i}" "${item}" >&2
-    (( i += 1 ))
+    printf -- '  %d) %s\n' "${_i}" "${item}" >&2
+    (( _i += 1 ))
   done
 
   while true; do
-    printf -- '%s [1-%d]: ' "${prompt}" "${count}" >&2
-    read -r choice
-    printf -- '%d' "${choice}" >/dev/null 2>&1 || continue
-    (( choice >= 1 && choice <= count )) || continue
-    printf -- '%s\n' "${items[$(( choice - 1 ))]}"
+    printf -- '%s [1-%d]: ' "${_prompt}" "${_count}" >&2
+    read -r _choice
+    printf -- '%d' "${_choice}" >/dev/null 2>&1 || continue
+    (( _choice >= 1 && _choice <= _count )) || continue
+    printf -- '%s\n' "${items[$(( _choice - 1 ))]}"
     return 0
   done
 }
@@ -122,8 +122,8 @@ tui_list() {
 # @stdout Space-separated selected items
 # @exitcode 0 Always (empty string if nothing selected)
 tui_checkbox() {
-  local prompt i idx result
-  prompt="${1:-Select (space to toggle, enter to confirm)}"
+  local _prompt _i _idx _result
+  _prompt="${1:-Select (space to toggle, enter to confirm)}"
   shift
   (( ${#} == 0 )) && { printf -- '%s\n' "tui_checkbox: no items provided" >&2; return 1; }
 
@@ -131,39 +131,39 @@ tui_checkbox() {
   items=( "${@}" )
   # Initialise all to unchecked
   selected=()
-  for (( i = 0; i < ${#items[@]}; i++ )); do
+  for (( _i = 0; _i < ${#items[@]}; _i++ )); do
     selected+=( 0 )
   done
 
   while true; do
     # Redraw list
-    printf -- '\n%s\n' "${prompt}" >&2
-    for (( i = 0; i < ${#items[@]}; i++ )); do
-      if (( selected[i] )); then
-        printf -- '  [x] %d) %s\n' "$(( i + 1 ))" "${items[i]}" >&2
+    printf -- '\n%s\n' "${_prompt}" >&2
+    for (( _i = 0; _i < ${#items[@]}; _i++ )); do
+      if (( selected[_i] )); then
+        printf -- '  [x] %d) %s\n' "$(( _i + 1 ))" "${items[_i]}" >&2
       else
-        printf -- '  [ ] %d) %s\n' "$(( i + 1 ))" "${items[i]}" >&2
+        printf -- '  [ ] %d) %s\n' "$(( _i + 1 ))" "${items[_i]}" >&2
       fi
     done
     printf -- 'Number to toggle, or Enter to confirm: ' >&2
-    read -r choice
+    read -r _choice
     # Empty input = confirm
-    [[ -z "${choice}" ]] && break
-    printf -- '%d' "${choice}" >/dev/null 2>&1 || continue
-    (( choice >= 1 && choice <= ${#items[@]} )) || continue
-    idx=$(( choice - 1 ))
-    if (( selected[idx] )); then
-      selected[idx]=0
+    [[ -z "${_choice}" ]] && break
+    printf -- '%d' "${_choice}" >/dev/null 2>&1 || continue
+    (( _choice >= 1 && _choice <= ${#items[@]} )) || continue
+    _idx=$(( _choice - 1 ))
+    if (( selected[_idx] )); then
+      selected[_idx]=0
     else
-      selected[idx]=1
+      selected[_idx]=1
     fi
   done
 
-  result=''
-  for (( i = 0; i < ${#items[@]}; i++ )); do
-    (( selected[i] )) && result="${result:+${result} }${items[i]}"
+  _result=''
+  for (( _i = 0; _i < ${#items[@]}; _i++ )); do
+    (( selected[_i] )) && _result="${_result:+${_result} }${items[_i]}"
   done
-  printf -- '%s\n' "${result}"
+  printf -- '%s\n' "${_result}"
 }
 
 # @description Prompt for a password (input hidden).
@@ -173,12 +173,12 @@ tui_checkbox() {
 # @stdout The entered password
 # @exitcode 0 Always
 tui_password() {
-  local prompt reply
-  prompt="${1:-Password}"
-  printf -- '%s: ' "${prompt}" >&2
-  read -r -s reply
+  local _prompt _reply
+  _prompt="${1:-Password}"
+  printf -- '%s: ' "${_prompt}" >&2
+  read -r -s _reply
   printf -- '\n' >&2
-  printf -- '%s\n' "${reply}"
+  printf -- '%s\n' "${_reply}"
 }
 
 # @description Prompt for an integer within a range.
@@ -194,18 +194,18 @@ tui_password() {
 # @stdout Chosen integer
 # @exitcode 0 Always
 tui_range() {
-  local prompt lo hi default reply
-  prompt="${1:-Enter a number}"
-  lo="${2:-0}"
-  hi="${3:-100}"
-  default="${4:-${lo}}"
+  local _prompt _lo _hi _default _reply
+  _prompt="${1:-Enter a number}"
+  _lo="${2:-0}"
+  _hi="${3:-100}"
+  _default="${4:-${_lo}}"
 
   while true; do
-    printf -- '%s [%d-%d] (default %d): ' "${prompt}" "${lo}" "${hi}" "${default}" >&2
-    read -r reply
-    reply="${reply:-${default}}"
-    printf -- '%d' "${reply}" >/dev/null 2>&1 || continue
-    (( reply >= lo && reply <= hi )) && break
+    printf -- '%s [%d-%d] (_default %d): ' "${_prompt}" "${_lo}" "${_hi}" "${_default}" >&2
+    read -r _reply
+    _reply="${_reply:-${_default}}"
+    printf -- '%d' "${_reply}" >/dev/null 2>&1 || continue
+    (( _reply >= _lo && _reply <= _hi )) && break
   done
-  printf -- '%d\n' "${reply}"
+  printf -- '%d\n' "${_reply}"
 }

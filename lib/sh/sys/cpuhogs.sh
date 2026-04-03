@@ -27,21 +27,21 @@ _SHELLAC_LOADED_sys_cpuhogs=1
 
 # @internal
 _cpuhogs_print_fmt() {
-    local print_fmt wrap_limit
+    local _print_fmt _wrap_limit
 
     case "${1}" in
-        (green)  print_fmt='\e[1;32m%s\t%4.2f%%\t%-s\e[0m\n'; shift 1 ;;
-        (yellow) print_fmt='\e[1;33m%s\t%4.2f%%\t%s\e[0m\n'; shift 1 ;;
-        (red)    print_fmt='\e[1;31m%s\t%4.2f%%\t%s\e[0m\n'; shift 1 ;;
-        (*)      print_fmt='%s\t%4.2f%%\t%s\n' ;;
+        (green)  _print_fmt='\e[1;32m%s\t%4.2f%%\t%-s\e[0m\n'; shift 1 ;;
+        (yellow) _print_fmt='\e[1;33m%s\t%4.2f%%\t%s\e[0m\n'; shift 1 ;;
+        (red)    _print_fmt='\e[1;31m%s\t%4.2f%%\t%s\e[0m\n'; shift 1 ;;
+        (*)      _print_fmt='%s\t%4.2f%%\t%s\n' ;;
     esac
 
     # Override if we're not being run interactively
-    [[ -t 1 ]] || print_fmt='%s\t%4.2f%%\t%s\n'
+    [[ -t 1 ]] || _print_fmt='%s\t%4.2f%%\t%s\n'
 
     # Print using the format that we've settled on
     # shellcheck disable=SC2059
-    printf -- "${print_fmt}" "${@}"
+    printf -- "${_print_fmt}" "${@}"
 }
 
 # @description List processes sorted by CPU usage, colour-coded by percentage.
@@ -54,40 +54,40 @@ _cpuhogs_print_fmt() {
 # @stdout Table of PID, CPU%, and command name
 # @exitcode 0 Always
 cpuhogs() {
-    local wrap_limit pid cpu cmd lines cpu_use
+    local _wrap_limit _pid _cpu _cmd _lines _cpu_use
     # Capture the width of the terminal window
-    wrap_limit="${COLUMNS:-$(tput cols)}"
+    _wrap_limit="${COLUMNS:-$(tput cols)}"
     # If we still don't have an answer, default to 80 columns
-    wrap_limit="${wrap_limit:-80}"
+    _wrap_limit="${_wrap_limit:-80}"
     # Subtract plenty of space for the pid and percentage output
-    wrap_limit="$(( wrap_limit - 26 ))"
+    _wrap_limit="$(( _wrap_limit - 26 ))"
 
     # Try to factor for a line count similar to 'head' or 'tail'
     case "${1}" in
     (-n)
-        printf -- '%d' "${2}" >/dev/null 2>&1 && lines="${2}"
+        printf -- '%d' "${2}" >/dev/null 2>&1 && _lines="${2}"
     ;;
     (*)
-        printf -- '%d' "${1}" >/dev/null 2>&1 && lines="${1}"
+        printf -- '%d' "${1}" >/dev/null 2>&1 && _lines="${1}"
     ;;
     esac
 
     # Loop through and parse the output of 'ps'
-    while read -r pid cpu cmd; do
+    while read -r _pid _cpu _cmd; do
         # Truncate $cmd so that it doesn't wrap multiple lines
-        (( ${#cmd} > wrap_limit )) && cmd="${cmd:0:$wrap_limit}..."
+        (( ${#_cmd} > _wrap_limit )) && _cmd="${_cmd:0:$_wrap_limit}..."
 
         # Truncate the float so that we have an integer to compare to
-        cpu_use="${cpu%%.*}"
+        _cpu_use="${_cpu%%.*}"
         # If we're over 20%, then print in red
-        if (( cpu_use >= 20 )); then
-            _cpuhogs_print_fmt red "${pid}" "${cpu}" "${cmd}"
+        if (( _cpu_use >= 20 )); then
+            _cpuhogs_print_fmt red "${_pid}" "${_cpu}" "${_cmd}"
         # Likewise, if we're over 10%, then print in yellow
-        elif (( cpu_use >= 10 )); then
-            _cpuhogs_print_fmt yellow "${pid}" "${cpu}" "${cmd}"
+        elif (( _cpu_use >= 10 )); then
+            _cpuhogs_print_fmt yellow "${_pid}" "${_cpu}" "${_cmd}"
         # Otherwise, print in green
         else
-            _cpuhogs_print_fmt green "${pid}" "${cpu}" "${cmd}"
+            _cpuhogs_print_fmt green "${_pid}" "${_cpu}" "${_cmd}"
         fi
-    done < <(ps -eo pid,%cpu,cmd --sort=%cpu | tail -n +2 | tail -n "${lines:-10}")
+    done < <(ps -eo _pid,%_cpu,_cmd --sort=%_cpu | tail -n +2 | tail -n "${_lines:-10}")
 }

@@ -39,39 +39,39 @@ _SHELLAC_LOADED_crypto_ssl_cert_split=1
 # @exitcode 0 Success
 # @exitcode 1 File not found, not readable, no certificates found, or output dir error
 ssl_cert_split() {
-  local bundle prefix outdir cert_count
-  bundle="${1:?ssl_cert_split: bundle file argument required}"
-  prefix="${2:-cert}"
-  outdir="${3:-.}"
+  local _bundle _prefix _outdir _cert_count
+  _bundle="${1:?ssl_cert_split: _bundle file argument required}"
+  _prefix="${2:-cert}"
+  _outdir="${3:-.}"
 
-  if [[ ! -f "${bundle}" ]]; then
-    printf -- '%s\n' "ssl_cert_split: not a file: ${bundle}" >&2
+  if [[ ! -f "${_bundle}" ]]; then
+    printf -- '%s\n' "ssl_cert_split: not a file: ${_bundle}" >&2
     return 1
   fi
-  if [[ ! -r "${bundle}" ]]; then
-    printf -- '%s\n' "ssl_cert_split: permission denied: ${bundle}" >&2
-    return 1
-  fi
-
-  cert_count=$(grep -c -- '-BEGIN CERTIFICATE-' "${bundle}" 2>/dev/null)
-  if (( cert_count == 0 )); then
-    printf -- '%s\n' "ssl_cert_split: no PEM certificates found in ${bundle}" >&2
+  if [[ ! -r "${_bundle}" ]]; then
+    printf -- '%s\n' "ssl_cert_split: permission denied: ${_bundle}" >&2
     return 1
   fi
 
-  if [[ ! -d "${outdir}" ]]; then
-    if ! mkdir -p "${outdir}"; then
-      printf -- '%s\n' "ssl_cert_split: could not create output directory: ${outdir}" >&2
+  _cert_count=$(grep -c -- '-BEGIN CERTIFICATE-' "${_bundle}" 2>/dev/null)
+  if (( _cert_count == 0 )); then
+    printf -- '%s\n' "ssl_cert_split: no PEM certificates found in ${_bundle}" >&2
+    return 1
+  fi
+
+  if [[ ! -d "${_outdir}" ]]; then
+    if ! mkdir -p "${_outdir}"; then
+      printf -- '%s\n' "ssl_cert_split: could not create output directory: ${_outdir}" >&2
       return 1
     fi
   fi
 
-  awk -v prefix="${outdir}/${prefix}" \
+  awk -v _prefix="${_outdir}/${_prefix}" \
     '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/{
        if (/BEGIN/) { n++ }
-       out = sprintf("%s%02d.pem", prefix, n)
+       out = sprintf("%s%02d.pem", _prefix, n)
        print > out
-     }' "${bundle}"
+     }' "${_bundle}"
 
-  printf -- '%d certificates extracted\n' "${cert_count}"
+  printf -- '%d certificates extracted\n' "${_cert_count}"
 }

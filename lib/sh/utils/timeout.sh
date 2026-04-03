@@ -34,7 +34,7 @@ command -v timeout >/dev/null 2>&1 && return 0
 # @exitcode 1 Invalid duration argument
 # @exitcode 77 Command timed out (perl path only)
 timeout() {
-  local duration
+  local _duration
 
   # $# should be at least 1, if not, print a usage message
   if (( $# == 0 )); then
@@ -58,16 +58,16 @@ timeout() {
       return 1
     ;;
     (*m)
-      duration="${1//[!0-9]/}"; duration=$(( duration * 60 ))
+      _duration="${1//[!0-9]/}"; _duration=$(( _duration * 60 ))
     ;;
     (*h)
-      duration="${1//[!0-9]/}"; duration=$(( duration * 60 * 60 ))
+      _duration="${1//[!0-9]/}"; _duration=$(( _duration * 60 * 60 ))
     ;;
     (*d)
-      duration="${1//[!0-9]/}"; duration=$(( duration * 60 * 60 * 24 ))
+      _duration="${1//[!0-9]/}"; _duration=$(( _duration * 60 * 60 * 24 ))
     ;;
     (*)
-      duration="${1//[!0-9]/}"
+      _duration="${1//[!0-9]/}"
     ;;
   esac
   # shift so that the rest of the line is the command to execute
@@ -76,7 +76,7 @@ timeout() {
   # If 'perl' is available, it has a few pretty good one-line options
   # see: http://stackoverflow.com/q/601543
   if command -v perl >/dev/null 2>&1; then
-    perl -e '$s = shift; $SIG{ALRM} = sub { kill INT => $p; exit 77 }; exec(@ARGV) unless $p = fork; alarm $s; waitpid $p, 0; exit ($? >> 8)' "${duration}" "$@"
+    perl -e '$s = shift; $SIG{ALRM} = sub { kill INT => $p; exit 77 }; exec(@ARGV) unless $p = fork; alarm $s; waitpid $p, 0; exit ($? >> 8)' "${_duration}" "$@"
     #perl -MPOSIX -e '$SIG{ALRM} = sub { kill(SIGTERM, -$$); }; alarm shift; $exit = system @ARGV; exit(WIFEXITED($exit) ? WEXITSTATUS($exit) : WTERMSIG($exit));' "$@"
 
   # Otherwise we offer a shell based failover.
@@ -89,7 +89,7 @@ timeout() {
 
       # Avoid default notification in non-interactive shell for SIGTERM
       trap -- "" SIGTERM
-      ( sleep "${duration}"
+      ( sleep "${_duration}"
         kill "${child}"
       ) 2> /dev/null &
 

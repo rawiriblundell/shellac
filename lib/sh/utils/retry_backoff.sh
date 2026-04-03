@@ -34,27 +34,27 @@ _SHELLAC_LOADED_utils_retry_backoff=1
 #
 # @exitcode 0 Command succeeded within attempts; 1 All attempts failed; 2 Missing command
 cmd_retry_backoff() {
-  local max_attempts attempt wait_secs max_wait
-  max_attempts="${1:-5}"
+  local _max_attempts _attempt _wait_secs _max_wait
+  _max_attempts="${1:-5}"
   shift
   (( ${#} == 0 )) && { printf -- '%s\n' "cmd_retry_backoff: missing command" >&2; return 2; }
-  max_wait="${SHELLAC_RETRY_MAX_WAIT:-60}"
+  _max_wait="${SHELLAC_RETRY_MAX_WAIT:-60}"
 
-  attempt=1
-  wait_secs=1
-  while (( attempt <= max_attempts )); do
+  _attempt=1
+  _wait_secs=1
+  while (( _attempt <= _max_attempts )); do
     if "${@}"; then
       return 0
     fi
-    if (( attempt < max_attempts )); then
-      printf -- '%s\n' "cmd_retry_backoff: attempt ${attempt}/${max_attempts} failed; retrying in ${wait_secs}s" >&2
-      sleep "${wait_secs}"
-      wait_secs=$(( wait_secs * 2 ))
-      (( wait_secs > max_wait )) && wait_secs="${max_wait}"
+    if (( _attempt < _max_attempts )); then
+      printf -- '%s\n' "cmd_retry_backoff: _attempt ${_attempt}/${_max_attempts} failed; retrying in ${_wait_secs}s" >&2
+      sleep "${_wait_secs}"
+      _wait_secs=$(( _wait_secs * 2 ))
+      (( _wait_secs > _max_wait )) && _wait_secs="${_max_wait}"
     fi
-    (( attempt += 1 ))
+    (( _attempt += 1 ))
   done
-  printf -- '%s\n' "cmd_retry_backoff: command failed after ${max_attempts} attempts: ${*}" >&2
+  printf -- '%s\n' "cmd_retry_backoff: command failed after ${_max_attempts} attempts: ${*}" >&2
   return 1
 }
 
@@ -69,24 +69,24 @@ cmd_retry_backoff() {
 #
 # @exitcode 0 Command succeeded; 1 All attempts failed; 2 Missing command
 cmd_retry_constant() {
-  local max_attempts wait_secs attempt
-  max_attempts="${1:-5}"
-  wait_secs="${2:-5}"
+  local _max_attempts _wait_secs _attempt
+  _max_attempts="${1:-5}"
+  _wait_secs="${2:-5}"
   shift 2
   (( ${#} == 0 )) && { printf -- '%s\n' "cmd_retry_constant: missing command" >&2; return 2; }
 
-  attempt=1
-  while (( attempt <= max_attempts )); do
+  _attempt=1
+  while (( _attempt <= _max_attempts )); do
     if "${@}"; then
       return 0
     fi
-    if (( attempt < max_attempts )); then
-      printf -- '%s\n' "cmd_retry_constant: attempt ${attempt}/${max_attempts} failed; retrying in ${wait_secs}s" >&2
-      sleep "${wait_secs}"
+    if (( _attempt < _max_attempts )); then
+      printf -- '%s\n' "cmd_retry_constant: _attempt ${_attempt}/${_max_attempts} failed; retrying in ${_wait_secs}s" >&2
+      sleep "${_wait_secs}"
     fi
-    (( attempt += 1 ))
+    (( _attempt += 1 ))
   done
-  printf -- '%s\n' "cmd_retry_constant: command failed after ${max_attempts} attempts: ${*}" >&2
+  printf -- '%s\n' "cmd_retry_constant: command failed after ${_max_attempts} attempts: ${*}" >&2
   return 1
 }
 
@@ -102,26 +102,26 @@ cmd_retry_constant() {
 #
 # @exitcode 0 Command succeeded; 1 Timeout reached; 2 Missing command
 cmd_retry_until() {
-  local timeout interval deadline now attempt
+  local _timeout _interval _deadline _now _attempt
   if (( ${#} == 0 )); then
-    printf -- '%s\n' "cmd_retry_until: missing timeout argument" >&2
+    printf -- '%s\n' "cmd_retry_until: missing _timeout argument" >&2
     return 2
   fi
-  timeout="${1}"
-  interval="${2:-5}"
+  _timeout="${1}"
+  _interval="${2:-5}"
   (( $# >= 2 )) && shift 2 || shift 1
   (( ${#} == 0 )) && { printf -- '%s\n' "cmd_retry_until: missing command" >&2; return 2; }
 
-  deadline=$(( $(date +%s) + timeout ))
-  attempt=1
-  while (( $(date +%s) < deadline )); do
+  _deadline=$(( $(date +%s) + _timeout ))
+  _attempt=1
+  while (( $(date +%s) < _deadline )); do
     if "${@}"; then
       return 0
     fi
-    printf -- '%s\n' "cmd_retry_until: attempt ${attempt} failed; retrying in ${interval}s" >&2
-    sleep "${interval}"
-    (( attempt += 1 ))
+    printf -- '%s\n' "cmd_retry_until: _attempt ${_attempt} failed; retrying in ${_interval}s" >&2
+    sleep "${_interval}"
+    (( _attempt += 1 ))
   done
-  printf -- '%s\n' "cmd_retry_until: timed out after ${timeout}s: ${*}" >&2
+  printf -- '%s\n' "cmd_retry_until: timed out after ${_timeout}s: ${*}" >&2
   return 1
 }

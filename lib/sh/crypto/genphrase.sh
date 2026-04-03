@@ -35,7 +35,7 @@ secrets_genphrase() {
   # shuf:         printf -- '%s\n' "$(shuf -n 3 ~/.pwords.dict | tr -d "\n")"
   # perl:         printf -- '%s\n' "perl -nle '$word = $_ if rand($.) < 1; END { print $word }' ~/.pwords.dict"
   # sed:          printf "$s\n" "sed -n $((RANDOM%$(wc -l < ~/.pwords.dict)+1))p ~/.pwords.dict"
-  # python:       printf -- '%s\n' "$(python -c 'import random, sys; print("".join(random.sample(sys.stdin.readlines(), "${phrase_words}")).rstrip("\n"))' < ~/.pwords.dict | tr -d "\n")"
+  # python:       printf -- '%s\n' "$(python -c 'import random, sys; print("".join(random.sample(sys.stdin.readlines(), "${_phrase_words}")).rstrip("\n"))' < ~/.pwords.dict | tr -d "\n")"
   # oawk/nawk:    printf -- '%s\n' "$(for i in {1..3}; do sed -n "$(echo "$RANDOM" $(wc -l <~/.pwords.dict) | awk '{ printf("%.0f\n",(1.0 * $1/32768 * $2)+1) }')p" ~/.pwords.dict; done | tr -d "\n")"
   # gawk:         printf -- '%s\n' "$(awk 'BEGIN{ srand(systime() + PROCINFO["pid"]); } { printf( "%.5f %s\n", rand(), $0); }' ~/.pwords.dict | sort -k 1n,1 | sed 's/^[^ ]* //' | head -3 | tr -d "\n")"
   # sort -R:      printf -- '%s\n' "$(sort -R ~/.pwords.dict | head -3 | tr -d "\n")"
@@ -60,30 +60,30 @@ secrets_genphrase() {
   fi
 
   # localise our vars for safety
-  local OPTIND  phrase_words phrase_num phrase_seed phrase_seed_doc seed_word total_words
+  local OPTIND  _phrase_words _phrase_num _phrase_seed _phrase_seed_doc _seed_word _total_words
 
   # Default the vars
-  phrase_words=3
-  phrase_num=1
-  phrase_seed="False"
-  phrase_seed_doc="False"
-  seed_word=
+  _phrase_words=3
+  _phrase_num=1
+  _phrase_seed="False"
+  _phrase_seed_doc="False"
+  _seed_word=
 
   while getopts ":hn:s:Sw:" Flags; do
     case "${Flags}" in
       (h)  printf -- '%s\n' "" "genphrase - a basic passphrase generator" \
              "" "Optional Arguments:" \
              "-h [help]" \
-             "-n [number of passphrases to generate (Default:${phrase_num})]" \
+             "-n [number of passphrases to generate (Default:${_phrase_num})]" \
              "-s [seed your own word.  Use 'genphrase -S' to read about this option.]" \
              "-S [explanation for the word seeding option: -s]" \
-             "-w [number of random words to use (Default:${phrase_words})]" ""
+             "-w [number of random words to use (Default:${_phrase_words})]" ""
            return 0;;
-      (n)  phrase_num="${OPTARG}";;
-      (s)  phrase_seed="True"
-           seed_word="[${OPTARG}]";;
-      (S)  phrase_seed_doc="True";;
-      (w)  phrase_words="${OPTARG}";;
+      (n)  _phrase_num="${OPTARG}";;
+      (s)  _phrase_seed="True"
+           _seed_word="[${OPTARG}]";;
+      (S)  _phrase_seed_doc="True";;
+      (w)  _phrase_words="${OPTARG}";;
       (\?)  printf -- '%s\n' "ERROR: Invalid option: '-${OPTARG}'.  Try 'genphrase -h' for usage." >&2
             return 1;;
       (:)  printf -- '%s\n' "Option '-${OPTARG}' requires an argument. e.g. '-${OPTARG} 10'" >&2
@@ -92,7 +92,7 @@ secrets_genphrase() {
   done
   
   # If -S is selected, print out the documentation for word seeding
-  if [[ "${phrase_seed_doc}" = "True" ]]; then
+  if [[ "${_phrase_seed_doc}" = "True" ]]; then
     printf -- '%s\n' \
     "======================================================================" \
     "genphrase and the -s option: Why you would want to seed your own word?" \
@@ -130,13 +130,13 @@ secrets_genphrase() {
   fi
   
   # Next test if a word is being seeded in
-  if [[ "${phrase_seed}" = "True" ]]; then
+  if [[ "${_phrase_seed}" = "True" ]]; then
     # If so, make space for the seed word
-    ((phrase_words = phrase_words - 1))
+    ((_phrase_words = _phrase_words - 1))
   fi
 
   # Calculate the total number of words we might process
-  total_words=$(( phrase_words * phrase_num ))
+  _total_words=$(( _phrase_words * _phrase_num ))
   
   # Now generate the passphrase(s)
   # First we test to see if shuf is available.  This should now work with the
@@ -147,19 +147,19 @@ secrets_genphrase() {
     if (( BASH_VERSINFO >= 4 )); then
       # Basically we're using shuf and awk to generate lines of random words
       # and assigning each line to an array element
-      mapfile -t wordArray < <(shuf -n "${total_words}" ~/.pwords.dict | awk -v w="${phrase_words}" 'ORS=NR%w?FS:RS')
+      mapfile -t wordArray < <(shuf -n "${_total_words}" ~/.pwords.dict | awk -v w="${_phrase_words}" 'ORS=NR%w?FS:RS')
     # This older method should be ok for this particular usage,
     # but otherwise is not a direct replacement for mapfile
     # See: http://mywiki.wooledge.org/BashFAQ/005#Loading_lines_from_a_file_or_stream
     else
-      IFS=$'\n' read -d '' -r -a wordArray < <(shuf -n "${total_words}" ~/.pwords.dict | awk -v w="${phrase_words}" 'ORS=NR%w?FS:RS')
+      IFS=$'\n' read -d '' -r -a wordArray < <(shuf -n "${_total_words}" ~/.pwords.dict | awk -v w="${_phrase_words}" 'ORS=NR%w?FS:RS')
     fi
 
     # Iterate through each line of the array
     for line in "${wordArray[@]}"; do
       # Convert the line to an array of its own and add any seed word
       # shellcheck disable=SC2206
-      lineArray=( "${seed_word}" ${line} )
+      lineArray=( "${_seed_word}" ${line} )
       if (( BASH_VERSINFO >= 4 )); then
         shuf -e "${lineArray[@]^}"
       else
@@ -180,25 +180,25 @@ secrets_genphrase() {
     if command -v mapfile >/dev/null 2>&1; then
       # Create two arrays, one with all the words, and one with a bunch of random numbers
       mapfile -t dictArray < ~/.pwords.dict
-      mapfile -t numArray < <(rand -M "${#dictArray[@]}" -r -N "${total_words}")
+      mapfile -t numArray < <(rand -M "${#dictArray[@]}" -r -N "${_total_words}")
     # Otherwise we take the classic approach
     else
       read -d '' -r -a dictArray < ~/.pwords.dict
-      read -d '' -r -a numArray < <(rand -M "${#dictArray[@]}" -r -N "${total_words}")
+      read -d '' -r -a numArray < <(rand -M "${#dictArray[@]}" -r -N "${_total_words}")
     fi
 
     # Setup the following vars for iterating through and slicing up 'numArray'
     loWord=0
-    hiWord=$(( phrase_words - 1 ))
+    hiWord=$(( _phrase_words - 1 ))
 
     # Now start working our way through both arrays
-    while (( hiWord <= total_words )); do
+    while (( hiWord <= _total_words )); do
       # Group all the following output
       {
         # We print out a random number with each word, this allows us to sort
         # all of the output, which randomises the location of any seed word
-        printf -- '%s\n' "${RANDOM} ${seed_word}"
-        for randInt in "${numArray[@]:loWord:phrase_words}"; do
+        printf -- '%s\n' "${RANDOM} ${_seed_word}"
+        for randInt in "${numArray[@]:loWord:_phrase_words}"; do
           if (( BASH_VERSINFO >= 4 )); then
             printf -- '%s\n' "${RANDOM} ${dictArray[randInt]^}"
           else
@@ -210,7 +210,7 @@ secrets_genphrase() {
       # Iterate our boundary vars up and loop again until completion
       # shellcheck disable=SC2034
       loWord=$(( hiWord + 1 ))
-      hiWord=$(( hiWord + phrase_words ))
+      hiWord=$(( hiWord + _phrase_words ))
     done
   fi
 }

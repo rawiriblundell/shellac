@@ -271,12 +271,12 @@ str_ucwords() {
 # @stdout Title-cased string
 # @exitcode 0 Always
 str_title_case() {
-  local input
+  local _input
   if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
-    IFS= read -r input
+    IFS= read -r _input
   else
-    input="${1:-}"
+    _input="${1:-}"
   fi
-  [[ -z "${input}" ]] && return 0
-  printf -- '%s\n' "${input^}" | sed 's/_\([a-z]\)/ \u\1/g'
+  [[ -z "${_input}" ]] && return 0
+  printf -- '%s\n' "${_input^}" | sed 's/_\([a-z]\)/ \u\1/g'
 }

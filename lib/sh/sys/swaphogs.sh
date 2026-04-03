@@ -33,31 +33,31 @@ _SHELLAC_LOADED_sys_swaphogs=1
 
 # @internal
 _swaphogs_get_proc_info() {
-  local file
+  local _file
   {
-      for file in /proc/*/status; do
-        awk '/^Pid|VmSwap|Name/{printf $2 " "}END{ print ""}' "${file}" 2>/dev/null
+      for _file in /proc/*/status; do
+        awk '/^Pid|VmSwap|Name/{printf $2 " "}END{ print ""}' "${_file}" 2>/dev/null
       done
   } | sort -k 3 -n | tail -n "${1:-10}"
 }
 
 # @internal
 _swaphogs_print_fmt() {
-    local print_fmt wrap_limit
+    local _print_fmt _wrap_limit
 
     case "${1}" in
-        (green)  print_fmt='\e[1;32m%s\t%4.2f%%\t%-s\e[0m\n'; shift 1 ;;
-        (yellow) print_fmt='\e[1;33m%s\t%4.2f%%\t%s\e[0m\n'; shift 1 ;;
-        (red)    print_fmt='\e[1;31m%s\t%4.2f%%\t%s\e[0m\n'; shift 1 ;;
-        (*)      print_fmt='%s\t%4.2f%%\t%s\n' ;;
+        (green)  _print_fmt='\e[1;32m%s\t%4.2f%%\t%-s\e[0m\n'; shift 1 ;;
+        (yellow) _print_fmt='\e[1;33m%s\t%4.2f%%\t%s\e[0m\n'; shift 1 ;;
+        (red)    _print_fmt='\e[1;31m%s\t%4.2f%%\t%s\e[0m\n'; shift 1 ;;
+        (*)      _print_fmt='%s\t%4.2f%%\t%s\n' ;;
     esac
 
     # Override if we're not being run interactively
-    [[ -t 1 ]] || print_fmt='%s\t%4.2f%%\t%s\n'
+    [[ -t 1 ]] || _print_fmt='%s\t%4.2f%%\t%s\n'
 
     # Print using the format that we've settled on
     # shellcheck disable=SC2059
-    printf -- "${print_fmt}" "${@}"
+    printf -- "${_print_fmt}" "${@}"
 }
 
 # @description List processes sorted by swap usage, colour-coded by percentage.
@@ -70,13 +70,13 @@ _swaphogs_print_fmt() {
 # @stdout Table of PID, swap%, and command name
 # @exitcode 0 Always
 swaphogs() {
-  local wrap_limit swap swap_pct _swaphogs_swap_total lines swap_int cmd pid
+  local _wrap_limit _swap _swap_pct _swaphogs_swap_total _lines _swap_int _cmd _pid
   # Capture the width of the terminal window
-  wrap_limit="${COLUMNS:-$(tput cols)}"
+  _wrap_limit="${COLUMNS:-$(tput cols)}"
   # If we still don't have an answer, default to 80 columns
-  wrap_limit="${wrap_limit:-80}"
+  _wrap_limit="${_wrap_limit:-80}"
   # Subtract plenty of space for the pid and percentage output
-  wrap_limit="$(( wrap_limit - 26 ))"
+  _wrap_limit="$(( _wrap_limit - 26 ))"
 
   # Get our total swap
   _swaphogs_swap_total=$(
@@ -87,38 +87,38 @@ swaphogs() {
   # Try to factor for a line count similar to 'head' or 'tail'
   case "${1}" in
     (-n)
-      printf -- '%d' "${2}" >/dev/null 2>&1 && lines="${2}"
+      printf -- '%d' "${2}" >/dev/null 2>&1 && _lines="${2}"
     ;;
     (*)
-      printf -- '%d' "${1}" >/dev/null 2>&1 && lines="${1}"
+      printf -- '%d' "${1}" >/dev/null 2>&1 && _lines="${1}"
     ;;
   esac
 
-  while read -r cmd pid swap; do
+  while read -r _cmd _pid _swap; do
     # Truncate $cmd so that it doesn't wrap multiple lines
     # /proc/*/status files almost always do this already FWIW
-    (( ${#cmd} > wrap_limit )) && cmd="${cmd:0:$wrap_limit}..."
+    (( ${#_cmd} > _wrap_limit )) && _cmd="${_cmd:0:$_wrap_limit}..."
 
     # Calculate the percentage of swap being used
     # This case statement prevents divide-by-0
-    case "${swap}" in
+    case "${_swap}" in
       ('') continue ;;
-      (0)  swap_pct=0 ;;
-      (*)  swap_pct="$(awk '{printf "%0.2f", ($1 / $2) * 100}' <<< "${swap} ${_swaphogs_swap_total}")" ;;
+      (0)  _swap_pct=0 ;;
+      (*)  _swap_pct="$(awk '{printf "%0.2f", ($1 / $2) * 100}' <<< "${_swap} ${_swaphogs_swap_total}")" ;;
     esac
 
     # Truncate the float so that we have an integer to compare to
-    swap_int="${swap_pct%%.*}"
+    _swap_int="${_swap_pct%%.*}"
 
     # If we're over 20%, then print in red
-    if (( swap_int >= 20 )); then
-        _swaphogs_print_fmt red "${pid}" "${swap_pct}" "${cmd}"
+    if (( _swap_int >= 20 )); then
+        _swaphogs_print_fmt red "${_pid}" "${_swap_pct}" "${_cmd}"
     # Likewise, if we're over 10%, then print in yellow
-    elif (( swap_int >= 10 )); then
-        _swaphogs_print_fmt yellow "${pid}" "${swap_pct}" "${cmd}"
+    elif (( _swap_int >= 10 )); then
+        _swaphogs_print_fmt yellow "${_pid}" "${_swap_pct}" "${_cmd}"
     # Otherwise, print in green
     else
-        _swaphogs_print_fmt green "${pid}" "${swap_pct}" "${cmd}"
+        _swaphogs_print_fmt green "${_pid}" "${_swap_pct}" "${_cmd}"
     fi
-  done < <(_swaphogs_get_proc_info "${lines}")
+  done < <(_swaphogs_get_proc_info "${_lines}")
 }

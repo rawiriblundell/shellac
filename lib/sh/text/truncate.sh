@@ -38,21 +38,21 @@ _SHELLAC_LOADED_text_truncate=1
 # @stdout Truncated string (no trailing newline)
 # @exitcode 0 Always
 str_truncate() {
-  local ellipsis
-  local length
-  local text
-  ellipsis=0
+  local _ellipsis
+  local _length
+  local _text
+  _ellipsis=0
   if [[ "${1:-}" = "-e" ]]; then
-    ellipsis=1
+    _ellipsis=1
     shift
   fi
-  length="${1}"
+  _length="${1}"
   shift
-  text="$*"
-  if (( ${#text} > length && ellipsis == 1 )); then
-    printf -- '%s' "${text:0:$(( length - 3 ))}..."
+  _text="$*"
+  if (( ${#_text} > _length && _ellipsis == 1 )); then
+    printf -- '%s' "${_text:0:$(( _length - 3 ))}..."
   else
-    printf -- '%s' "${text:0:${length}}"
+    printf -- '%s' "${_text:0:${_length}}"
   fi
 }
 text_truncate() { str_truncate "${@}"; }

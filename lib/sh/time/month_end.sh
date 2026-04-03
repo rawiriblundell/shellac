@@ -27,10 +27,10 @@ _SHELLAC_LOADED_time_month_end=1
 # @stdout Last day of the current month in YYYY-MM-DD format
 # @exitcode 0 Always
 time_month_end() {
-    local date_int
-    date_int=$(date +%Y%m27)
+    local _date_int
+    _date_int=$(date +%Y%m27)
     for (( i=0; i<4; i++ )); do
-        date_int=$(( date_int + 1 ))
-        date -d "${date_int}" "+%Y-%m-%d" 2>/dev/null
+        _date_int=$(( _date_int + 1 ))
+        date -d "${_date_int}" "+%Y-%m-%d" 2>/dev/null
     done | tail -n 1
 }

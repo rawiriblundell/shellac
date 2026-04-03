@@ -27,11 +27,11 @@ _SHELLAC_LOADED_time_date_arithmetic=1
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_add_days() {
-  local timestamp day
+  local _timestamp _day
   (( ${#} == 0 )) && { printf -- '%s\n' "time_add_days: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  day="${2:-1}"
-  printf -- '%s\n' "$(( timestamp + day * 86400 ))"
+  _timestamp="${1}"
+  _day="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp + _day * 86400 ))"
 }
 
 # @description Add N weeks to a Unix timestamp.
@@ -40,11 +40,11 @@ time_add_days() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_add_weeks() {
-  local timestamp week
+  local _timestamp _week
   (( ${#} == 0 )) && { printf -- '%s\n' "time_add_weeks: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  week="${2:-1}"
-  printf -- '%s\n' "$(( timestamp + week * 604800 ))"
+  _timestamp="${1}"
+  _week="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp + _week * 604800 ))"
 }
 
 # @description Add N months to a Unix timestamp.
@@ -53,12 +53,12 @@ time_add_weeks() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_add_months() {
-  local timestamp month new_timestamp
+  local _timestamp _month _new_timestamp
   (( ${#} == 0 )) && { printf -- '%s\n' "time_add_months: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  month="${2:-1}"
-  new_timestamp="$(date -d "$(date -d "@${timestamp}" '+%F %T') +${month} month" +'%s')" || return 1
-  printf -- '%s\n' "${new_timestamp}"
+  _timestamp="${1}"
+  _month="${2:-1}"
+  _new_timestamp="$(date -d "$(date -d "@${_timestamp}" '+%F %T') +${_month} month" +'%s')" || return 1
+  printf -- '%s\n' "${_new_timestamp}"
 }
 
 # @description Add N years to a Unix timestamp.
@@ -67,12 +67,12 @@ time_add_months() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_add_years() {
-  local timestamp year new_timestamp
+  local _timestamp _year _new_timestamp
   (( ${#} == 0 )) && { printf -- '%s\n' "time_add_years: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  year="${2:-1}"
-  new_timestamp="$(date -d "$(date -d "@${timestamp}" '+%F %T') +${year} year" +'%s')" || return 1
-  printf -- '%s\n' "${new_timestamp}"
+  _timestamp="${1}"
+  _year="${2:-1}"
+  _new_timestamp="$(date -d "$(date -d "@${_timestamp}" '+%F %T') +${_year} year" +'%s')" || return 1
+  printf -- '%s\n' "${_new_timestamp}"
 }
 
 # @description Add N hours to a Unix timestamp.
@@ -81,11 +81,11 @@ time_add_years() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_add_hours() {
-  local timestamp hour
+  local _timestamp _hour
   (( ${#} == 0 )) && { printf -- '%s\n' "time_add_hours: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  hour="${2:-1}"
-  printf -- '%s\n' "$(( timestamp + hour * 3600 ))"
+  _timestamp="${1}"
+  _hour="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp + _hour * 3600 ))"
 }
 
 # @description Add N minutes to a Unix timestamp.
@@ -94,11 +94,11 @@ time_add_hours() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_add_minutes() {
-  local timestamp minute
+  local _timestamp _minute
   (( ${#} == 0 )) && { printf -- '%s\n' "time_add_minutes: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  minute="${2:-1}"
-  printf -- '%s\n' "$(( timestamp + minute * 60 ))"
+  _timestamp="${1}"
+  _minute="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp + _minute * 60 ))"
 }
 
 # @description Add N seconds to a Unix timestamp.
@@ -107,11 +107,11 @@ time_add_minutes() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_add_seconds() {
-  local timestamp second
+  local _timestamp _second
   (( ${#} == 0 )) && { printf -- '%s\n' "time_add_seconds: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  second="${2:-1}"
-  printf -- '%s\n' "$(( timestamp + second ))"
+  _timestamp="${1}"
+  _second="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp + _second ))"
 }
 
 # @description Subtract N days from a Unix timestamp.
@@ -120,11 +120,11 @@ time_add_seconds() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_sub_days() {
-  local timestamp day
+  local _timestamp _day
   (( ${#} == 0 )) && { printf -- '%s\n' "time_sub_days: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  day="${2:-1}"
-  printf -- '%s\n' "$(( timestamp - day * 86400 ))"
+  _timestamp="${1}"
+  _day="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp - _day * 86400 ))"
 }
 
 # @description Subtract N weeks from a Unix timestamp.
@@ -133,11 +133,11 @@ time_sub_days() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_sub_weeks() {
-  local timestamp week
+  local _timestamp _week
   (( ${#} == 0 )) && { printf -- '%s\n' "time_sub_weeks: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  week="${2:-1}"
-  printf -- '%s\n' "$(( timestamp - week * 604800 ))"
+  _timestamp="${1}"
+  _week="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp - _week * 604800 ))"
 }
 
 # @description Subtract N months from a Unix timestamp.
@@ -146,12 +146,12 @@ time_sub_weeks() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_sub_months() {
-  local timestamp month new_timestamp
+  local _timestamp _month _new_timestamp
   (( ${#} == 0 )) && { printf -- '%s\n' "time_sub_months: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  month="${2:-1}"
-  new_timestamp="$(date -d "$(date -d "@${timestamp}" '+%F %T') ${month} months ago" +'%s')" || return 1
-  printf -- '%s\n' "${new_timestamp}"
+  _timestamp="${1}"
+  _month="${2:-1}"
+  _new_timestamp="$(date -d "$(date -d "@${_timestamp}" '+%F %T') ${_month} months ago" +'%s')" || return 1
+  printf -- '%s\n' "${_new_timestamp}"
 }
 
 # @description Subtract N years from a Unix timestamp.
@@ -160,12 +160,12 @@ time_sub_months() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_sub_years() {
-  local timestamp year new_timestamp
+  local _timestamp _year _new_timestamp
   (( ${#} == 0 )) && { printf -- '%s\n' "time_sub_years: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  year="${2:-1}"
-  new_timestamp="$(date -d "$(date -d "@${timestamp}" '+%F %T') ${year} years ago" +'%s')" || return 1
-  printf -- '%s\n' "${new_timestamp}"
+  _timestamp="${1}"
+  _year="${2:-1}"
+  _new_timestamp="$(date -d "$(date -d "@${_timestamp}" '+%F %T') ${_year} years ago" +'%s')" || return 1
+  printf -- '%s\n' "${_new_timestamp}"
 }
 
 # @description Subtract N hours from a Unix timestamp.
@@ -174,11 +174,11 @@ time_sub_years() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_sub_hours() {
-  local timestamp hour
+  local _timestamp _hour
   (( ${#} == 0 )) && { printf -- '%s\n' "time_sub_hours: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  hour="${2:-1}"
-  printf -- '%s\n' "$(( timestamp - hour * 3600 ))"
+  _timestamp="${1}"
+  _hour="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp - _hour * 3600 ))"
 }
 
 # @description Subtract N minutes from a Unix timestamp.
@@ -187,11 +187,11 @@ time_sub_hours() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_sub_minutes() {
-  local timestamp minute
+  local _timestamp _minute
   (( ${#} == 0 )) && { printf -- '%s\n' "time_sub_minutes: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  minute="${2:-1}"
-  printf -- '%s\n' "$(( timestamp - minute * 60 ))"
+  _timestamp="${1}"
+  _minute="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp - _minute * 60 ))"
 }
 
 # @description Subtract N seconds from a Unix timestamp.
@@ -200,11 +200,11 @@ time_sub_minutes() {
 # @stdout New Unix timestamp
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_sub_seconds() {
-  local timestamp second
+  local _timestamp _second
   (( ${#} == 0 )) && { printf -- '%s\n' "time_sub_seconds: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  second="${2:-1}"
-  printf -- '%s\n' "$(( timestamp - second ))"
+  _timestamp="${1}"
+  _second="${2:-1}"
+  printf -- '%s\n' "$(( _timestamp - _second ))"
 }
 
 # @description Format a Unix timestamp as a human-readable string.
@@ -213,10 +213,10 @@ time_sub_seconds() {
 # @stdout Formatted date string
 # @exitcode 0 Success; 1 date error; 2 Missing arguments
 time_format() {
-  local timestamp format out
+  local _timestamp _format _out
   (( ${#} == 0 )) && { printf -- '%s\n' "time_format: missing arguments" >&2; return 2; }
-  timestamp="${1}"
-  format="${2:-%F %T}"
-  out="$(date -d "@${timestamp}" +"${format}")" || return 1
-  printf -- '%s\n' "${out}"
+  _timestamp="${1}"
+  _format="${2:-%F %T}"
+  _out="$(date -d "@${_timestamp}" +"${_format}")" || return 1
+  printf -- '%s\n' "${_out}"
 }

@@ -36,30 +36,30 @@ _SHELLAC_LOADED_utils_timealert=1
 #
 # @exitcode Passthrough — the exit code of the wrapped command
 timealert() {
-  local start end elapsed rc cmd_label
+  local _start _end _elapsed _rc _cmd_label
   (( ${#} == 0 )) && { printf -- '%s\n' "timealert: missing command" >&2; return 1; }
-  cmd_label="${*}"
-  start="$(date +%s)"
+  _cmd_label="${*}"
+  _start="$(date +%s)"
   "${@}"
-  rc=$?
-  end="$(date +%s)"
-  elapsed=$(( end - start ))
-  local days hours mins secs label
-  days=$(( elapsed / 86400 ))
-  elapsed=$(( elapsed % 86400 ))
-  hours=$(( elapsed / 3600 ))
-  elapsed=$(( elapsed % 3600 ))
-  mins=$(( elapsed / 60 ))
-  secs=$(( elapsed % 60 ))
-  if (( days > 0 )); then
-    label="${days}d ${hours}h ${mins}m ${secs}s"
-  elif (( hours > 0 )); then
-    label="${hours}h ${mins}m ${secs}s"
-  elif (( mins > 0 )); then
-    label="${mins}m ${secs}s"
+  _rc=$?
+  _end="$(date +%s)"
+  _elapsed=$(( _end - _start ))
+  local _days _hours _mins _secs _label
+  _days=$(( _elapsed / 86400 ))
+  _elapsed=$(( _elapsed % 86400 ))
+  _hours=$(( _elapsed / 3600 ))
+  _elapsed=$(( _elapsed % 3600 ))
+  _mins=$(( _elapsed / 60 ))
+  _secs=$(( _elapsed % 60 ))
+  if (( _days > 0 )); then
+    _label="${_days}d ${_hours}h ${_mins}m ${_secs}s"
+  elif (( _hours > 0 )); then
+    _label="${_hours}h ${_mins}m ${_secs}s"
+  elif (( _mins > 0 )); then
+    _label="${_mins}m ${_secs}s"
   else
-    label="${secs}s"
+    _label="${_secs}s"
   fi
-  printf -- '[done] %s  (%s)\n' "${cmd_label}" "${label}" >&2
-  return "${rc}"
+  printf -- '[done] %s  (%s)\n' "${_cmd_label}" "${_label}" >&2
+  return "${_rc}"
 }

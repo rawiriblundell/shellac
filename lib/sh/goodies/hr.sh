@@ -58,14 +58,14 @@ hr() {
 # hr() {
 #   case "${1}" in
 #     (bar)
-#       local color width
+#       local _color _width
 #       # Figure out the width of the terminal window
-#       width="$(( "${COLUMNS:-$(tput cols)}" - 6 ))"
+#       _width="$(( "${COLUMNS:-$(tput cols)}" - 6 ))"
 #       # Define our initial color code
-#       color="$(_select_random_color)"
-#       tput setaf "${color}"               # Set our color
+#       _color="$(_select_random_color)"
+#       tput setaf "${_color}"               # Set our color
 #       printf -- '%s' "${blockAsc}"        # Print the ascending block sequence
-#       for (( i=1; i<=width; ++i )); do    # Fill the gap with hard blocks
+#       for (( i=1; i<=_width; ++i )); do    # Fill the gap with hard blocks
 #         printf -- '%b' "${block100}"
 #       done
 #       printf -- '%s\n' "${blockDwn}"      # Print our descending block sequence
@@ -77,8 +77,8 @@ hr() {
 #       printf -- '%*s\n' "${1:-$COLUMNS}" | tr ' ' "${2:-#}"
 #     ;;
 #     (*)
-#       color="$(_select_random_color)"
-#       tput setaf "${color}"
+#       _color="$(_select_random_color)"
+#       tput setaf "${_color}"
 #       # shellcheck disable=SC2183
 #       printf -- '%*s\n' "${1:-$COLUMNS}" | tr ' ' "${2:-#}"
 #       tput sgr0
@@ -108,15 +108,15 @@ mapfile -t ALLOWED_COLORS < <(printf -- '%d\n' {0..255} "${BLOCKED_COLORS[@]}" |
 
 # @internal
 _select_random_color() {
-  local color
+  local _color
   # Define our initial color code
-  color=$(( RANDOM % 255 ))
+  _color=$(( RANDOM % 255 ))
   # Ensure that our color code is an allowed one.  If not, regenerate until it is.
-  until printf -- '%d\n' "${ALLOWED_COLORS[@]}" | grep -xq "${color}"; do
-    color=$(( RANDOM % 255 ))
+  until printf -- '%d\n' "${ALLOWED_COLORS[@]}" | grep -xq "${_color}"; do
+    _color=$(( RANDOM % 255 ))
   done
   # Emit our selected color number
-  printf -- '%d\n' "${color}"
+  printf -- '%d\n' "${_color}"
 }
 
 # @description Print a colored block-character horizontal rule, suitable for PS1 prompts.
@@ -125,14 +125,14 @@ _select_random_color() {
 # @stdout A colored horizontal rule spanning the terminal width minus 6 columns
 # @exitcode 0 Always
 hrps1(){
-  local color width
+  local _color _width
   # Figure out the width of the terminal window
-  width="$(( "${COLUMNS:-$(tput cols)}" - 6 ))"
+  _width="$(( "${COLUMNS:-$(tput cols)}" - 6 ))"
   # Define our initial color code
-  color="$(_select_random_color)"
-  tput setaf "${color}"               # Set our color
+  _color="$(_select_random_color)"
+  tput setaf "${_color}"               # Set our color
   printf -- '%s' "${block_asc}"       # Print the ascending block sequence
-  for (( i=1; i<=width; ++i )); do    # Fill the gap with hard blocks
+  for (( i=1; i<=_width; ++i )); do    # Fill the gap with hard blocks
     printf -- '%b' "${block100}"
   done
   printf -- '%s\n' "${block_dwn}"     # Print our descending block sequence

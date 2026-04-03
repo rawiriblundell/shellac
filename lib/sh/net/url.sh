@@ -28,17 +28,17 @@ _SHELLAC_LOADED_net_url=1
 # @stdout Percent-encoded string
 # @exitcode 0 Always
 url_encode() {
-  local string char encoded i
-  string="${1}"
-  encoded=""
-  for (( i = 0; i < ${#string}; i++ )); do
-    char="${string:i:1}"
-    case "${char}" in
-      ([A-Za-z0-9\-_.~]) encoded+="${char}" ;;
-      (*) encoded+="$(printf '%%%02X' "'${char}")" ;;
+  local _string _char _encoded _i
+  _string="${1}"
+  _encoded=""
+  for (( _i = 0; _i < ${#_string}; _i++ )); do
+    _char="${_string:_i:1}"
+    case "${_char}" in
+      ([A-Za-z0-9\-_.~]) _encoded+="${_char}" ;;
+      (*) _encoded+="$(printf '%%%02X' "'${_char}")" ;;
     esac
   done
-  printf -- '%s\n' "${encoded}"
+  printf -- '%s\n' "${_encoded}"
 }
 
 # @description Decode a percent-encoded URL string.
@@ -49,10 +49,10 @@ url_encode() {
 # @stdout Decoded string
 # @exitcode 0 Always
 url_decode() {
-  local encoded
-  encoded="${1//+/ }"
+  local _encoded
+  _encoded="${1//+/ }"
   # Replace %XX with \xXX then interpret with printf %b
-  printf -- '%b\n' "${encoded//%/\\x}"
+  printf -- '%b\n' "${_encoded//%/\\x}"
 }
 
 # @description Parse a URL query string into key=value lines.
@@ -76,33 +76,33 @@ url_decode() {
 # @exitcode 0 Success
 # @exitcode 2 Missing argument
 url_parse_query() {
-  local arr_name qs pair key value
-  arr_name=""
+  local _arr_name _qs _pair _key _value
+  _arr_name=""
 
   if [[ "${1}" = "-n" ]]; then
-    arr_name="${2:?url_parse_query: -n requires an array name}"
+    _arr_name="${2:?url_parse_query: -n requires an array name}"
     shift 2
   fi
 
-  qs="${1:?url_parse_query: query string argument required}"
+  _qs="${1:?url_parse_query: query _string argument required}"
   # Strip leading '?' if present
-  qs="${qs#\?}"
+  _qs="${_qs#\?}"
 
-  if [[ -n "${arr_name}" ]]; then
-    local -n _url_parse_query_target="${arr_name}"
+  if [[ -n "${_arr_name}" ]]; then
+    local -n _url_parse_query_target="${_arr_name}"
   fi
 
   local IFS='&'
-  for pair in ${qs}; do
-    key="${pair%%=*}"
-    value="${pair#*=}"
-    key=$(url_decode "${key}")
-    value=$(url_decode "${value}")
-    if [[ -n "${arr_name}" ]]; then
+  for _pair in ${_qs}; do
+    _key="${_pair%%=*}"
+    _value="${_pair#*=}"
+    _key=$(url_decode "${_key}")
+    _value=$(url_decode "${_value}")
+    if [[ -n "${_arr_name}" ]]; then
       # shellcheck disable=SC2034
-      _url_parse_query_target["${key}"]="${value}"
+      _url_parse_query_target["${_key}"]="${_value}"
     else
-      printf -- '%s=%s\n' "${key}" "${value}"
+      printf -- '%s=%s\n' "${_key}" "${_value}"
     fi
   done
 }
@@ -116,18 +116,18 @@ url_parse_query() {
 # @exitcode 0 Key found
 # @exitcode 1 Key not found
 url_get_param() {
-  local qs key pair k v
-  qs="${1:?url_get_param: query string argument required}"
-  key="${2:?url_get_param: key argument required}"
-  qs="${qs#\?}"
+  local _qs _key _pair _k _v
+  _qs="${1:?url_get_param: query _string argument required}"
+  _key="${2:?url_get_param: _key argument required}"
+  _qs="${_qs#\?}"
 
   local IFS='&'
-  for pair in ${qs}; do
-    k="${pair%%=*}"
-    v="${pair#*=}"
-    k=$(url_decode "${k}")
-    if [[ "${k}" = "${key}" ]]; then
-      url_decode "${v}"
+  for _pair in ${_qs}; do
+    _k="${_pair%%=*}"
+    _v="${_pair#*=}"
+    _k=$(url_decode "${_k}")
+    if [[ "${_k}" = "${_key}" ]]; then
+      url_decode "${_v}"
       return 0
     fi
   done
@@ -152,16 +152,16 @@ url_get_param() {
 url_build_query() {
   (( ${#} == 0 )) && { printf -- '%s\n' "url_build_query: at least one key=value argument required" >&2; return 1; }
 
-  local pair key value result first
+  local _pair _key _value result _first
   result=""
-  first=1
+  _first=1
 
-  for pair in "${@}"; do
-    key="${pair%%=*}"
-    value="${pair#*=}"
-    (( first )) || result+="&"
-    result+="$(url_encode "${key}")=$(url_encode "${value}")"
-    first=0
+  for _pair in "${@}"; do
+    _key="${_pair%%=*}"
+    _value="${_pair#*=}"
+    (( _first )) || result+="&"
+    result+="$(url_encode "${_key}")=$(url_encode "${_value}")"
+    _first=0
   done
 
   printf -- '%s\n' "${result}"

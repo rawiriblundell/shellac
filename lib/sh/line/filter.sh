@@ -78,10 +78,10 @@ filter_not_last () {
 # @stdout Lines matching the pattern
 # @exitcode 0 Always
 filter_matching () {
-	local pattern
-	expect_args pattern -- "$@"
+	local _pattern
+	expect_args _pattern -- "$@"
 
-	awk '/'"${pattern//\//\\/}"'/ { print }' || return 0
+	awk '/'"${_pattern//\//\\/}"'/ { print }' || return 0
 }
 
 
@@ -92,10 +92,10 @@ filter_matching () {
 # @stdout Lines not matching the pattern
 # @exitcode 0 Always
 filter_not_matching () {
-	local pattern
-	expect_args pattern -- "$@"
+	local _pattern
+	expect_args _pattern -- "$@"
 
-	awk '!/'"${pattern//\//\\/}"'/ { print }' || return 0
+	awk '!/'"${_pattern//\//\\/}"'/ { print }' || return 0
 }
 
 

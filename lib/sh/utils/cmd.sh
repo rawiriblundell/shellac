@@ -35,27 +35,27 @@ _SHELLAC_LOADED_utils_cmd=1
 # @exitcode 0 All specified commands were found
 # @exitcode 1 One or more commands were not found
 cmd_check() {
-  local errcount cmd
+  local _errcount _cmd
   case "${1}" in
     (-v|--verbose)
       shift 1
-      errcount=0
-      for cmd in "${@}"; do
-        command -v "${cmd}" ||
-          { printf -- '%s\n' "${cmd} not found" >&2; (( ++errcount )); }
+      _errcount=0
+      for _cmd in "${@}"; do
+        command -v "${_cmd}" ||
+          { printf -- '%s\n' "${_cmd} not found" >&2; (( ++_errcount )); }
       done
-      (( errcount == 0 )) && return 0
+      (( _errcount == 0 )) && return 0
     ;;
     ('')
       printf -- 'Usage: cmd_check [-v|--verbose] <command> [command...]\n' >&2
       return 0
     ;;
     (*)
-      errcount=0
-      for cmd in "${@}"; do
-        command -v "${cmd}" >/dev/null 2>&1 || (( ++errcount ))
+      _errcount=0
+      for _cmd in "${@}"; do
+        command -v "${_cmd}" >/dev/null 2>&1 || (( ++_errcount ))
       done
-      (( errcount == 0 )) && return 0
+      (( _errcount == 0 )) && return 0
     ;;
   esac
   return 1

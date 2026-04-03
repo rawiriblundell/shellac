@@ -39,28 +39,28 @@ _SHELLAC_LOADED_time_duration=1
 # @stdout Human-readable duration string
 # @exitcode 0 Always
 time_duration() {
-  local secs days hours mins sep
-  sep=" "
+  local _secs _days _hours _mins _sep
+  _sep=" "
   if [[ "${1:-}" = "--compact" ]]; then
-    sep=""
+    _sep=""
     shift
   fi
-  secs="${1:-0}"
-  days=$(( secs / 86400 ))
-  secs=$(( secs % 86400 ))
-  hours=$(( secs / 3600 ))
-  secs=$(( secs % 3600 ))
-  mins=$(( secs / 60 ))
-  secs=$(( secs % 60 ))
+  _secs="${1:-0}"
+  _days=$(( _secs / 86400 ))
+  _secs=$(( _secs % 86400 ))
+  _hours=$(( _secs / 3600 ))
+  _secs=$(( _secs % 3600 ))
+  _mins=$(( _secs / 60 ))
+  _secs=$(( _secs % 60 ))
 
-  if (( days > 0 )); then
-    printf -- "%dd${sep}%dh${sep}%dm${sep}%ds\n" "${days}" "${hours}" "${mins}" "${secs}"
-  elif (( hours > 0 )); then
-    printf -- "%dh${sep}%dm${sep}%ds\n" "${hours}" "${mins}" "${secs}"
-  elif (( mins > 0 )); then
-    printf -- "%dm${sep}%ds\n" "${mins}" "${secs}"
+  if (( _days > 0 )); then
+    printf -- "%dd${_sep}%dh${_sep}%dm${_sep}%ds\n" "${_days}" "${_hours}" "${_mins}" "${_secs}"
+  elif (( _hours > 0 )); then
+    printf -- "%dh${_sep}%dm${_sep}%ds\n" "${_hours}" "${_mins}" "${_secs}"
+  elif (( _mins > 0 )); then
+    printf -- "%dm${_sep}%ds\n" "${_mins}" "${_secs}"
   else
-    printf -- '%ds\n' "${secs}"
+    printf -- '%ds\n' "${_secs}"
   fi
 }
 
@@ -78,10 +78,10 @@ time_duration() {
 # @stdout Elapsed seconds
 # @exitcode 0 Always
 time_diff_seconds() {
-  local start end diff
-  start="${1:?time_diff_seconds: missing start epoch}"
-  end="${2:-$(date +%s)}"
-  diff=$(( end - start ))
-  (( diff < 0 )) && diff=$(( -diff ))
-  printf -- '%d\n' "${diff}"
+  local _start _end _diff
+  _start="${1:?time_diff_seconds: missing _start epoch}"
+  _end="${2:-$(date +%s)}"
+  _diff=$(( _end - _start ))
+  (( _diff < 0 )) && _diff=$(( -_diff ))
+  printf -- '%d\n' "${_diff}"
 }

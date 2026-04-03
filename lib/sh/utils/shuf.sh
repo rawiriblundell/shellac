@@ -35,10 +35,10 @@ command -v shuf >/dev/null 2>&1 && return 0
 # @exitcode 0 Success
 # @exitcode 1 RANDOM not available, conflicting options, or invalid argument
 shuf() {
-  local OPTIND input_range input_strings n_min n_max n_count shuf_array shuf_repeat
+  local OPTIND _input_range _input_strings _n_min _n_max _n_count _shuf_array _shuf_repeat
   local _idx
   local _rand_pos
-  local reservoir_size
+  local _reservoir_size
 
   # Test that $RANDOM is present and functioning as a pseudo-random source.
   # Two reads of $RANDOM should produce different values; a static variable
@@ -52,11 +52,11 @@ shuf() {
 
   while getopts ":e:i:hn:rv:" opt_flags; do
     case "${opt_flags}" in
-      (e) input_strings=true
-          shuf_array=( "${OPTARG}" )
+      (e) _input_strings=true
+          _shuf_array=( "${OPTARG}" )
           until [[ $(eval "printf '%s' \"\${$OPTIND:0:1}\"") = "-" ]] || [[ -z $(eval "printf '%s' \"\${$OPTIND}\"") ]]; do
             # shellcheck disable=SC2207
-            shuf_array+=($(eval "printf '%s' \"\${$OPTIND}\""))
+            _shuf_array+=($(eval "printf '%s' \"\${$OPTIND}\""))
             OPTIND=$((OPTIND + 1))
           done;;
       (h)  printf -- '%s\n' "" "shuf - generate random permutations" \
@@ -69,12 +69,12 @@ shuf() {
               "  -r, repeat               Output lines can be repeated" \
               "  -v, version.             Print the version information" ""
             return 0;;
-      (i) input_range=true
-          n_min="${OPTARG%-*}"
-          n_max="${OPTARG##*-}"
+      (i) _input_range=true
+          _n_min="${OPTARG%-*}"
+          _n_max="${OPTARG##*-}"
           ;;
-      (n) n_count="${OPTARG}";;
-      (r) shuf_repeat=true;;
+      (n) _n_count="${OPTARG}";;
+      (r) _shuf_repeat=true;;
       (v)  printf -- '%s\n' "shuf.  This is a bashrc function knockoff that steps in if the real 'shuf' is not found."
            return 0;;
       (\?)  printf -- '%s\n' "shuf: invalid option -- '-$OPTARG'." \
@@ -88,48 +88,48 @@ shuf() {
 
   # Handle -e and -i options.  They shouldn't be together because we can't
   # understand their love.  -e is handled later on in the script
-  if [[ "${input_range}" = "true" ]] && [[ "${input_strings}" == "true" ]]; then
+  if [[ "${_input_range}" = "true" ]] && [[ "${_input_strings}" == "true" ]]; then
     printf -- '%s\n' "shuf: cannot combine -e and -i options" >&2
     return 1
   fi
 
   # Default the reservoir size
   # This number was unscientifically chosen using "feels right" technology
-  reservoir_size=4096
+  _reservoir_size=4096
 
   # If we're dealing with a file, feed that into file descriptor 6
   if [[ -r "${1}" ]]; then
-    # Size it up first and adjust n_count if necessary
-    if [[ -n "${n_count}" ]] && (( $(wc -l < "${1}") < n_count )); then
-      n_count=$(wc -l < "${1}")
+    # Size it up first and adjust _n_count if necessary
+    if [[ -n "${_n_count}" ]] && (( $(wc -l < "${1}") < _n_count )); then
+      _n_count=$(wc -l < "${1}")
     fi
     exec 6< "${1}"
   # Cater for the -i option
-  elif [[ "${input_range}" = "true" ]]; then
+  elif [[ "${_input_range}" = "true" ]]; then
     # If an input range is provided and repeats are ok, then simply call random_int:
-    if [[ "${shuf_repeat}" = "true" ]] && (( n_max <= 32767 )); then
-      random_int "${n_count:-$n_max}" "${n_min}" "${n_max}"
+    if [[ "${_shuf_repeat}" = "true" ]] && (( _n_max <= 32767 )); then
+      random_int "${_n_count:-$_n_max}" "${_n_min}" "${_n_max}"
       return "$?"
     # Otherwise, print a complete range to fd6 for later processing
     else
-      exec 6< <(eval "printf -- '%d\\n' {$n_min..$n_max}")
+      exec 6< <(eval "printf -- '%d\\n' {$_n_min..$_n_max}")
     fi
-  # If we're dealing with -e, we already have shuf_array
-  elif [[ "${input_strings}" = "true" ]]; then
-    # First, adjust n_count as appropriate
-    if [[ -z "${n_count}" ]] || (( n_count > "${#shuf_array[@]}" )); then
-      n_count="${#shuf_array[@]}"
+  # If we're dealing with -e, we already have _shuf_array
+  elif [[ "${_input_strings}" = "true" ]]; then
+    # First, adjust _n_count as appropriate
+    if [[ -z "${_n_count}" ]] || (( _n_count > "${#_shuf_array[@]}" )); then
+      _n_count="${#_shuf_array[@]}"
     fi
     # If repeats are ok, just get it over and done with
-    if [[ "${shuf_repeat}" = "true" ]] && (( n_count <= 32767 )); then
-      for _idx in $(random_int "${n_count}" 1 "${#shuf_array[@]}"); do
+    if [[ "${_shuf_repeat}" = "true" ]] && (( _n_count <= 32767 )); then
+      for _idx in $(random_int "${_n_count}" 1 "${#_shuf_array[@]}"); do
         (( _idx-- ))
-        printf -- '%s\n' "${shuf_array[_idx]}"
+        printf -- '%s\n' "${_shuf_array[_idx]}"
       done
       return "$?"
-    # Otherwise, dump shuf_array into fd6
+    # Otherwise, dump _shuf_array into fd6
     else
-      exec 6< <(printf -- '%s\n' "${shuf_array[@]}")
+      exec 6< <(printf -- '%s\n' "${_shuf_array[@]}")
     fi
   # If none of the above things are in use, then we assume stdin
   else
@@ -138,10 +138,10 @@ shuf() {
 
   # If we reach this point, then we need to setup our output filtering
   # We use this over a conventional loop, because loops are very slow
-  # So, if n_count is defined, we pipe all output to 'head -n'
+  # So, if _n_count is defined, we pipe all output to 'head -n'
   # Otherwise, we simply stream via `cat` as an overglorified no-op
-  if [[ -n "${n_count}" ]]; then
-    head_out() { head -n "${n_count}"; }
+  if [[ -n "${_n_count}" ]]; then
+    head_out() { head -n "${_n_count}"; }
   else
     head_out() { cat -; }
   fi
@@ -152,17 +152,17 @@ shuf() {
     set -f
 
     # Suck up as much input as required or possible into the reservoir
-    mapfile -u 6 -n "${n_count:-$reservoir_size}" -t shuf_array
+    mapfile -u 6 -n "${_n_count:-$_reservoir_size}" -t _shuf_array
 
     # If there's more input, we start selecting random points in
     # the reservoir to evict and replace with incoming data
-    _idx="${#shuf_array[@]}"
+    _idx="${#_shuf_array[@]}"
     while IFS=$'\n' read -r -u 6; do
       _rand_pos=$(random_int 1 1 "$_idx")
       (( _rand_pos-- ))
-      if (( _rand_pos < ${#shuf_array[@]} )); then
-        printf -- '%s\n' "${shuf_array[_rand_pos]}"
-        shuf_array[_rand_pos]="${REPLY}"
+      if (( _rand_pos < ${#_shuf_array[@]} )); then
+        printf -- '%s\n' "${_shuf_array[_rand_pos]}"
+        _shuf_array[_rand_pos]="${REPLY}"
       else
         printf -- '%s\n' "${REPLY}"
       fi
@@ -171,14 +171,14 @@ shuf() {
 
     # At this point we very likely have something left in the reservoir
     # so we shuffle it out.  This is effectively Satollo's algorithm
-    while (( ${#shuf_array[@]} > 0 )); do
-      _rand_pos=$(random_int 1 1 "${#shuf_array[@]}")
+    while (( ${#_shuf_array[@]} > 0 )); do
+      _rand_pos=$(random_int 1 1 "${#_shuf_array[@]}")
       (( _rand_pos-- ))
-      if (( _rand_pos < ${#shuf_array[@]} )) && [[ -n "${shuf_array[_rand_pos]}" ]]; then
-        printf -- '%s\n' "${shuf_array[_rand_pos]}"
-        unset -- 'shuf_array[_rand_pos]'
+      if (( _rand_pos < ${#_shuf_array[@]} )) && [[ -n "${_shuf_array[_rand_pos]}" ]]; then
+        printf -- '%s\n' "${_shuf_array[_rand_pos]}"
+        unset -- '_shuf_array[_rand_pos]'
         # shellcheck disable=SC2206
-        shuf_array=( "${shuf_array[@]}" )
+        _shuf_array=( "${_shuf_array[@]}" )
       fi
     done
     set +f

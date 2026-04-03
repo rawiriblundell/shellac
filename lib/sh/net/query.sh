@@ -61,24 +61,24 @@ net_query_ip() {
 # @exitcode 0 Success
 # @exitcode 1 IPINFO_TOKEN not set
 net_query_ipinfo() {
-  local target mode country
+  local _target _mode _country
   (( "${#IPINFO_TOKEN}" == 0 )) && {
     printf -- '%s\n' "IPINFO_TOKEN not found in the environment" >&2
     return 1
   }
   while (( $# > 0 )); do
     case "${1}" in
-      (-b|--brief) mode=brief; shift 1 ;;
-      (*)          target="${1}"; shift 1 ;;
+      (-b|--brief) _mode=brief; shift 1 ;;
+      (*)          _target="${1}"; shift 1 ;;
     esac
   done
-  case "${mode}" in
+  case "${_mode}" in
     (brief)
-      country=$(curl -s "https://ipinfo.io/${target}/country?token=${IPINFO_TOKEN}")
-      printf -- '%s: %s\n' "${target}" "${country}"
+      _country=$(curl -s "https://ipinfo.io/${_target}/_country?token=${IPINFO_TOKEN}")
+      printf -- '%s: %s\n' "${_target}" "${_country}"
     ;;
     (*)
-      curl -s "https://ipinfo.io/${target}?token=${IPINFO_TOKEN}"
+      curl -s "https://ipinfo.io/${_target}?token=${IPINFO_TOKEN}"
     ;;
   esac
 }
@@ -113,9 +113,9 @@ net_query_as_numbers() {
 # @stdout whois output with blank/comment lines stripped
 # @exitcode 0 Always
 net_query_asn_attr() {
-  local as_num
-  for as_num in "${@:?No AS number supplied}"; do
-    whois -H -h riswhois.ripe.net -- -F -K -i "${as_num}" | grep -Ev '^$|^%|::'
+  local _as_num
+  for _as_num in "${@:?No AS number supplied}"; do
+    whois -H -h riswhois.ripe.net -- -F -K -i "${_as_num}" | grep -Ev '^$|^%|::'
   done
 }
 
@@ -138,79 +138,79 @@ net_query_asn_attr() {
 # Adapted from kvz/bash3boilerplate (MIT) https://github.com/kvz/bash3boilerplate
 # Original author: Kevin van Zonneveld
 net_parse_url() {
-  local url proto userpass user pass hostport host port path need
+  local _url _proto _userpass _user _pass _hostport _host _port _path _need
 
   (( ${#} == 0 )) && { printf -- '%s\n' "net_parse_url: missing argument" >&2; return 2; }
 
-  url="${1}"
-  need="${2:-}"
+  _url="${1}"
+  _need="${2:-}"
 
-  proto=""
-  userpass=""
-  user=""
-  pass=""
-  host=""
-  port=""
-  path=""
+  _proto=""
+  _userpass=""
+  _user=""
+  _pass=""
+  _host=""
+  _port=""
+  _path=""
 
-  if [[ "${url}" = *"://"* ]]; then
-    proto="${url%%://*}://"
-    url="${url#*://}"
+  if [[ "${_url}" = *"://"* ]]; then
+    _proto="${_url%%://*}://"
+    _url="${_url#*://}"
   fi
 
-  if [[ "${url}" = *"@"* ]]; then
-    userpass="${url%%@*}"
-    url="${url#*@}"
+  if [[ "${_url}" = *"@"* ]]; then
+    _userpass="${_url%%@*}"
+    _url="${_url#*@}"
   fi
 
-  hostport="${url%%/*}"
-  if [[ "${url}" = */* ]]; then
-    path="${url#*/}"
+  _hostport="${_url%%/*}"
+  if [[ "${_url}" = */* ]]; then
+    _path="${_url#*/}"
   fi
 
-  if [[ "${userpass}" = *":"* ]]; then
-    user="${userpass%%:*}"
-    pass="${userpass#*:}"
+  if [[ "${_userpass}" = *":"* ]]; then
+    _user="${_userpass%%:*}"
+    _pass="${_userpass#*:}"
   else
-    user="${userpass}"
+    _user="${_userpass}"
   fi
 
-  if [[ "${hostport}" = *":"* ]]; then
-    host="${hostport%%:*}"
-    port="${hostport#*:}"
+  if [[ "${_hostport}" = *":"* ]]; then
+    _host="${_hostport%%:*}"
+    _port="${_hostport#*:}"
   else
-    host="${hostport}"
+    _host="${_hostport}"
   fi
 
-  [[ -z "${user}" ]] && user="${userpass}"
-  [[ -z "${host}" ]] && host="${hostport}"
+  [[ -z "${_user}" ]] && _user="${_userpass}"
+  [[ -z "${_host}" ]] && _host="${_hostport}"
 
-  if [[ -z "${port}" ]]; then
-    case "${proto}" in
-      (http://)  port="80"   ;;
-      (https://) port="443"  ;;
-      (mysql://) port="3306" ;;
-      (redis://) port="6379" ;;
+  if [[ -z "${_port}" ]]; then
+    case "${_proto}" in
+      (http://)  _port="80"   ;;
+      (https://) _port="443"  ;;
+      (mysql://) _port="3306" ;;
+      (redis://) _port="6379" ;;
       (*) ;;
     esac
   fi
 
-  if [[ -n "${need}" ]]; then
-    case "${need}" in
-      (proto|user|pass|host|port|path)
-        printf -- '%s\n' "${!need}"
+  if [[ -n "${_need}" ]]; then
+    case "${_need}" in
+      (_proto|_user|_pass|_host|_port|_path)
+        printf -- '%s\n' "${!_need}"
       ;;
       (*)
-        printf -- 'net_parse_url: unknown field selector: %s\n' "${need}" >&2
+        printf -- 'net_parse_url: unknown field selector: %s\n' "${_need}" >&2
         return 1
       ;;
     esac
   else
-    printf -- 'proto: %s\n' "${proto}"
-    printf -- 'user:  %s\n' "${user}"
-    printf -- 'pass:  %s\n' "${pass}"
-    printf -- 'host:  %s\n' "${host}"
-    printf -- 'port:  %s\n' "${port}"
-    printf -- 'path:  %s\n' "${path}"
+    printf -- '_proto: %s\n' "${_proto}"
+    printf -- '_user:  %s\n' "${_user}"
+    printf -- '_pass:  %s\n' "${_pass}"
+    printf -- '_host:  %s\n' "${_host}"
+    printf -- '_port:  %s\n' "${_port}"
+    printf -- '_path:  %s\n' "${_path}"
   fi
 }

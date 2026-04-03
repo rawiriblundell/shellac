@@ -35,10 +35,10 @@ _SHELLAC_LOADED_crypto_ssl_cert_join=1
 # @exitcode 0 Success
 # @exitcode 1 Missing arguments, unreadable file, or invalid PEM certificate
 ssl_cert_join() {
-  local outfile cert
+  local _outfile _cert
 
   if [[ "${1}" = "-o" ]]; then
-    outfile="${2:?ssl_cert_join: -o requires an output file path}"
+    _outfile="${2:?ssl_cert_join: -o requires an output file path}"
     shift 2
   fi
 
@@ -48,23 +48,23 @@ ssl_cert_join() {
   fi
 
   # Validate all inputs before writing any output
-  for cert in "${@}"; do
-    if [[ ! -f "${cert}" ]]; then
-      printf -- '%s\n' "ssl_cert_join: not a file: ${cert}" >&2
+  for _cert in "${@}"; do
+    if [[ ! -f "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_cert_join: not a file: ${_cert}" >&2
       return 1
     fi
-    if [[ ! -r "${cert}" ]]; then
-      printf -- '%s\n' "ssl_cert_join: permission denied: ${cert}" >&2
+    if [[ ! -r "${_cert}" ]]; then
+      printf -- '%s\n' "ssl_cert_join: permission denied: ${_cert}" >&2
       return 1
     fi
-    if ! openssl x509 -noout -in "${cert}" 2>/dev/null; then
-      printf -- '%s\n' "ssl_cert_join: not a valid PEM certificate: ${cert}" >&2
+    if ! openssl x509 -noout -in "${_cert}" 2>/dev/null; then
+      printf -- '%s\n' "ssl_cert_join: not a valid PEM certificate: ${_cert}" >&2
       return 1
     fi
   done
 
-  if [[ -n "${outfile}" ]]; then
-    cat -- "${@}" > "${outfile}"
+  if [[ -n "${_outfile}" ]]; then
+    cat -- "${@}" > "${_outfile}"
   else
     cat -- "${@}"
   fi

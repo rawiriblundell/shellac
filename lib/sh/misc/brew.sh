@@ -30,8 +30,8 @@ _SHELLAC_LOADED_misc_brew=1
 # @exitcode 0 All packages are installed
 # @exitcode 1 One or more packages are not installed, or brew is not found
 brew_is_installed() {
-  local failcount
-  failcount=0
+  local _failcount
+  _failcount=0
   if ! command -v brew >/dev/null 2>&1; then
     printf -- '%s\n' "This script requires brew on a mac.  This wasn't found..." >&2
     return 1
@@ -41,8 +41,8 @@ brew_is_installed() {
       printf -- '%s\n' "${brew_pkg} appears to be installed"
     else
       printf -- '%s\n' "${brew_pkg} is not installed"
-      (( failcount++ ))
+      (( _failcount++ ))
     fi
   done
-  (( failcount > 0 )) && return 1
+  (( _failcount > 0 )) && return 1
 }

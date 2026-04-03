@@ -109,13 +109,13 @@ net_ip() {
   return 1
 }
 
-# @description Get the default gateway address. Optionally scoped to a specific
+# @description Get the default _gateway address. Optionally scoped to a specific
 #   interface. Tries 'ip route', then 'netstat', then 'route' in order.
 #   Handles Linux and Solaris differences via OSSTR.
 #
-# @arg $1 string Optional: interface name for per-interface gateway lookup
+# @arg $1 string Optional: interface name for per-interface _gateway lookup
 #
-# @stdout The gateway IP, 'none' if no route exists, or 'unknown' if indeterminate
+# @stdout The _gateway IP, 'none' if no route exists, or 'unknown' if indeterminate
 # @exitcode 0 On success or 'none' sentinel
 # @exitcode 1 When interface specified but 'ip' is unavailable
 net_gateway() {
@@ -136,7 +136,7 @@ net_gateway() {
     return 1
   fi
 
-  # Global gateway lookup
+  # Global _gateway lookup
   if command -v ip >/dev/null 2>&1; then
     _get_gwaddr=$(ip route show | awk '/^default|^0.0.0.0/{ print $3 }')
   fi
@@ -158,13 +158,13 @@ net_gateway() {
 
 # @internal Normalise a MAC address to XX-YY-ZZ-AA-BB-CC format (uppercase).
 _sanitise_mac_addr() {
-  local raw_mac octet
-  raw_mac="${1:?No MAC data}"
-  for octet in ${raw_mac}; do
-    if (( ${#octet} == 1 )); then
-      printf -- '0%s-' "${octet}"
+  local _raw_mac _octet
+  _raw_mac="${1:?No MAC data}"
+  for _octet in ${_raw_mac}; do
+    if (( ${#_octet} == 1 )); then
+      printf -- '0%s-' "${_octet}"
     else
-      printf -- '%s-' "${octet}"
+      printf -- '%s-' "${_octet}"
     fi
   done | tr '[:lower:]' '[:upper:]' | cut -d- -f1-6
 }
@@ -181,95 +181,95 @@ _sanitise_mac_addr() {
 # @stdout The MAC address in XX-YY-ZZ-AA-BB-CC format
 # @exitcode 0 Always
 net_mac() {
-  local mac_addr raw_mac _iface
+  local _mac_addr _raw_mac _iface
   _iface="${1:-}"
 
   if [[ -n "${_iface}" ]]; then
     if command -v ip >/dev/null 2>&1; then
-      mac_addr=$(ip -brief link show dev "${_iface}" 2>/dev/null | awk '{print $3}' | tr ':' '-')
+      _mac_addr=$(ip -brief link show dev "${_iface}" 2>/dev/null | awk '{print $3}' | tr ':' '-')
     elif command -v ifconfig >/dev/null 2>&1; then
-      mac_addr=$(ifconfig "${_iface}" 2>/dev/null | awk '$0 ~ /HWaddr/ {print $5}' | tr ':' '-')
-      if [[ -z "${mac_addr}" ]]; then
-        mac_addr=$(ifconfig "${_iface}" 2>/dev/null | awk '$0 ~ /ether/ {print $2; exit}' | tr ':' '-')
+      _mac_addr=$(ifconfig "${_iface}" 2>/dev/null | awk '$0 ~ /HWaddr/ {print $5}' | tr ':' '-')
+      if [[ -z "${_mac_addr}" ]]; then
+        _mac_addr=$(ifconfig "${_iface}" 2>/dev/null | awk '$0 ~ /ether/ {print $2; exit}' | tr ':' '-')
       fi
     fi
-    printf -- '%s\n' "${mac_addr:--}"
+    printf -- '%s\n' "${_mac_addr:--}"
     return 0
   fi
 
   # No interface specified: primary UP interface
   if command -v ip >/dev/null 2>&1; then
-    mac_addr=$(ip -brief link | awk '$2 == "UP" {print $3; exit}' | tr ":" "-")
+    _mac_addr=$(ip -brief link | awk '$2 == "UP" {print $3; exit}' | tr ":" "-")
   elif command -v ifconfig >/dev/null 2>&1; then
-    mac_addr=$(ifconfig | awk '$0 ~ /HWaddr/ {print $5}' | tr ":" "-" | head -n 1)
+    _mac_addr=$(ifconfig | awk '$0 ~ /HWaddr/ {print $5}' | tr ":" "-" | head -n 1)
     # If we're here, then we might have a different ifconfig output format.  Yay.
-    if [[ -z "${mac_addr}" ]]; then
-      mac_addr=$(ifconfig | awk '$0 ~ /ether/ {print $2; exit}' | tr ":" "-")
+    if [[ -z "${_mac_addr}" ]]; then
+      _mac_addr=$(ifconfig | awk '$0 ~ /ether/ {print $2; exit}' | tr ":" "-")
     fi
   # Solaris
   elif command -v dladm >/dev/null 2>&1; then
-    mac_addr=$(dladm show-linkprop -p mac-address | awk '/^LINK/{print $4; exit}' | tr ":" " ")
+    _mac_addr=$(dladm show-linkprop -p mac-address | awk '/^LINK/{print $4; exit}' | tr ":" " ")
   elif arp "$(hostname)" >/dev/null 2>&1; then
-    raw_mac=$(arp "$(hostname)" | awk '{ print $4 }' | tr ":" " ")
-    mac_addr=$(_sanitise_mac_addr "${raw_mac}")
+    _raw_mac=$(arp "$(hostname)" | awk '{ print $4 }' | tr ":" " ")
+    _mac_addr=$(_sanitise_mac_addr "${_raw_mac}")
   fi
-  printf -- '%s\n' "${mac_addr}"
+  printf -- '%s\n' "${_mac_addr}"
 }
 
 # @internal Check if an interface is a loopback device.
 _net_nics_is_loopback() {
-  local iface iftype
-  iface="${1:?}"
-  if [[ -r "/sys/class/net/${iface}/type" ]]; then
-    iftype=$(< "/sys/class/net/${iface}/type")
-    (( iftype == 772 )) && return 0
+  local _iface _iftype
+  _iface="${1:?}"
+  if [[ -r "/sys/class/net/${_iface}/type" ]]; then
+    _iftype=$(< "/sys/class/net/${_iface}/type")
+    (( _iftype == 772 )) && return 0
   fi
   if command -v ip >/dev/null 2>&1; then
-    ip link show dev "${iface}" 2>/dev/null | grep -q 'LOOPBACK' && return 0
+    ip link show dev "${_iface}" 2>/dev/null | grep -q 'LOOPBACK' && return 0
   fi
   return 1
 }
 
 # @internal Check if an interface is backed by physical hardware.
 _net_nics_is_physical() {
-  local iface
-  iface="${1:?}"
-  [[ -e "/sys/class/net/${iface}/device" ]]
+  local _iface
+  _iface="${1:?}"
+  [[ -e "/sys/class/net/${_iface}/device" ]]
 }
 
-# @internal List interface names. Skips loopback unless include_all=1.
+# @internal List interface names. Skips loopback unless _include_all=1.
 _net_nics_list() {
-  local include_all iface
-  include_all="${1:-0}"
+  local _include_all _iface
+  _include_all="${1:-0}"
 
   if [[ -d /sys/class/net ]]; then
-    for iface in /sys/class/net/*/; do
-      iface="${iface%/}"
-      iface="${iface##*/}"
-      if (( include_all == 0 )); then
-        _net_nics_is_loopback "${iface}" && continue
+    for _iface in /sys/class/net/*/; do
+      _iface="${_iface%/}"
+      _iface="${_iface##*/}"
+      if (( _include_all == 0 )); then
+        _net_nics_is_loopback "${_iface}" && continue
       fi
-      printf -- '%s\n' "${iface}"
+      printf -- '%s\n' "${_iface}"
     done
     return 0
   fi
 
   if command -v ip >/dev/null 2>&1; then
-    while read -r iface; do
-      if (( include_all == 0 )); then
-        _net_nics_is_loopback "${iface}" && continue
+    while read -r _iface; do
+      if (( _include_all == 0 )); then
+        _net_nics_is_loopback "${_iface}" && continue
       fi
-      printf -- '%s\n' "${iface}"
+      printf -- '%s\n' "${_iface}"
     done < <(ip -o link show 2>/dev/null | awk -F': ' '{print $2}')
     return 0
   fi
 
   if command -v ifconfig >/dev/null 2>&1; then
-    while read -r iface; do
-      if (( include_all == 0 )); then
-        _net_nics_is_loopback "${iface}" && continue
+    while read -r _iface; do
+      if (( _include_all == 0 )); then
+        _net_nics_is_loopback "${_iface}" && continue
       fi
-      printf -- '%s\n' "${iface}"
+      printf -- '%s\n' "${_iface}"
     done < <(ifconfig -a 2>/dev/null | awk '/^[a-zA-Z]/{gsub(/:/,"",$1); print $1}')
     return 0
   fi
@@ -279,32 +279,32 @@ _net_nics_list() {
 
 # @internal Return the ifindex for an interface.
 _net_nics_index() {
-  local iface
-  iface="${1:?}"
-  if [[ -r "/sys/class/net/${iface}/ifindex" ]]; then
-    printf -- '%s\n' "$(<"/sys/class/net/${iface}/ifindex")"
+  local _iface
+  _iface="${1:?}"
+  if [[ -r "/sys/class/net/${_iface}/ifindex" ]]; then
+    printf -- '%s\n' "$(<"/sys/class/net/${_iface}/ifindex")"
     return 0
   fi
   if command -v ip >/dev/null 2>&1; then
-    ip link show dev "${iface}" 2>/dev/null | awk -F: 'NR==1{print $1+0; exit}'
+    ip link show dev "${_iface}" 2>/dev/null | awk -F: 'NR==1{print $1+0; exit}'
     return 0
   fi
   printf -- '%s\n' "-"
 }
 
-# @internal Return the operational state of an interface (uppercased).
+# @internal Return the operational _state of an interface (uppercased).
 _net_nics_state() {
-  local iface state
-  iface="${1:?}"
-  if [[ -r "/sys/class/net/${iface}/operstate" ]]; then
-    state=$(< "/sys/class/net/${iface}/operstate")
-    printf -- '%s\n' "${state^^}"
+  local _iface _state
+  _iface="${1:?}"
+  if [[ -r "/sys/class/net/${_iface}/operstate" ]]; then
+    _state=$(< "/sys/class/net/${_iface}/operstate")
+    printf -- '%s\n' "${_state^^}"
     return 0
   fi
   if command -v ip >/dev/null 2>&1; then
-    state=$(ip link show dev "${iface}" 2>/dev/null |
+    _state=$(ip link show dev "${_iface}" 2>/dev/null |
       awk '{for(i=1;i<=NF;i++) if($i=="state"){print $(i+1); exit}}')
-    printf -- '%s\n' "${state:-unknown}"
+    printf -- '%s\n' "${_state:-unknown}"
     return 0
   fi
   printf -- '%s\n' "unknown"
@@ -312,42 +312,42 @@ _net_nics_state() {
 
 # @internal Return the MTU for an interface.
 _net_nics_mtu() {
-  local iface
-  iface="${1:?}"
-  if [[ -r "/sys/class/net/${iface}/mtu" ]]; then
-    printf -- '%s\n' "$(<"/sys/class/net/${iface}/mtu")"
+  local _iface
+  _iface="${1:?}"
+  if [[ -r "/sys/class/net/${_iface}/_mtu" ]]; then
+    printf -- '%s\n' "$(<"/sys/class/net/${_iface}/_mtu")"
     return 0
   fi
   if command -v ip >/dev/null 2>&1; then
-    ip link show dev "${iface}" 2>/dev/null |
+    ip link show dev "${_iface}" 2>/dev/null |
       awk '{for(i=1;i<=NF;i++) if($i=="mtu"){print $(i+1); exit}}'
     return 0
   fi
   printf -- '%s\n' "-"
 }
 
-# @internal Return the link speed and duplex for an interface.
+# @internal Return the link _speed and _duplex for an interface.
 #   Reads /sys/class/net first, falls back to ethtool. Returns '-' if unknown.
 _net_nics_speed() {
-  local iface speed duplex eth_speed eth_duplex
-  iface="${1:?}"
-  if [[ -r "/sys/class/net/${iface}/speed" ]]; then
-    speed=$(< "/sys/class/net/${iface}/speed")
-    # -1 = speed not reported (common for virtual/loopback interfaces)
-    if (( speed > 0 )); then
-      duplex="-"
-      if [[ -r "/sys/class/net/${iface}/duplex" ]]; then
-        duplex=$(< "/sys/class/net/${iface}/duplex")
+  local _iface _speed _duplex _eth_speed _eth_duplex
+  _iface="${1:?}"
+  if [[ -r "/sys/class/net/${_iface}/_speed" ]]; then
+    _speed=$(< "/sys/class/net/${_iface}/_speed")
+    # -1 = _speed not reported (common for virtual/loopback interfaces)
+    if (( _speed > 0 )); then
+      _duplex="-"
+      if [[ -r "/sys/class/net/${_iface}/_duplex" ]]; then
+        _duplex=$(< "/sys/class/net/${_iface}/_duplex")
       fi
-      printf -- '%s Mb/s (%s duplex)\n' "${speed}" "${duplex}"
+      printf -- '%s Mb/s (%s _duplex)\n' "${_speed}" "${_duplex}"
       return 0
     fi
   fi
   if command -v ethtool >/dev/null 2>&1; then
-    eth_speed=$(ethtool "${iface}" 2>/dev/null | awk '/Speed:/{print $2}')
-    eth_duplex=$(ethtool "${iface}" 2>/dev/null | awk '/Duplex:/{print $2}')
-    if [[ -n "${eth_speed}" ]]; then
-      printf -- '%s (%s duplex)\n' "${eth_speed}" "${eth_duplex:--}"
+    _eth_speed=$(ethtool "${_iface}" 2>/dev/null | awk '/Speed:/{print $2}')
+    _eth_duplex=$(ethtool "${_iface}" 2>/dev/null | awk '/Duplex:/{print $2}')
+    if [[ -n "${_eth_speed}" ]]; then
+      printf -- '%s (%s _duplex)\n' "${_eth_speed}" "${_eth_duplex:--}"
       return 0
     fi
   fi
@@ -358,11 +358,11 @@ _net_nics_speed() {
 #   Tries resolvectl for per-interface DNS, then falls back to resolv.conf
 #   (checked in multiple locations for different DNS implementations).
 _net_nics_dns() {
-  local iface dns_servers resolv_file
-  iface="${1:?}"
+  local _iface _dns_servers _resolv_file
+  _iface="${1:?}"
 
   if command -v resolvectl >/dev/null 2>&1; then
-    dns_servers=$(resolvectl status "${iface}" 2>/dev/null |
+    _dns_servers=$(resolvectl status "${_iface}" 2>/dev/null |
       awk '/DNS Servers:/{
         sub(/.*DNS Servers:[[:space:]]*/,"")
         n=split($0,a," ")
@@ -370,20 +370,20 @@ _net_nics_dns() {
         for(i=1;i<=n;i++) s = s (s?", ":"") a[i]
         print s
       }')
-    if [[ -n "${dns_servers}" ]]; then
-      printf -- '%s\n' "${dns_servers}"
+    if [[ -n "${_dns_servers}" ]]; then
+      printf -- '%s\n' "${_dns_servers}"
       return 0
     fi
   fi
 
-  for resolv_file in \
+  for _resolv_file in \
     /etc/resolv.conf \
     /var/run/systemd/resolve/resolv.conf \
     /run/systemd/resolve/resolv.conf; do
-    if [[ -r "${resolv_file}" ]]; then
-      dns_servers=$(awk '/^nameserver/{s = s (s?", ":"") $2} END{print s}' "${resolv_file}")
-      if [[ -n "${dns_servers}" ]]; then
-        printf -- '%s (global)\n' "${dns_servers}"
+    if [[ -r "${_resolv_file}" ]]; then
+      _dns_servers=$(awk '/^nameserver/{s = s (s?", ":"") $2} END{print s}' "${_resolv_file}")
+      if [[ -n "${_dns_servers}" ]]; then
+        printf -- '%s (global)\n' "${_dns_servers}"
         return 0
       fi
     fi
@@ -395,10 +395,10 @@ _net_nics_dns() {
 # @internal Emit 'family addr/prefix (type)' lines for all addresses on an interface.
 #   type is one of: dhcp, link, static.
 _net_nics_addrs() {
-  local iface
-  iface="${1:?}"
+  local _iface
+  _iface="${1:?}"
   if command -v ip >/dev/null 2>&1; then
-    ip -o addr show dev "${iface}" 2>/dev/null |
+    ip -o addr show dev "${_iface}" 2>/dev/null |
       awk '{
         family = "inet"; addr = ""
         for (i = 1; i <= NF; i++) {
@@ -415,96 +415,96 @@ _net_nics_addrs() {
 
 # @internal Print a verbose labelled block for a single interface.
 _net_nics_report() {
-  local iface idx state iftype mac mtu speed gateway dns
-  local addr_family addr_cidr addr_tag addr_line
-  local -a ipv4_addrs ipv6_addrs
+  local _iface _idx _state _iftype _mac _mtu _speed _gateway _dns
+  local _addr_family _addr_cidr _addr_tag _addr_line
+  local -a _ipv4_addrs _ipv6_addrs
 
-  iface="${1:?}"
-  idx=$(_net_nics_index "${iface}")
-  state=$(_net_nics_state "${iface}")
+  _iface="${1:?}"
+  _idx=$(_net_nics_index "${_iface}")
+  _state=$(_net_nics_state "${_iface}")
 
-  if _net_nics_is_loopback "${iface}"; then
-    iftype="loopback"
-  elif _net_nics_is_physical "${iface}"; then
-    iftype="physical"
+  if _net_nics_is_loopback "${_iface}"; then
+    _iftype="loopback"
+  elif _net_nics_is_physical "${_iface}"; then
+    _iftype="physical"
   else
-    iftype="virtual"
+    _iftype="virtual"
   fi
 
-  mac=$(net_mac "${iface}")
-  mtu=$(_net_nics_mtu "${iface}")
-  speed=$(_net_nics_speed "${iface}")
-  gateway=$(net_gateway "${iface}")
-  dns=$(_net_nics_dns "${iface}")
+  _mac=$(net_mac "${_iface}")
+  _mtu=$(_net_nics_mtu "${_iface}")
+  _speed=$(_net_nics_speed "${_iface}")
+  _gateway=$(net_gateway "${_iface}")
+  _dns=$(_net_nics_dns "${_iface}")
 
-  ipv4_addrs=()
-  ipv6_addrs=()
-  while read -r addr_family addr_cidr addr_tag; do
-    if [[ "${addr_family}" = "inet" ]]; then
-      ipv4_addrs+=( "${addr_cidr} ${addr_tag}" )
+  _ipv4_addrs=()
+  _ipv6_addrs=()
+  while read -r _addr_family _addr_cidr _addr_tag; do
+    if [[ "${_addr_family}" = "inet" ]]; then
+      _ipv4_addrs+=( "${_addr_cidr} ${_addr_tag}" )
     else
-      ipv6_addrs+=( "${addr_cidr} ${addr_tag}" )
+      _ipv6_addrs+=( "${_addr_cidr} ${_addr_tag}" )
     fi
-  done < <(_net_nics_addrs "${iface}")
+  done < <(_net_nics_addrs "${_iface}")
 
   printf -- '\n'
-  printf -- 'Interface : %s (index %s)\n' "${iface}" "${idx}"
-  printf -- '  %-12s: %s\n' "State"   "${state}"
-  printf -- '  %-12s: %s\n' "Type"    "${iftype}"
-  printf -- '  %-12s: %s\n' "MAC"     "${mac:--}"
-  printf -- '  %-12s: %s\n' "MTU"     "${mtu}"
-  printf -- '  %-12s: %s\n' "Speed"   "${speed}"
+  printf -- 'Interface : %s (index %s)\n' "${_iface}" "${_idx}"
+  printf -- '  %-12s: %s\n' "State"   "${_state}"
+  printf -- '  %-12s: %s\n' "Type"    "${_iftype}"
+  printf -- '  %-12s: %s\n' "MAC"     "${_mac:--}"
+  printf -- '  %-12s: %s\n' "MTU"     "${_mtu}"
+  printf -- '  %-12s: %s\n' "Speed"   "${_speed}"
 
-  if (( ${#ipv4_addrs[@]} == 0 )); then
+  if (( ${#_ipv4_addrs[@]} == 0 )); then
     printf -- '  %-12s: %s\n' "IPv4" "-"
   else
-    printf -- '  %-12s: %s\n' "IPv4" "${ipv4_addrs[0]}"
-    for addr_line in "${ipv4_addrs[@]:1}"; do
-      printf -- '                %s\n' "${addr_line}"
+    printf -- '  %-12s: %s\n' "IPv4" "${_ipv4_addrs[0]}"
+    for _addr_line in "${_ipv4_addrs[@]:1}"; do
+      printf -- '                %s\n' "${_addr_line}"
     done
   fi
 
-  if (( ${#ipv6_addrs[@]} == 0 )); then
+  if (( ${#_ipv6_addrs[@]} == 0 )); then
     printf -- '  %-12s: %s\n' "IPv6" "-"
   else
-    printf -- '  %-12s: %s\n' "IPv6" "${ipv6_addrs[0]}"
-    for addr_line in "${ipv6_addrs[@]:1}"; do
-      printf -- '                %s\n' "${addr_line}"
+    printf -- '  %-12s: %s\n' "IPv6" "${_ipv6_addrs[0]}"
+    for _addr_line in "${_ipv6_addrs[@]:1}"; do
+      printf -- '                %s\n' "${_addr_line}"
     done
   fi
 
-  printf -- '  %-12s: %s\n' "Gateway" "${gateway}"
-  printf -- '  %-12s: %s\n' "DNS"     "${dns}"
+  printf -- '  %-12s: %s\n' "Gateway" "${_gateway}"
+  printf -- '  %-12s: %s\n' "DNS"     "${_dns}"
 }
 
 # @internal Print a single summary row for the brief table.
 _net_nics_brief_line() {
-  local iface state mac speed first_ipv4 extra_count addr_family addr_cidr addr_tag
+  local _iface _state _mac _speed _first_ipv4 _extra_count _addr_family _addr_cidr _addr_tag
 
-  iface="${1:?}"
-  state=$(_net_nics_state "${iface}")
-  mac=$(net_mac "${iface}")
-  speed=$(_net_nics_speed "${iface}")
-  speed="${speed%% *}"
+  _iface="${1:?}"
+  _state=$(_net_nics_state "${_iface}")
+  _mac=$(net_mac "${_iface}")
+  _speed=$(_net_nics_speed "${_iface}")
+  _speed="${_speed%% *}"
 
-  first_ipv4="-"
-  extra_count=0
-  while read -r addr_family addr_cidr addr_tag; do
-    if [[ "${addr_family}" = "inet" ]]; then
-      if [[ "${first_ipv4}" = "-" ]]; then
-        first_ipv4="${addr_cidr}"
+  _first_ipv4="-"
+  _extra_count=0
+  while read -r _addr_family _addr_cidr _addr_tag; do
+    if [[ "${_addr_family}" = "inet" ]]; then
+      if [[ "${_first_ipv4}" = "-" ]]; then
+        _first_ipv4="${_addr_cidr}"
       else
-        (( extra_count++ ))
+        (( _extra_count++ ))
       fi
     fi
-  done < <(_net_nics_addrs "${iface}")
+  done < <(_net_nics_addrs "${_iface}")
 
-  if (( extra_count > 0 )); then
-    first_ipv4="${first_ipv4} (+${extra_count} more)"
+  if (( _extra_count > 0 )); then
+    _first_ipv4="${_first_ipv4} (+${_extra_count} more)"
   fi
 
   printf -- '%-16s %-8s %-20s %-26s %s\n' \
-    "${iface}" "${state}" "${mac:--}" "${first_ipv4}" "${speed}"
+    "${_iface}" "${_state}" "${_mac:--}" "${_first_ipv4}" "${_speed}"
 }
 
 # @description Print information about network interfaces on the host.
@@ -512,7 +512,7 @@ _net_nics_brief_line() {
 #
 # @arg -a,--all    Include loopback interfaces
 # @arg -b,--brief  Compact summary table instead of verbose blocks
-# @arg [iface...]  Limit output to named interfaces
+# @arg [_iface...]  Limit output to named interfaces
 #
 # @example
 #   net_nics              # => verbose blocks for all non-loopback interfaces
@@ -523,14 +523,14 @@ _net_nics_brief_line() {
 # @stdout Network interface details
 # @exitcode 0 Always
 net_nics() {
-  local include_all show_brief iface
-  include_all=0
-  show_brief=0
+  local _include_all _show_brief _iface
+  _include_all=0
+  _show_brief=0
 
   while (( ${#} > 0 )); do
     case "${1}" in
-      (-a|--all)   include_all=1; shift ;;
-      (-b|--brief) show_brief=1; shift ;;
+      (-a|--all)   _include_all=1; shift ;;
+      (-b|--brief) _show_brief=1; shift ;;
       (--)         shift; break ;;
       (-*)
         printf -- 'net_nics: unknown option: %s\n' "${1}" >&2
@@ -540,27 +540,27 @@ net_nics() {
     esac
   done
 
-  local -a iface_list
+  local -a _iface_list
   if (( ${#} > 0 )); then
-    iface_list=( "${@}" )
+    _iface_list=( "${@}" )
   else
-    readarray -t iface_list < <(_net_nics_list "${include_all}")
+    readarray -t _iface_list < <(_net_nics_list "${_include_all}")
   fi
 
-  if (( ${#iface_list[@]} == 0 )); then
+  if (( ${#_iface_list[@]} == 0 )); then
     printf -- 'net_nics: no interfaces found\n' >&2
     return 1
   fi
 
-  if (( show_brief )); then
+  if (( _show_brief )); then
     printf -- '%-16s %-8s %-20s %-26s %s\n' "NAME" "STATE" "MAC" "IPv4" "SPEED"
     printf -- '%s\n' "--------------------------------------------------------------------------------"
-    for iface in "${iface_list[@]}"; do
-      _net_nics_brief_line "${iface}"
+    for _iface in "${_iface_list[@]}"; do
+      _net_nics_brief_line "${_iface}"
     done
   else
-    for iface in "${iface_list[@]}"; do
-      _net_nics_report "${iface}"
+    for _iface in "${_iface_list[@]}"; do
+      _net_nics_report "${_iface}"
     done
     printf -- '\n'
   fi

@@ -61,21 +61,21 @@ else
     # We strip leading 0's in order to prevent unwanted octal math
     # This seems terse, but the vars are the same as their 'date' formats
     time_epoch() {
-        local year julian_day hour minute second year_offset year_secs
+        local _year _julian_day _hour _minute _second _year_offset _year_secs
 
         # set -- splits date output into positional params, avoiding heredoc indentation traps.
         # Unquoted intentionally: word splitting on spaces separates the five fields.
         # The 10# prefix below strips leading zeros to prevent octal interpretation.
         # shellcheck disable=SC2046
         set -- $(date -u '+%Y %j %H %M %S')
-        year="${1}"; julian_day="${2}"; hour="${3}"; minute="${4}"; second="${5}"
+        _year="${1}"; _julian_day="${2}"; _hour="${3}"; _minute="${4}"; _second="${5}"
 
         # year_offset: years elapsed since 1600 (the algorithm's base year)
-        year_offset=$(( year - 1600 ))
-        # year_secs: seconds from Unix epoch to the start of the current day
-        year_secs=$(( (year_offset * 365 + year_offset / 4 - year_offset / 100 + year_offset / 400 + $(( 10#${julian_day} )) - 135140) * 86400 ))
+        _year_offset=$(( _year - 1600 ))
+        # _year_secs: seconds from Unix epoch to the start of the current day
+        _year_secs=$(( (_year_offset * 365 + _year_offset / 4 - _year_offset / 100 + _year_offset / 400 + $(( 10#${_julian_day} )) - 135140) * 86400 ))
 
-        printf -- '%s\n' "$(( year_secs + ($(( 10#${hour} )) * 3600) + ($(( 10#${minute} )) * 60) + $(( 10#${second} )) ))"
+        printf -- '%s\n' "$(( _year_secs + ($(( 10#${_hour} )) * 3600) + ($(( 10#${_minute} )) * 60) + $(( 10#${_second} )) ))"
     }
 fi
 
@@ -180,13 +180,13 @@ time_date_to_epoch() {
 # @stdout Current epoch in milliseconds
 # @exitcode 0 Always
 time_epoch_ms() {
-  local ns
-  ns="$(date +%s%3N 2>/dev/null)"
+  local _ns
+  _ns="$(date +%s%3N 2>/dev/null)"
   # If %3N is unsupported (macOS date), fall back to seconds * 1000
-  if [[ "${ns}" == *N* ]] || [[ -z "${ns}" ]]; then
+  if [[ "${_ns}" == *N* ]] || [[ -z "${_ns}" ]]; then
     printf -- '%d000\n' "$(date +%s)"
   else
-    printf -- '%s\n' "${ns}"
+    printf -- '%s\n' "${_ns}"
   fi
 }
 
@@ -203,26 +203,26 @@ time_epoch_ms() {
 #
 # @exitcode 0 Awoke at or after target; 1 Bad argument
 time_sleep_until() {
-  local target now diff use_ms
-  use_ms=0
+  local _target _now _diff _use_ms
+  _use_ms=0
 
   case "${1:-}" in
-    (--ms) use_ms=1; shift ;;
+    (--ms) _use_ms=1; shift ;;
   esac
 
-  target="${1:?time_sleep_until: missing target epoch argument}"
+  _target="${1:?time_sleep_until: missing _target epoch argument}"
 
-  if (( use_ms )); then
-    now="$(time_epoch_ms)"
-    diff=$(( target - now ))
-    (( diff <= 0 )) && return 0
-    sleep "$(printf -- '0.%03d\n' "$(( diff % 1000 ))")" 2>/dev/null || true
-    diff=$(( diff / 1000 ))
-    (( diff > 0 )) && sleep "${diff}"
+  if (( _use_ms )); then
+    _now="$(time_epoch_ms)"
+    _diff=$(( _target - _now ))
+    (( _diff <= 0 )) && return 0
+    sleep "$(printf -- '0.%03d\n' "$(( _diff % 1000 ))")" 2>/dev/null || true
+    _diff=$(( _diff / 1000 ))
+    (( _diff > 0 )) && sleep "${_diff}"
   else
-    now="$(date +%s)"
-    diff=$(( target - now ))
-    (( diff <= 0 )) && return 0
-    sleep "${diff}"
+    _now="$(date +%s)"
+    _diff=$(( _target - _now ))
+    (( _diff <= 0 )) && return 0
+    sleep "${_diff}"
   fi
 }

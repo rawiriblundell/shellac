@@ -34,11 +34,11 @@ include core/is
 #
 # @exitcode 0 Value is non-empty; 1 Value is empty
 assert_not_empty() {
-  local value name
-  value="${1:-}"
-  name="${2:-value}"
-  if var_is_blank "${value}"; then
-    printf -- '%s\n' "assert_not_empty: ${name} must not be empty" >&2
+  local _value _name
+  _value="${1:-}"
+  _name="${2:-_value}"
+  if var_is_blank "${_value}"; then
+    printf -- '%s\n' "assert_not_empty: ${_name} must not be empty" >&2
     return 1
   fi
 }
@@ -52,10 +52,10 @@ assert_not_empty() {
 #
 # @exitcode 0 Command found; 1 Command missing
 assert_is_installed() {
-  local cmd
-  cmd="${1:?assert_is_installed: missing command argument}"
-  if ! is_command "${cmd}"; then
-    printf -- '%s\n' "assert_is_installed: required command not found: ${cmd}" >&2
+  local _cmd
+  _cmd="${1:?assert_is_installed: missing command argument}"
+  if ! is_command "${_cmd}"; then
+    printf -- '%s\n' "assert_is_installed: required command not found: ${_cmd}" >&2
     return 1
   fi
 }
@@ -70,11 +70,11 @@ assert_is_installed() {
 #
 # @exitcode 0 Value is in list; 1 Value not in list
 assert_value_in_list() {
-  local value
-  value="${1:?assert_value_in_list: missing value}"
+  local _value
+  _value="${1:?assert_value_in_list: missing _value}"
   shift
-  if ! var_is_one_of "${value}" "${@}"; then
-    printf -- '%s\n' "assert_value_in_list: '${value}' is not in allowed list: ${*}" >&2
+  if ! var_is_one_of "${_value}" "${@}"; then
+    printf -- '%s\n' "assert_value_in_list: '${_value}' is not in allowed list: ${*}" >&2
     return 1
   fi
 }
@@ -90,12 +90,12 @@ assert_value_in_list() {
 # @exitcode 0 Exactly one non-empty; 1 Zero or more than one non-empty
 assert_exactly_one_of() {
   if ! var_exactly_one_set "${@}"; then
-    local count value
-    count=0
-    for value in "${@}"; do
-      [[ -n "${value}" ]] && (( count += 1 ))
+    local _count _value
+    _count=0
+    for _value in "${@}"; do
+      [[ -n "${_value}" ]] && (( _count += 1 ))
     done
-    printf -- '%s\n' "assert_exactly_one_of: expected exactly 1 non-empty value; got ${count}" >&2
+    printf -- '%s\n' "assert_exactly_one_of: expected exactly 1 non-empty _value; got ${_count}" >&2
     return 1
   fi
 }

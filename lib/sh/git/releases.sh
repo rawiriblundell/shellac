@@ -33,28 +33,28 @@ _SHELLAC_LOADED_git_releases=1
 # @exitcode 0 Release found
 # @exitcode 1 No matching release found
 _git_fetch_release_json() {
-  local repo version url json
-  repo="${1}"
-  version="${2}"
+  local _repo _version _url _json
+  _repo="${1}"
+  _version="${2}"
 
-  if [[ "${version}" = "latest" ]]; then
-    url="https://api.github.com/repos/${repo}/releases/latest"
-    json=$(curl -fsSL "${url}" 2>/dev/null) && printf -- '%s\n' "${json}" && return 0
+  if [[ "${_version}" = "latest" ]]; then
+    _url="https://api.github.com/repos/${_repo}/releases/latest"
+    _json=$(curl -fsSL "${_url}" 2>/dev/null) && printf -- '%s\n' "${_json}" && return 0
     return 1
   fi
 
   local -a candidates
-  candidates=( "${version}" "v${version}" "release-${version}" )
+  candidates=( "${_version}" "v${_version}" "release-${_version}" )
   # Avoid duplicate if version already starts with 'v'
-  [[ "${version}" = v* ]] && candidates=( "${version}" "release-${version#v}" )
+  [[ "${_version}" = v* ]] && candidates=( "${_version}" "release-${_version#v}" )
 
-  local tag
-  for tag in "${candidates[@]}"; do
-    url="https://api.github.com/repos/${repo}/releases/tags/${tag}"
-    json=$(curl -fsSL "${url}" 2>/dev/null) || continue
+  local _tag
+  for _tag in "${candidates[@]}"; do
+    _url="https://api.github.com/repos/${_repo}/releases/tags/${_tag}"
+    _json=$(curl -fsSL "${_url}" 2>/dev/null) || continue
     # GitHub returns 200 with a message field on not-found; check for tag_name
-    printf -- '%s\n' "${json}" | jq -e '.tag_name' >/dev/null 2>&1 || continue
-    printf -- '%s\n' "${json}"
+    printf -- '%s\n' "${_json}" | jq -e '.tag_name' >/dev/null 2>&1 || continue
+    printf -- '%s\n' "${_json}"
     return 0
   done
   return 1
@@ -91,84 +91,84 @@ _git_fetch_release_arch_aliases() {
 # @exitcode 0 Asset downloaded successfully
 # @exitcode 1 Error (missing args, no matching asset, download failure)
 git_fetch_release() {
-  local repo version arch
-  local release_json asset_url asset_name
+  local _repo _version _arch
+  local _release_json _asset_url _asset_name
   local -a arch_aliases all_assets tarball_assets
 
-  repo="${1:?git_fetch_release: owner/repo argument required}"
-  version="${2:-latest}"
-  arch="${3:-}"
+  _repo="${1:?git_fetch_release: owner/_repo argument required}"
+  _version="${2:-latest}"
+  _arch="${3:-}"
 
   # Detect arch if not supplied
-  if [[ -z "${arch}" ]]; then
-    arch=$(uname -m 2>/dev/null)
-    : "${arch:=x86_64}"
+  if [[ -z "${_arch}" ]]; then
+    _arch=$(uname -m 2>/dev/null)
+    : "${_arch:=x86_64}"
   fi
 
   # Fetch release metadata
-  release_json=$(_git_fetch_release_json "${repo}" "${version}") || {
-    printf -- '%s\n' "git_fetch_release: release '${version}' not found for ${repo}" >&2
+  _release_json=$(_git_fetch_release_json "${_repo}" "${_version}") || {
+    printf -- '%s\n' "git_fetch_release: release '${_version}' not found for ${_repo}" >&2
     return 1
   }
 
   # Build ordered alias list for this arch
-  local aliases_str
-  aliases_str=$(_git_fetch_release_arch_aliases "${arch}")
-  read -ra arch_aliases <<< "${aliases_str}"
+  local _aliases_str
+  _aliases_str=$(_git_fetch_release_arch_aliases "${_arch}")
+  read -ra arch_aliases <<< "${_aliases_str}"
 
   # Extract all browser_download_urls from the release
   mapfile -t all_assets < <(
-    printf -- '%s\n' "${release_json}" |
+    printf -- '%s\n' "${_release_json}" |
       jq -r '.assets[].browser_download_url' 2>/dev/null
   )
 
   if (( ${#all_assets[@]} == 0 )); then
-    printf -- '%s\n' "git_fetch_release: no assets found for ${repo} ${version}" >&2
+    printf -- '%s\n' "git_fetch_release: no assets found for ${_repo} ${_version}" >&2
     return 1
   fi
 
   # Filter: skip checksums, signatures, source archives
   local -a filtered_assets
-  for asset_url in "${all_assets[@]}"; do
-    case "${asset_url}" in
+  for _asset_url in "${all_assets[@]}"; do
+    case "${_asset_url}" in
       (*.sha256|*.sha512|*.md5|*.asc|*.sig|*source.tar.gz|*_checksums.txt) continue ;;
     esac
-    filtered_assets+=( "${asset_url}" )
+    filtered_assets+=( "${_asset_url}" )
   done
 
   # Select asset: iterate arch aliases, prefer tarballs over zip
-  local selected=""
-  local alias
-  for alias in "${arch_aliases[@]}"; do
+  local _selected=""
+  local _alias
+  for _alias in "${arch_aliases[@]}"; do
     # Collect candidates matching this alias
     tarball_assets=()
-    for asset_url in "${filtered_assets[@]}"; do
-      [[ "${asset_url}" != *"${alias}"* ]] && continue
-      case "${asset_url}" in
-        (*.tar.gz|*.tar.xz|*.tar.bz2|*.tgz) tarball_assets+=( "${asset_url}" ) ;;
+    for _asset_url in "${filtered_assets[@]}"; do
+      [[ "${_asset_url}" != *"${_alias}"* ]] && continue
+      case "${_asset_url}" in
+        (*.tar.gz|*.tar.xz|*.tar.bz2|*.tgz) tarball_assets+=( "${_asset_url}" ) ;;
       esac
     done
     if (( ${#tarball_assets[@]} > 0 )); then
-      selected="${tarball_assets[0]}"
+      _selected="${tarball_assets[0]}"
       break
     fi
     # No tarball — accept zip or bare binary for this alias
-    for asset_url in "${filtered_assets[@]}"; do
-      [[ "${asset_url}" != *"${alias}"* ]] && continue
-      selected="${asset_url}"
+    for _asset_url in "${filtered_assets[@]}"; do
+      [[ "${_asset_url}" != *"${_alias}"* ]] && continue
+      _selected="${_asset_url}"
       break
     done
-    [[ -n "${selected}" ]] && break
+    [[ -n "${_selected}" ]] && break
   done
 
-  if [[ -z "${selected}" ]]; then
-    printf -- '%s\n' "git_fetch_release: no asset matching arch '${arch}' found for ${repo} ${version}" >&2
+  if [[ -z "${_selected}" ]]; then
+    printf -- '%s\n' "git_fetch_release: no asset matching _arch '${_arch}' found for ${_repo} ${_version}" >&2
     printf -- '%s\n' "Available assets:" >&2
     printf -- '  %s\n' "${filtered_assets[@]}" >&2
     return 1
   fi
 
-  asset_name="${selected##*/}"
-  printf -- '%s\n' "Downloading: ${selected}" >&2
-  curl -fL --progress-bar -o "${asset_name}" "${selected}"
+  _asset_name="${_selected##*/}"
+  printf -- '%s\n' "Downloading: ${_selected}" >&2
+  curl -fL --progress-bar -o "${_asset_name}" "${_selected}"
 }

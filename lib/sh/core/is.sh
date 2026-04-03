@@ -212,11 +212,11 @@ is_sourced() {
 #
 # @exitcode 0 Value is in the set; 1 Value is not in the set
 var_is_one_of() {
-    local value candidate
-    value="${1:?}"
+    local _value _candidate
+    _value="${1:?}"
     shift
-    for candidate in "${@}"; do
-        [[ "${value}" == "${candidate}" ]] && return 0
+    for _candidate in "${@}"; do
+        [[ "${_value}" == "${_candidate}" ]] && return 0
     done
     return 1
 }
@@ -231,10 +231,10 @@ var_is_one_of() {
 #
 # @exitcode 0 Exactly one non-empty; 1 Zero or more than one non-empty
 var_exactly_one_set() {
-    local count value
-    count=0
-    for value in "${@}"; do
-        [[ -n "${value}" ]] && (( count += 1 ))
+    local _count _value
+    _count=0
+    for _value in "${@}"; do
+        [[ -n "${_value}" ]] && (( _count += 1 ))
     done
-    (( count == 1 ))
+    (( _count == 1 ))
 }

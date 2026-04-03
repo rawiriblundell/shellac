@@ -41,15 +41,15 @@ _SHELLAC_LOADED_core_stacktrace=1
 # @stdout Call stack to stderr, one frame per line
 # @exitcode 0 Always
 stacktrace() {
-  local frame offset
-  offset="${1:-1}"
+  local _frame _offset
+  _offset="${1:-1}"
   printf -- '%s\n' "--- Stack trace ---" >&2
-  for (( frame = offset; frame < ${#FUNCNAME[@]}; frame++ )); do
+  for (( _frame = _offset; _frame < ${#FUNCNAME[@]}; _frame++ )); do
     printf -- '  [%d] %s  %s:%d\n' \
-      "$(( frame - offset ))" \
-      "${FUNCNAME[${frame}]:-main}" \
-      "${BASH_SOURCE[${frame}]:-unknown}" \
-      "${BASH_LINENO[$(( frame - 1 ))]}" >&2
+      "$(( _frame - _offset ))" \
+      "${FUNCNAME[${_frame}]:-main}" \
+      "${BASH_SOURCE[${_frame}]:-unknown}" \
+      "${BASH_LINENO[$(( _frame - 1 ))]}" >&2
   done
   printf -- '%s\n' "-------------------" >&2
 }
@@ -69,14 +69,14 @@ stacktrace() {
 # @exitcode 0 Always; 1 Missing array name argument
 stacktrace_array() {
   local -n _sta_out="${1:?stacktrace_array: missing array name argument}"
-  local offset frame entry
-  offset="${2:-1}"
+  local _offset _frame _entry
+  _offset="${2:-1}"
   _sta_out=()
-  for (( frame = offset; frame < ${#FUNCNAME[@]}; frame++ )); do
-    entry="$(printf -- '%s  %s:%d' \
-      "${FUNCNAME[${frame}]:-main}" \
-      "${BASH_SOURCE[${frame}]:-unknown}" \
-      "${BASH_LINENO[$(( frame - 1 ))]}")"
-    _sta_out+=( "${entry}" )
+  for (( _frame = _offset; _frame < ${#FUNCNAME[@]}; _frame++ )); do
+    _entry="$(printf -- '%s  %s:%d' \
+      "${FUNCNAME[${_frame}]:-main}" \
+      "${BASH_SOURCE[${_frame}]:-unknown}" \
+      "${BASH_LINENO[$(( _frame - 1 ))]}")"
+    _sta_out+=( "${_entry}" )
   done
 }

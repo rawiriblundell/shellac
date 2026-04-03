@@ -93,7 +93,7 @@ num_compare_float() {
 # @exitcode 3 Missing arguments
 # @exitcode 4 Invalid format (non-numeric segments)
 numbers_version_compare() {
-  local regex i
+  local _regex _i
   declare -a ver1 ver2
   (( ${#} < 2 )) && {
     printf -- '%s\n' "numbers_version_compare: requires 2 arguments" >&2
@@ -114,13 +114,13 @@ numbers_version_compare() {
   [[ "${1}" = "${2}" ]] && return 0
   IFS=. read -r -a ver1 <<< "${1}"
   IFS=. read -r -a ver2 <<< "${2}"
-  for (( i = ${#ver1[@]}; i < ${#ver2[@]}; i++ )); do
-    ver1[i]=0
+  for (( _i = ${#ver1[@]}; _i < ${#ver2[@]}; _i++ )); do
+    ver1[_i]=0
   done
-  for (( i = 0; i < ${#ver1[@]}; i++ )); do
-    [[ -z "${ver2[i]}" ]] && ver2[i]=0
-    (( 10#${ver1[i]} > 10#${ver2[i]} )) && return 1
-    (( 10#${ver1[i]} < 10#${ver2[i]} )) && return 2
+  for (( _i = 0; _i < ${#ver1[@]}; _i++ )); do
+    [[ -z "${ver2[_i]}" ]] && ver2[_i]=0
+    (( 10#${ver1[_i]} > 10#${ver2[_i]} )) && return 1
+    (( 10#${ver1[_i]} < 10#${ver2[_i]} )) && return 2
   done
   return 0
 }

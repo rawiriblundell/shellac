@@ -30,7 +30,7 @@ _SHELLAC_LOADED_text_len=1
 # @stdout Length (and optionally content) of the input
 # @exitcode 0 Always
 str_len() {
-  local str
+  local _str
   case "${1}" in
     (-b|--bytes)
       shift 1
@@ -39,8 +39,8 @@ str_len() {
       _lc_all_orig="${LC_ALL}"
       LANG=C
       LC_ALL=C
-      str="${*}"
-      printf -- '%d\n' "${#str}"
+      _str="${*}"
+      printf -- '%d\n' "${#_str}"
       LANG="${_lang_orig}"
       LC_ALL="${_lc_all_orig}"
     ;;
@@ -64,8 +64,8 @@ str_len() {
       if [ -f "${1}" ] && [ -r "${1}" ]; then
         awk '{ print length, $0 }' "${1}"
       else
-      str="${*}"
-      printf -- '%d\n' "${#str}"
+      _str="${*}"
+      printf -- '%d\n' "${#_str}"
       fi
     ;;
   esac

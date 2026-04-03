@@ -28,7 +28,7 @@ _SHELLAC_LOADED_text_csvwrap=1
 # @stdout Wrapped comma-separated list with backslash continuations
 # @exitcode 0 Always
 csvwrap() {
-  local split_count
-  split_count="${1:-8}"
-  split_count="${split_count}" perl -pe 's{,}{++$n % $ENV{split_count} ? $& : ",\\\n"}ge'
+  local _split_count
+  _split_count="${1:-8}"
+  _split_count="${_split_count}" perl -pe 's{,}{++$n % $ENV{_split_count} ? $& : ",\\\n"}ge'
 }

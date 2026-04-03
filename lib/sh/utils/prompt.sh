@@ -36,22 +36,22 @@ _SHELLAC_LOADED_utils_prompt=1
 # @stdout User's response (or default)
 # @exitcode 0 Success; 2 Missing argument
 prompt_response() {
-  local def_arg response
+  local _def_arg _response
   (( ${#} == 0 )) && { printf -- '%s\n' "prompt_response: missing argument" >&2; return 2; }
-  def_arg="${2:-}"
-  response=""
+  _def_arg="${2:-}"
+  _response=""
   while :; do
     printf -- '%s ? ' "${1}"
-    [[ -n "${def_arg}" ]] && [[ "${def_arg}" != "-" ]] && printf -- '[%s] ' "${def_arg}"
-    read -r response
-    [[ -n "${response}" ]] && break
-    if [[ -z "${response}" ]] && [[ -n "${def_arg}" ]]; then
-      response="${def_arg}"
+    [[ -n "${_def_arg}" ]] && [[ "${_def_arg}" != "-" ]] && printf -- '[%s] ' "${_def_arg}"
+    read -r _response
+    [[ -n "${_response}" ]] && break
+    if [[ -z "${_response}" ]] && [[ -n "${_def_arg}" ]]; then
+      _response="${_def_arg}"
       break
     fi
   done
-  [[ "${response}" = "-" ]] && response=""
-  printf -- '%s\n' "${response}"
+  [[ "${_response}" = "-" ]] && _response=""
+  printf -- '%s\n' "${_response}"
 }
 
 # @description Prompt for a password, echoing '*' per keystroke and supporting backspace.
@@ -67,36 +67,36 @@ prompt_response() {
 #
 # @exitcode 0 Success; 2 Missing arguments
 prompt_password() {
-  local var_name msg charcount char password
+  local _var_name _msg _charcount _char _password
   (( ${#} < 2 )) && { printf -- '%s\n' "prompt_password: requires 2 arguments" >&2; return 2; }
-  var_name="${1}"
-  msg="${2}"
-  charcount=0
-  char=""
-  password=""
-  printf -- '%s: ' "${msg}"
+  _var_name="${1}"
+  _msg="${2}"
+  _charcount=0
+  _char=""
+  _password=""
+  printf -- '%s: ' "${_msg}"
   stty -echo
-  while IFS= read -p "" -r -s -n 1 char; do
-    if [[ "${char}" = $'\0' ]]; then
+  while IFS= read -p "" -r -s -n 1 _char; do
+    if [[ "${_char}" = $'\0' ]]; then
       break
     fi
-    if [[ "${char}" = $'\177' ]]; then
-      if (( charcount > 0 )); then
-        (( charcount-- ))
+    if [[ "${_char}" = $'\177' ]]; then
+      if (( _charcount > 0 )); then
+        (( _charcount-- ))
         printf -- '\b \b'
-        password="${password%?}"
+        _password="${_password%?}"
       fi
     else
-      (( charcount++ ))
+      (( _charcount++ ))
       printf -- '*'
-      password+="${char}"
+      _password+="${_char}"
     fi
   done
   stty echo
   printf -- '\n'
   # shellcheck disable=SC2229
-  read -r "${var_name}" <<< "${password}"
-  readonly "${var_name}"
+  read -r "${_var_name}" <<< "${_password}"
+  readonly "${_var_name}"
 }
 
 # @description Prompt for an interactive yes/no confirmation. Reads a single

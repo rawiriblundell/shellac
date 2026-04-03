@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-# Provenance: https://github.com/rawiriblundell/sh_libpath
+# Provenance: https://github.com/rawiriblundell/shellac
 # SPDX-License-Identifier: Apache-2.0
 # Adapted from tomocafe/dotfiles (MIT) https://github.com/tomocafe/dotfiles
 # Adapted from codeforester/base (MIT) https://github.com/codeforester/base

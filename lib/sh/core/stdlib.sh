@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-# Provenance: https://github.com/rawiriblundell/sh_libpath
+# Provenance: https://github.com/rawiriblundell/shellac
 # SPDX-License-Identifier: Apache-2.0
 
 [ -n "${_SHELLAC_LOADED_core_stdlib+x}" ] && return 0

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-# Provenance: https://github.com/rawiriblundell/sh_libpath
+# Provenance: https://github.com/rawiriblundell/shellac
 # SPDX-License-Identifier: Apache-2.0
 # Adapted from kvz/bash3boilerplate (MIT) https://github.com/kvz/bash3boilerplate
 # Original author: Kevin van Zonneveld

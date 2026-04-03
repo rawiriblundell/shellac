@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-# Provenance: https://github.com/rawiriblundell/sh_libpath
+# Provenance: https://github.com/rawiriblundell/shellac
 # Adapted from labbots/bash-utility (MIT) https://github.com/labbots/bash-utility
 # SPDX-License-Identifier: Apache-2.0
 

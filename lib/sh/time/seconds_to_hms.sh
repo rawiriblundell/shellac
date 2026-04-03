@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-# Provenance: https://github.com/rawiriblundell/sh_libpath
+# Provenance: https://github.com/rawiriblundell/shellac
 # SPDX-License-Identifier: Apache-2.0
 # Adapted from jmooring/bash-function-library (Apache-2.0) https://github.com/jmooring/bash-function-library
 # Original author: Joe Mooring

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-# Provenance: https://github.com/rawiriblundell/sh_libpath
+# Provenance: https://github.com/rawiriblundell/shellac
 # SPDX-License-Identifier: Apache-2.0
 # Adapted from cyberark/bash-lib (Apache-2.0) https://github.com/cyberark/bash-lib
 # Adapted from dolpa/dolpa-bash-utils (Unlicense) https://github.com/dolpa/dolpa-bash-utils

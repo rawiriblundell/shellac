@@ -24,7 +24,7 @@ _SHELLAC_LOADED_time_epoch=1
 
 # @description Return the current Unix epoch in seconds.
 #   Selects the fastest available method at load time:
-#   EPOCHSECONDS (bash 5+ / zsh), printf %T (bash 4.2+), date, perl, curl,
+#   EPOCHSECONDS (bash 5+ / zsh), printf %T (bash 4.2+), date, perl,
 #   or a portable pure-shell fallback.
 #
 # @stdout Current Unix epoch as an integer
@@ -49,36 +49,34 @@ elif command -v perl >/dev/null 2>&1; then
     time_epoch() { perl -e 'print($^T."\n");'; }
     # Alternative: time_epoch() { perl -e 'print time."\n";'; }
 
-# We can try reaching out to the internet...
-elif command -v curl >/dev/null 2>&1; then
-    if curl -s -m 1 http://icanhazepoch.com/ | grep "^[0-9].*$" >/dev/null 2>&1; then
-        time_epoch() { curl -s -m 1 http://icanhazepoch.com/; }
-    fi
+# There are internet based options like
+# curl -s http://worldtimeapi.org/api/timezone/UTC/ | jq -r '.unixtime'
+# But they are less guaranteed to be present long-term, and/or responding promptly
 
-# Otherwise we failover to a portable-ish shell method
+# So we failover to a portable-ish shell method
 else
 
-# Calculate how many seconds since epoch
-# Portable version based on http://www.etalabs.net/sh_tricks.html
-# We strip leading 0's in order to prevent unwanted octal math
-# This seems terse, but the vars are the same as their 'date' formats
-time_epoch() {
-    local year julian_day hour minute second year_offset year_secs
+    # Calculate how many seconds since epoch
+    # Portable version based on http://www.etalabs.net/sh_tricks.html
+    # We strip leading 0's in order to prevent unwanted octal math
+    # This seems terse, but the vars are the same as their 'date' formats
+    time_epoch() {
+        local year julian_day hour minute second year_offset year_secs
 
-    # set -- splits date output into positional params, avoiding heredoc indentation traps.
-    # Unquoted intentionally: word splitting on spaces separates the five fields.
-    # The 10# prefix below strips leading zeros to prevent octal interpretation.
-    # shellcheck disable=SC2046
-    set -- $(date -u '+%Y %j %H %M %S')
-    year="${1}"; julian_day="${2}"; hour="${3}"; minute="${4}"; second="${5}"
+        # set -- splits date output into positional params, avoiding heredoc indentation traps.
+        # Unquoted intentionally: word splitting on spaces separates the five fields.
+        # The 10# prefix below strips leading zeros to prevent octal interpretation.
+        # shellcheck disable=SC2046
+        set -- $(date -u '+%Y %j %H %M %S')
+        year="${1}"; julian_day="${2}"; hour="${3}"; minute="${4}"; second="${5}"
 
-    # year_offset: years elapsed since 1600 (the algorithm's base year)
-    year_offset=$(( year - 1600 ))
-    # year_secs: seconds from Unix epoch to the start of the current day
-    year_secs=$(( (year_offset * 365 + year_offset / 4 - year_offset / 100 + year_offset / 400 + $(( 10#${julian_day} )) - 135140) * 86400 ))
+        # year_offset: years elapsed since 1600 (the algorithm's base year)
+        year_offset=$(( year - 1600 ))
+        # year_secs: seconds from Unix epoch to the start of the current day
+        year_secs=$(( (year_offset * 365 + year_offset / 4 - year_offset / 100 + year_offset / 400 + $(( 10#${julian_day} )) - 135140) * 86400 ))
 
-    printf -- '%s\n' "$(( year_secs + ($(( 10#${hour} )) * 3600) + ($(( 10#${minute} )) * 60) + $(( 10#${second} )) ))"
-}
+        printf -- '%s\n' "$(( year_secs + ($(( 10#${hour} )) * 3600) + ($(( 10#${minute} )) * 60) + $(( 10#${second} )) ))"
+    }
 fi
 
 # @description Return the current Unix epoch expressed in a larger time unit.

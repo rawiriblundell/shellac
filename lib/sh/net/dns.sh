@@ -36,24 +36,14 @@ net_dns() {
       return 0
     ;;
     ([Ll]inux)
-      # TODO: Update to test against IP addresses rather than 'Global'
       if command -v resolvectl >/dev/null 2>&1; then
         printf -- '%s\n' "Attempting lookup test using 'resolvectl' command..." >&2
-        # shellcheck disable=SC2046
-        set -- $(resolvectl dns | grep Global)
-        printf -- '%s\n' "${@:2}"
+        resolvectl dns | awk -F ': ' '{print $2}' | grep . | paste -sd ' ' -
         return 0
       fi
-      if command -v systemd-resolv >/dev/null 2>&1; then
+      if command -v systemd-resolve >/dev/null 2>&1; then
         printf -- '%s\n' "Attempting lookup test using 'systemd-resolve' command..." >&2
-        # shellcheck disable=SC2046
-        set -- $(
-          systemd-resolve --status |
-            awk '/DNS Server:/{flag=1;next}/DNS Domain/{flag=0}flag' |
-            paste -sd ' ' - |
-            tr -s '[:space:]'
-        )
-        printf -- '%s\n' "${@:3}"
+        systemd-resolve --status | awk -F ': ' '/DNS Servers/{print $2}' | paste -sd ' ' -
         return 0
       fi
       if command -v nm-tool >/dev/null 2>&1; then

@@ -37,9 +37,12 @@ _git_fetch_release_json() {
   _repo="${1}"
   _version="${2}"
 
+  local _max_time
+  _max_time="${SHELLAC_CURL_MAX_TIME:-30}"
+
   if [[ "${_version}" = "latest" ]]; then
     _url="https://api.github.com/repos/${_repo}/releases/latest"
-    _json=$(curl -fsSL "${_url}" 2>/dev/null) && printf -- '%s\n' "${_json}" && return 0
+    _json=$(curl -fsSL --max-time "${_max_time}" "${_url}" 2>/dev/null) && printf -- '%s\n' "${_json}" && return 0
     return 1
   fi
 
@@ -51,7 +54,7 @@ _git_fetch_release_json() {
   local _tag
   for _tag in "${candidates[@]}"; do
     _url="https://api.github.com/repos/${_repo}/releases/tags/${_tag}"
-    _json=$(curl -fsSL "${_url}" 2>/dev/null) || continue
+    _json=$(curl -fsSL --max-time "${_max_time}" "${_url}" 2>/dev/null) || continue
     # GitHub returns 200 with a message field on not-found; check for tag_name
     printf -- '%s\n' "${_json}" | jq -e '.tag_name' >/dev/null 2>&1 || continue
     printf -- '%s\n' "${_json}"
@@ -168,7 +171,10 @@ git_fetch_release() {
     return 1
   fi
 
+  local _download_max_time
+  _download_max_time="${SHELLAC_CURL_DOWNLOAD_MAX_TIME:-120}"
+
   _asset_name="${_selected##*/}"
   printf -- '%s\n' "Downloading: ${_selected}" >&2
-  curl -fL --progress-bar -o "${_asset_name}" "${_selected}"
+  curl -fL --progress-bar --max-time "${_download_max_time}" -o "${_asset_name}" "${_selected}"
 }

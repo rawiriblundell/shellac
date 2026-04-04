@@ -1,0 +1,1779 @@
+<!doctype html>
+<html data-bs-theme="">
+
+<head>
+    <title>Musings - Shellac
+    </title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    
+    <link rel="canonical" href="https://rawiriblundell.github.io/shellac/docs/musings/">
+    
+
+    
+    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon.ico">
+    
+    
+
+    <script>var base_url = '../..';</script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/root.min.css">
+    <link rel="stylesheet" href="../../assets/css/main.min.css">
+    <link rel="stylesheet" href="../../assets/css/media.min.css">
+    <link rel="stylesheet" href="../../assets/css/mkdocstrings.min.css">
+    <script src="../../search/main.js"></script>
+
+    
+    
+    
+    
+</head>
+
+<body>
+    <div class="container py-3">
+        <header>
+            <!-- block header -->
+<nav class="navbar navbar-expand-xl border-bottom">
+    <div class="container-fluid">
+        
+            <img class="logo" src="../../images/shellac-light.png">
+        
+
+        
+            <span class=" fs-4 title-color site-name" id="component-site-name" style="text-transform: uppercase;">Shellac</span>
+        
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsMenu"
+            aria-controls="navbarsMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse flex-column ml-auto" id="navbarsMenu">
+            <ul class="navbar-nav">
+
+                <!-- block menu -->
+                <li class="nav-item">
+                    <!-- block menu -->
+    
+        <li class="nav-item" id="component-menu">
+            <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="
+                            nav-link text-gray text-decoration-none" href="../..">[Home]</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class=" active 
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Docs]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../installation/" class="dropdown-item text-decoration-none ">Installation</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../structure/" class="dropdown-item text-decoration-none ">Structure</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../naming-conventions/" class="dropdown-item text-decoration-none ">Naming conventions</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../shell_scopes/" class="dropdown-item text-decoration-none ">Shell scopes</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../variable_precedence/" class="dropdown-item text-decoration-none ">Variable precedence</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../shellac_in_practice/" class="dropdown-item text-decoration-none ">Shellac in practice</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="./" class="dropdown-item text-decoration-none  active ">Musings</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../Other%20shell%20libraries/" class="dropdown-item text-decoration-none ">Other shell libraries</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../Use%20of%20AI/" class="dropdown-item text-decoration-none ">Use of AI</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../on_vibe_coding/" class="dropdown-item text-decoration-none ">On vibe coding</a>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Module Reference]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/" class="dropdown-item text-decoration-none ">Index</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Args &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/args/arg_count/" class="dropdown-item text-decoration-none ">Arg count</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/args/arg_grep/" class="dropdown-item text-decoration-none ">Arg grep</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Array &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/aggregate/" class="dropdown-item text-decoration-none ">Aggregate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/concat/" class="dropdown-item text-decoration-none ">Concat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/contains/" class="dropdown-item text-decoration-none ">Contains</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/fill/" class="dropdown-item text-decoration-none ">Fill</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/functional/" class="dropdown-item text-decoration-none ">Functional</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/join/" class="dropdown-item text-decoration-none ">Join</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/length/" class="dropdown-item text-decoration-none ">Length</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/mapfile/" class="dropdown-item text-decoration-none ">Mapfile</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/readlist/" class="dropdown-item text-decoration-none ">Readlist</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/remove/" class="dropdown-item text-decoration-none ">Remove</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/set/" class="dropdown-item text-decoration-none ">Set</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/shift/" class="dropdown-item text-decoration-none ">Shift</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/slice/" class="dropdown-item text-decoration-none ">Slice</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/sort/" class="dropdown-item text-decoration-none ">Sort</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/toarray/" class="dropdown-item text-decoration-none ">Toarray</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Core &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/assert/" class="dropdown-item text-decoration-none ">Assert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/debug/" class="dropdown-item text-decoration-none ">Debug</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/die/" class="dropdown-item text-decoration-none ">Die</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/include/" class="dropdown-item text-decoration-none ">Include</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/is/" class="dropdown-item text-decoration-none ">Is</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/open/" class="dropdown-item text-decoration-none ">Open</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/requires/" class="dropdown-item text-decoration-none ">Requires</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/save_function/" class="dropdown-item text-decoration-none ">Save function</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/stacktrace/" class="dropdown-item text-decoration-none ">Stacktrace</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/status/" class="dropdown-item text-decoration-none ">Status</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/stdlib/" class="dropdown-item text-decoration-none ">Stdlib</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/trap/" class="dropdown-item text-decoration-none ">Trap</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/types/" class="dropdown-item text-decoration-none ">Types</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/wants/" class="dropdown-item text-decoration-none ">Wants</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Crypto &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/chacha20/" class="dropdown-item text-decoration-none ">Chacha20</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/genpasswd/" class="dropdown-item text-decoration-none ">Genpasswd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/genphrase/" class="dropdown-item text-decoration-none ">Genphrase</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/random/" class="dropdown-item text-decoration-none ">Random</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssh_fingerprint/" class="dropdown-item text-decoration-none ">Ssh fingerprint</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_cert_join/" class="dropdown-item text-decoration-none ">Ssl cert join</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_cert_split/" class="dropdown-item text-decoration-none ">Ssl cert split</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_connect/" class="dropdown-item text-decoration-none ">Ssl connect</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_convert/" class="dropdown-item text-decoration-none ">Ssl convert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_decrypt/" class="dropdown-item text-decoration-none ">Ssl decrypt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_dgst/" class="dropdown-item text-decoration-none ">Ssl dgst</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_diag/" class="dropdown-item text-decoration-none ">Ssl diag</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_encrypt/" class="dropdown-item text-decoration-none ">Ssl encrypt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_generate/" class="dropdown-item text-decoration-none ">Ssl generate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_hpkp/" class="dropdown-item text-decoration-none ">Ssl hpkp</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_inspect/" class="dropdown-item text-decoration-none ">Ssl inspect</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_keystore/" class="dropdown-item text-decoration-none ">Ssl keystore</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_p12store/" class="dropdown-item text-decoration-none ">Ssl p12store</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_passwd/" class="dropdown-item text-decoration-none ">Ssl passwd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_pkcs12/" class="dropdown-item text-decoration-none ">Ssl pkcs12</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_ppk/" class="dropdown-item text-decoration-none ">Ssl ppk</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_validate_cert/" class="dropdown-item text-decoration-none ">Ssl validate cert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_view_cert/" class="dropdown-item text-decoration-none ">Ssl view cert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_view_csr/" class="dropdown-item text-decoration-none ">Ssl view csr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_view_key/" class="dropdown-item text-decoration-none ">Ssl view key</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_view_pkcs12/" class="dropdown-item text-decoration-none ">Ssl view pkcs12</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/uuid/" class="dropdown-item text-decoration-none ">Uuid</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Fs &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/archive/" class="dropdown-item text-decoration-none ">Archive</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/backup/" class="dropdown-item text-decoration-none ">Backup</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/base64/" class="dropdown-item text-decoration-none ">Base64</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/ini_val/" class="dropdown-item text-decoration-none ">Ini val</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/io/" class="dropdown-item text-decoration-none ">Io</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/permissions/" class="dropdown-item text-decoration-none ">Permissions</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/stat_file/" class="dropdown-item text-decoration-none ">Stat file</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Git &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/git/base/" class="dropdown-item text-decoration-none ">Base</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/git/releases/" class="dropdown-item text-decoration-none ">Releases</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Goodies &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/8ball/" class="dropdown-item text-decoration-none ">8ball</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/ansi_cursor/" class="dropdown-item text-decoration-none ">Ansi cursor</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/bash_loading_animations/" class="dropdown-item text-decoration-none ">Bash loading animations</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/hex/" class="dropdown-item text-decoration-none ">Hex</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/hr/" class="dropdown-item text-decoration-none ">Hr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/larson/" class="dropdown-item text-decoration-none ">Larson</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/linenoise/" class="dropdown-item text-decoration-none ">Linenoise</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/pretty/" class="dropdown-item text-decoration-none ">Pretty</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/rounded_box/" class="dropdown-item text-decoration-none ">Rounded box</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/spinner/" class="dropdown-item text-decoration-none ">Spinner</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/tui_prompts/" class="dropdown-item text-decoration-none ">Tui prompts</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Hash &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/hash/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Json &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/json/jsonprint/" class="dropdown-item text-decoration-none ">Jsonprint</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Line &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/behead/" class="dropdown-item text-decoration-none ">Behead</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/filter/" class="dropdown-item text-decoration-none ">Filter</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/first/" class="dropdown-item text-decoration-none ">First</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/indent/" class="dropdown-item text-decoration-none ">Indent</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/last/" class="dropdown-item text-decoration-none ">Last</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/line/" class="dropdown-item text-decoration-none ">Line</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/line_immutable/" class="dropdown-item text-decoration-none ">Line immutable</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/longest/" class="dropdown-item text-decoration-none ">Longest</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/printline/" class="dropdown-item text-decoration-none ">Printline</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/reverse_words/" class="dropdown-item text-decoration-none ">Reverse words</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/scroll/" class="dropdown-item text-decoration-none ">Scroll</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Markdown &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/markdown/markdown/" class="dropdown-item text-decoration-none ">Markdown</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Misc &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/aws_costs/" class="dropdown-item text-decoration-none ">Aws costs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/brew/" class="dropdown-item text-decoration-none ">Brew</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/brew_use_gnu_coreutils/" class="dropdown-item text-decoration-none ">Brew use gnu coreutils</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/greet/" class="dropdown-item text-decoration-none ">Greet</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/nagios_output/" class="dropdown-item text-decoration-none ">Nagios output</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/strict/" class="dropdown-item text-decoration-none ">Strict</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Net &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/cidr/" class="dropdown-item text-decoration-none ">Cidr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/dns/" class="dropdown-item text-decoration-none ">Dns</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/download/" class="dropdown-item text-decoration-none ">Download</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/http_status_codes/" class="dropdown-item text-decoration-none ">Http status codes</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/interface/" class="dropdown-item text-decoration-none ">Interface</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/open_link/" class="dropdown-item text-decoration-none ">Open link</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/probe/" class="dropdown-item text-decoration-none ">Probe</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/query/" class="dropdown-item text-decoration-none ">Query</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/url/" class="dropdown-item text-decoration-none ">Url</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/validate/" class="dropdown-item text-decoration-none ">Validate</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Numbers &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/calc/" class="dropdown-item text-decoration-none ">Calc</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/compare/" class="dropdown-item text-decoration-none ">Compare</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/math/" class="dropdown-item text-decoration-none ">Math</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/numeric/" class="dropdown-item text-decoration-none ">Numeric</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/primes/" class="dropdown-item text-decoration-none ">Primes</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/range/" class="dropdown-item text-decoration-none ">Range</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/rounding/" class="dropdown-item text-decoration-none ">Rounding</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/seq/" class="dropdown-item text-decoration-none ">Seq</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/stats/" class="dropdown-item text-decoration-none ">Stats</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/sum/" class="dropdown-item text-decoration-none ">Sum</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Path &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/path/base/" class="dropdown-item text-decoration-none ">Base</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/path/realpaths/" class="dropdown-item text-decoration-none ">Realpaths</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Sys &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/cpu/" class="dropdown-item text-decoration-none ">Cpu</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/cpuhogs/" class="dropdown-item text-decoration-none ">Cpuhogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/hogs/" class="dropdown-item text-decoration-none ">Hogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/info/" class="dropdown-item text-decoration-none ">Info</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/mem/" class="dropdown-item text-decoration-none ">Mem</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/memhogs/" class="dropdown-item text-decoration-none ">Memhogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/mount/" class="dropdown-item text-decoration-none ">Mount</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/os/" class="dropdown-item text-decoration-none ">Os</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/path_env/" class="dropdown-item text-decoration-none ">Path env</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/process/" class="dropdown-item text-decoration-none ">Process</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/service/" class="dropdown-item text-decoration-none ">Service</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/shell/" class="dropdown-item text-decoration-none ">Shell</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/signals/" class="dropdown-item text-decoration-none ">Signals</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/swaphogs/" class="dropdown-item text-decoration-none ">Swaphogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/terminal_size/" class="dropdown-item text-decoration-none ">Terminal size</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/uptime/" class="dropdown-item text-decoration-none ">Uptime</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/virtual/" class="dropdown-item text-decoration-none ">Virtual</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/what/" class="dropdown-item text-decoration-none ">What</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Text &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/carve/" class="dropdown-item text-decoration-none ">Carve</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/case_convert/" class="dropdown-item text-decoration-none ">Case convert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/chr/" class="dropdown-item text-decoration-none ">Chr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/collapse/" class="dropdown-item text-decoration-none ">Collapse</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/color/" class="dropdown-item text-decoration-none ">Color</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/csvwrap/" class="dropdown-item text-decoration-none ">Csvwrap</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/dos2unix/" class="dropdown-item text-decoration-none ">Dos2unix</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/encode/" class="dropdown-item text-decoration-none ">Encode</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/first/" class="dropdown-item text-decoration-none ">First</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/helmet/" class="dropdown-item text-decoration-none ">Helmet</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/len/" class="dropdown-item text-decoration-none ">Len</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/padding/" class="dropdown-item text-decoration-none ">Padding</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/predicates/" class="dropdown-item text-decoration-none ">Predicates</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/prefix_suffix/" class="dropdown-item text-decoration-none ">Prefix suffix</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/puts/" class="dropdown-item text-decoration-none ">Puts</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/quote/" class="dropdown-item text-decoration-none ">Quote</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/repeat/" class="dropdown-item text-decoration-none ">Repeat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/replace/" class="dropdown-item text-decoration-none ">Replace</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/rev/" class="dropdown-item text-decoration-none ">Rev</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/rot13/" class="dropdown-item text-decoration-none ">Rot13</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/rotate/" class="dropdown-item text-decoration-none ">Rotate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/sanitize/" class="dropdown-item text-decoration-none ">Sanitize</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/shuffle/" class="dropdown-item text-decoration-none ">Shuffle</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/split/" class="dropdown-item text-decoration-none ">Split</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/style/" class="dropdown-item text-decoration-none ">Style</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/substr/" class="dropdown-item text-decoration-none ">Substr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/tput/" class="dropdown-item text-decoration-none ">Tput</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/transform/" class="dropdown-item text-decoration-none ">Transform</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/trim/" class="dropdown-item text-decoration-none ">Trim</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/truncate/" class="dropdown-item text-decoration-none ">Truncate</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Time &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/date_arithmetic/" class="dropdown-item text-decoration-none ">Date arithmetic</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/date_ordinal/" class="dropdown-item text-decoration-none ">Date ordinal</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/dst/" class="dropdown-item text-decoration-none ">Dst</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/duration/" class="dropdown-item text-decoration-none ">Duration</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/epoch/" class="dropdown-item text-decoration-none ">Epoch</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/human_duration/" class="dropdown-item text-decoration-none ">Human duration</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/is_leap_year/" class="dropdown-item text-decoration-none ">Is leap year</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/month_end/" class="dropdown-item text-decoration-none ">Month end</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/seconds_to_hms/" class="dropdown-item text-decoration-none ">Seconds to hms</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/timestamp/" class="dropdown-item text-decoration-none ">Timestamp</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Units &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/units/bytes_to_human/" class="dropdown-item text-decoration-none ">Bytes to human</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/units/permissions/" class="dropdown-item text-decoration-none ">Permissions</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/units/temperature/" class="dropdown-item text-decoration-none ">Temperature</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Users &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/users/provision/" class="dropdown-item text-decoration-none ">Provision</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/users/query/" class="dropdown-item text-decoration-none ">Query</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Utils &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/choose/" class="dropdown-item text-decoration-none ">Choose</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/cmd/" class="dropdown-item text-decoration-none ">Cmd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/logging/" class="dropdown-item text-decoration-none ">Logging</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/mkcd/" class="dropdown-item text-decoration-none ">Mkcd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/prompt/" class="dropdown-item text-decoration-none ">Prompt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/repeat/" class="dropdown-item text-decoration-none ">Repeat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/retry_backoff/" class="dropdown-item text-decoration-none ">Retry backoff</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/shuf/" class="dropdown-item text-decoration-none ">Shuf</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/tac/" class="dropdown-item text-decoration-none ">Tac</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/timealert/" class="dropdown-item text-decoration-none ">Timealert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/timeout/" class="dropdown-item text-decoration-none ">Timeout</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/validate_config/" class="dropdown-item text-decoration-none ">Validate config</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/wrap/" class="dropdown-item text-decoration-none ">Wrap</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+            </ul>
+        </li>
+<!-- endblock -->
+                </li>
+                <!-- endblock -->
+
+                <!-- block search -->
+                <li class="nav-item">
+                    <a class="collapsed" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <div class="md-search-icon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+                    </a>
+                </li>
+                <!--  endblock -->
+
+                <!-- block source -->
+                <li class="nav-item">
+                    
+                        
+                            <!-- block source -->
+<div class="md-source source-detail">
+  <div class="md-source-repo-icon">
+    <i class="fa fa-github-alt" aria-hidden="true"></i>
+  </div>
+
+  <div class="md-source-repo-url">
+    <a href="https://github.com/rawiriblundell/shellac" class="md-source">
+        rawiriblundell/shellac
+    </a>
+
+    <ul class="md-source-repo-text">
+      <li>
+        <i class="fa fa-tag" aria-hidden="true"></i>
+        <img
+          alt="GitHub tag (latest by date)"
+          src="https://img.shields.io/github/v/tag/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+
+      <li>
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <img
+          alt="GitHub Repo stars"
+          src="https://img.shields.io/github/stars/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+
+      <li>
+        <i class="fa fa-code-fork" aria-hidden="true"></i>
+        <img
+          alt="GitHub forks"
+          src="https://img.shields.io/github/forks/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+    </ul>
+  </div>
+</div>
+<!--  endblock -->
+                        
+                    
+                </li>
+                <!--  endblock -->
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--  endblock -->
+        </header>
+
+        <main><!-- block search -->
+<div class="collapse" id="collapseExample">
+    <div role="search" class="search-box">
+        <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+            <input type="text" name="q" class="search-query"
+            placeholder="Search docs" title="Type search term here" />
+        </form>
+    </div>
+</div>
+<!-- endblock -->
+
+            
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 d-none d-md-block" id="component-sidebar">
+                        <!-- block sidebar -->
+<div class="navbar-expand-md" role="complementary">
+    
+    <div class="sidebar navbar-collapse collapse card">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#abstraction-depth-when-to-smooth-over-a-wart" class="nav-link">Abstraction depth: when to smooth over a wart</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#portable-pipelines-head-c-and-the-habit-of-writing-for-the-lowest-common-denominator" class="nav-link">Portable pipelines: head -c and the habit of writing for the lowest common denominator</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#capability-guards-graceful-fallback-versus-silent-wrong-answers" class="nav-link">Capability guards: graceful fallback versus silent wrong answers</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#str_-line_-text_-where-the-prefix-boundaries-blur" class="nav-link">str_, line_, text_*: where the prefix boundaries blur</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#self-reference-dry-versus-extractability" class="nav-link">Self-reference: DRY versus extractability</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#requires-placement-library-level-versus-function-level" class="nav-link">requires placement: library level versus function level</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- endblock -->
+                    </div>
+                    <div class="col-md-9 col-12" id="component-content">
+                        <!-- block content -->
+<section class="container post" id="component-content">
+    <article>
+        <header>
+            
+                <h1 class=" title" id="component-title">Musings</h1>
+            
+        </header>
+        <p><p>This is a collection of design tensions that don't have clean resolutions —
+cases where shellac's goals pull in opposite directions. They're worth
+writing down rather than quietly deciding, because the same questions will
+come up again.</p>
+<hr />
+<h2 id="abstraction-depth-when-to-smooth-over-a-wart">Abstraction depth: when to smooth over a wart<a class="headerlink" href="#abstraction-depth-when-to-smooth-over-a-wart" title="Permanent link">&para;</a></h2>
+<p>Shellac's purpose is to smooth over shell scripting warts and gotchas. But
+shellac also wants to be approachable to newcomers, and a library with an
+answer to every problem becomes its own problem.</p>
+<p>A concrete example: <code>sort | uniq</code> versus <code>sort -u</code>.</p>
+<p>The kneejerk cleanup is to collapse <code>sort | uniq</code> to <code>sort -u</code>. On GNU
+systems that's fine. On Solaris and some older UNIX systems, <code>uniq -u</code> has
+quirks — duplicates can slip through in ways that <code>sort | uniq</code> handles
+correctly. So <code>sort | uniq</code> isn't sloppy; it's a portability choice with a
+reason behind it.</p>
+<p>The next thought is to encapsulate this into a <code>line_unique()</code> function that
+detects the environment and picks the right behaviour. That's a reasonable
+shellac instinct. But it's also a rabbit hole: once you start abstracting
+every pipeline that has a portability footnote, you end up with a library
+that wraps <code>sort</code>, <code>uniq</code>, <code>cat</code>, and eventually <code>ls</code>. At that point you've
+rebuilt a compatibility layer, not a utility library.</p>
+<p>The tension is:</p>
+<ul>
+<li><strong>Smooth over warts</strong> — that's the point of shellac.</li>
+<li><strong>Don't abstract everything</strong> — newcomers need to be able to read the
+  code and recognise what's happening. A call to <code>line_unique</code> is opaque
+  where <code>sort | uniq</code> is self-evident.</li>
+<li><strong>Don't silently change semantics</strong> — collapsing <code>sort | uniq</code> to
+  <code>sort -u</code> in a demo document implies they're equivalent. They mostly are,
+  but writing it down as a "cleanup" papers over the reason the original
+  author wrote it the way they did.</li>
+</ul>
+<p>Where to draw the line is a judgement call made case by case. The heuristic
+used here: abstract when the wart is invisible (the caller can't easily
+detect it themselves), leave it alone when the pattern is readable and the
+reason is documentable. <code>sort | uniq</code> is readable; the portability reason
+belongs in a comment, not a function.</p>
+<hr />
+<h2 id="portable-pipelines-head-c-and-the-habit-of-writing-for-the-lowest-common-denominator">Portable pipelines: head -c and the habit of writing for the lowest common denominator<a class="headerlink" href="#portable-pipelines-head-c-and-the-habit-of-writing-for-the-lowest-common-denominator" title="Permanent link">&para;</a></h2>
+<p><code>head -c N</code> reads N bytes from stdin. It works on Linux and macOS, fails
+silently or produces wrong output on some BSDs and older Solaris. For a lot
+of code that will only ever run on modern Linux this doesn't matter. For
+shellac, where the goal is code that travels, it does.</p>
+<p>A concrete example is generating random strings:</p>
+<pre class="highlight"><code class="language-bash"># Common but not portable
+tr -dc '[:graph:]' &lt;/dev/urandom | head -c 16
+
+# Portable equivalent
+tr -dc '[:graph:]' &lt;/dev/urandom | fold -w 1 | head -n 16 | paste -sd '' -</code></pre>
+<p>The portable version is longer and less obvious at a glance. <code>fold -w 1</code>
+splits the character stream one character per line; <code>head -n 16</code> takes 16
+lines; <code>paste -sd '' -</code> collapses them back to a single string. Each tool
+in that pipeline has well-defined POSIX behaviour. The result is the same
+16-character string, produced reliably everywhere.</p>
+<p>The instinct to clean up the longer form is understandable. The pipeline
+looks like it's doing extra work. But the extra work is the point — it's
+trading readability for reach, and in a shared library that's often the
+right trade.</p>
+<p><code>paste</code> in particular is an unsung hero of portable shell pipelines. Its
+<code>-sd '' -</code> idiom (serial paste with empty delimiter, reading stdin) collapses
+a stream of lines into a single string without spawning extra processes or
+relying on shell tricks. Despite being POSIX for decades, it's routinely
+unknown even to experienced shell programmers. The common substitute is
+<code>tr -d '\n'</code> chained with a trailing <code>echo</code> or <code>printf</code> to restore the
+final newline — a pattern that appears in production scripts, dotfiles, and
+Stack Overflow answers from people with decades of shell experience.
+<code>fold</code> has the same problem: it's been in every UNIX since the 1970s, and
+most developers reach for Python or awk before they think of it.</p>
+<p>The lesson isn't that everyone should memorise obscure POSIX utilities. It's
+that the portable form of a pipeline is often already there in the toolbox,
+and the "clever" substitute that bypasses it usually has edge cases the
+author didn't test.</p>
+<p>The habit extends beyond <code>head -c</code>. Anywhere a GNU extension provides a
+nicer syntax — <code>grep -P</code>, <code>sed -E</code> on some systems, <code>date -d</code> — there's
+a portable form that achieves the same thing with more ceremony. Whether to
+use it depends on where the code needs to run. Shellac assumes it needs to
+run somewhere inconvenient, so the ceremony stays.</p>
+<hr />
+<h2 id="capability-guards-graceful-fallback-versus-silent-wrong-answers">Capability guards: graceful fallback versus silent wrong answers<a class="headerlink" href="#capability-guards-graceful-fallback-versus-silent-wrong-answers" title="Permanent link">&para;</a></h2>
+<p><code>array_sort_natural</code> uses <code>sort -V</code> (GNU coreutils version sort) to order
+strings containing embedded numbers the way humans expect. On systems
+without it, the function falls back to standard lexicographic <code>sort</code> with a
+warning to stderr.</p>
+<p>That seems reasonable. It keeps the function usable everywhere and tells
+the caller something went wrong. The problem is that lexicographic sort
+doesn't just produce a different order — it produces the wrong order for
+the use case. A caller sorting <code>( v1.9 v1.10 v2.0 )</code> and getting back
+<code>( v1.10 v1.9 v2.0 )</code> has a bug, whether or not they saw the warning.</p>
+<p>The alternative is to make <code>sort -V</code> a hard requirement: check at include
+time, fail loudly, and leave it to the caller to decide whether to proceed.
+That's less convenient but honest. A function that returns wrong answers
+silently is worse than one that refuses to run.</p>
+<p>The tension is:</p>
+<ul>
+<li><strong>Degrade gracefully</strong> — a missing tool shouldn't kill an otherwise
+  working script.</li>
+<li><strong>Don't silently produce wrong results</strong> — a fallback that changes
+  semantics isn't a fallback, it's a different function with the same name.</li>
+</ul>
+<p>The right call depends on what "wrong" means for the specific function. For
+<code>array_sort_natural</code>, the order matters by definition — that's why the
+caller asked for natural sort. The fallback is semantically incorrect and
+the warning may be missed. A hard failure with a clear message would be
+more honest.</p>
+<p>For other capability guards the calculus is different. A function that
+tries <code>openssl</code> and falls back to <code>python3 -c</code> for base64 decoding is
+producing the same result either way. The fallback is safe. The guard
+exists only to prefer the faster path.</p>
+<p>The heuristic used here: if the fallback produces a different answer, it is
+not a fallback. Guard hard, fail loudly, and let the caller handle it.</p>
+<hr />
+<h2 id="str_-line_-text_-where-the-prefix-boundaries-blur">str_<em>, line_</em>, text_*: where the prefix boundaries blur<a class="headerlink" href="#str_-line_-text_-where-the-prefix-boundaries-blur" title="Permanent link">&para;</a></h2>
+<p>The three prefixes were intended to encode a meaningful distinction:</p>
+<ul>
+<li><strong><code>str_</code></strong> — operates on a string value in memory. Input is an argument,
+  output is a transformed value. Character-level. <code>str_len</code>, <code>str_replace</code>,
+  <code>str_ucfirst</code>, <code>str_snake_case</code>.</li>
+<li><strong><code>line_</code></strong> — operates on a stream of lines. Input is stdin or a file,
+  output is line-structured. <code>line_first</code>, <code>line_grep</code>, <code>line_sort</code>,
+  <code>line_count</code>.</li>
+<li><strong><code>text_</code></strong> — transforms text for presentation or display. <code>text_bold</code>,
+  <code>text_center</code>, <code>text_underline</code>, <code>text_fg</code>.</li>
+</ul>
+<p>That model is clean on paper. In practice, <code>text_</code> has blurred into a
+catch-all for "things that transform how text looks," which includes both
+ANSI terminal formatting (<code>text_bold</code>, <code>text_fg</code>) and plain case conversion
+(<code>text_toupper</code>, <code>text_tolower</code>, <code>text_capitalise</code>). The case conversion
+functions live in <code>text/style.sh</code> alongside escape-code wrappers, but
+they are not display formatting — they are value transformations.</p>
+<p>Meanwhile, <code>str_ucfirst</code>, <code>str_ucwords</code>, and <code>str_title_case</code> do the same
+category of work with a <code>str_</code> prefix from <code>text/case_convert.sh</code>. The
+result is a gap in the model: full uppercase is <code>text_toupper</code>, but
+capitalise-first-word is <code>str_ucfirst</code>. The caller wanting to uppercase a
+string has no obvious prefix to reach for.</p>
+<p>The cross-language context makes this sharper. Python, Ruby, JavaScript, and
+Go all put case conversion on the string type itself: <code>s.upper()</code>,
+<code>s.upcase</code>, <code>s.toUpperCase()</code>, <code>strings.ToUpper(s)</code>. There is no
+distinction between "string operation" and "text presentation" at the
+language level — it is all one namespace. Shell has no string type, so
+shellac has to impose that organization through naming. But the naming
+currently reflects the file the function was written in more than the
+semantic category it belongs to.</p>
+<p>The tension is:</p>
+<ul>
+<li><strong><code>str_</code> is the right prefix</strong> for case conversion — these are value
+  transformations, not presentation effects. <code>str_toupper</code> would be
+  consistent with <code>str_ucfirst</code> and cross-language convention.</li>
+<li><strong><code>text_toupper</code> and <code>text_tolower</code> already exist</strong> and are in use.
+  Renaming or aliasing them risks breaking callers and fragmenting the
+  documentation.</li>
+<li><strong><code>text_</code> should mean "display/presentation"</strong> — if it expands to cover
+  any function that touches the content of a string, the prefix loses its
+  signal value.</li>
+</ul>
+<p>This has been partially resolved. The value-transformation functions in
+<code>style.sh</code> — <code>text_toupper</code>, <code>text_tolower</code>, <code>text_capitalise</code>, <code>text_c2n</code>,
+<code>text_n2c</code>, <code>text_n2s</code> — have been renamed to <code>str_*</code> canonical names, with
+<code>text_*</code> kept as thin aliases for backward compatibility. The ANSI formatting
+functions (<code>text_bold</code>, <code>text_fg</code>, etc.) and display layout functions
+(<code>text_center</code>, <code>text_wordwrap</code>) remain <code>text_*</code>, which is where they belong.</p>
+<p>The alias approach also ran in the other direction: <code>str_truncate</code>,
+<code>str_padding</code>, and <code>line_indent</code> — all display/presentation operations —
+gained <code>text_*</code> aliases (<code>text_truncate</code>, <code>text_padding</code>, <code>text_indent</code>).</p>
+<p>The rule that emerged from the cleanup: <code>text_*</code> means the function is
+primarily about how something looks on screen. <code>str_*</code> means it transforms
+a string value. When in doubt, ask whether the function would make sense in
+a non-terminal context. Case conversion: yes. Centering text to terminal
+width: no.</p>
+<p>New functions should follow this consistently. The <code>text_*</code> aliases in
+<code>style.sh</code> exist to avoid breaking callers — they are not an invitation to
+keep writing <code>text_</code> for value transformations.</p>
+<hr />
+<h2 id="self-reference-dry-versus-extractability">Self-reference: DRY versus extractability<a class="headerlink" href="#self-reference-dry-versus-extractability" title="Permanent link">&para;</a></h2>
+<p>One of the criticisms shellac levels at other shell library projects is
+constant self-reference. A function calls another function from the same
+project, which calls another, and before long the dependency graph is deep
+enough that pulling out a single function means pulling out half the library.
+The irony is that shellac can do this too, if it's not deliberate about it.</p>
+<p>The canonical example that came up: <code>is_command</code> is a thin wrapper around
+<code>command -v</code>:</p>
+<pre class="highlight"><code class="language-bash">is_command() {
+    command -v "${1:-$RANDOM}" &gt;/dev/null 2&gt;&amp;1
+}</code></pre>
+<p>Using <code>is_command</code> inside <code>text/style.sh</code> to check for <code>awk</code> or <code>tr</code> means
+anyone who wants to lift <code>str_toupper</code> into their own script also needs
+<code>is_command</code> — which lives in <code>core/is.sh</code>, which is part of shellac's
+core. A function that could have been self-contained now has a load-order
+dependency on the library it came from.</p>
+<p><code>command -v tool &gt;/dev/null 2&gt;&amp;1</code> is POSIX, readable, and needs nothing. It's
+three extra characters over <code>is_command tool</code>. The extra characters cost
+nothing; the dependency does.</p>
+<p>The tension is:</p>
+<ul>
+<li><strong>DRY</strong> — the library already has <code>is_command</code>, using it is consistent.</li>
+<li><strong>Extractability</strong> — each function should be copy-pasteable without
+  dragging in infrastructure. That's part of what makes shellac different
+  from the libraries it criticises.</li>
+</ul>
+<p>In a library context DRY is the wrong frame. The goal is not to avoid
+repeating <code>&gt;/dev/null 2&gt;&amp;1</code> — it's to avoid creating coupling that reduces
+the value of the individual function. Three categories of cross-library
+reference are worth distinguishing:</p>
+<p><strong>Avoidable</strong> — calling a shellac wrapper where a native shell or POSIX
+primitive does the same job. <code>is_command</code> → <code>command -v</code>. These should not
+appear in library code. Replace them on sight.</p>
+<p><strong>Functional</strong> — a function whose purpose is to compose other library
+functions. <code>crypto/genpasswd.sh</code> calling <code>random_int</code> is reasonable because
+<code>genpasswd</code> is inherently a higher-level function; it builds on <code>random</code> by
+design. These dependencies should be explicit <code>include</code> statements so the
+load order is declared, not assumed.</p>
+<p><strong>Aggregator</strong> — a module whose entire purpose is to bundle others.
+<code>sys/hogs.sh</code> includes <code>sys/cpuhogs</code>, <code>sys/memhogs</code>, and <code>sys/swaphogs</code>
+and re-exports them as a single entry point. That's the point of the
+module; the dependency is the feature.</p>
+<p>The heuristic: if the dependency is invisible to the function's caller and
+could be replaced with a primitive, replace it. If the dependency is the
+reason the function exists, keep it and declare it explicitly.</p>
+<hr />
+<h2 id="requires-placement-library-level-versus-function-level">requires placement: library level versus function level<a class="headerlink" href="#requires-placement-library-level-versus-function-level" title="Permanent link">&para;</a></h2>
+<p><code>requires</code> exists to fail loudly when a dependency is missing rather than
+let execution continue into a cryptic error message or, worse, a silent
+wrong answer. The question that comes up when adding requires guards to
+library files is where to put them: at the top of the file so they fire
+at load time, or inside individual functions so they fire at call time.</p>
+<p>The instinct is to put them at the top of the file. A file named
+<code>ssl_inspect.sh</code> obviously requires <code>openssl</code>. A single <code>requires openssl</code>
+on line three is visible, obvious, and easy to audit. That instinct is
+correct for files where every function uses the same tool.</p>
+<p>The instinct breaks down as soon as the tool list is not uniform. Take
+<code>ssl_passwd.sh</code>: one function calls <code>openssl passwd</code>, another calls
+<code>/usr/bin/passwd</code>. A library-level <code>requires openssl passwd</code> blocks the
+caller who only needed the system <code>passwd</code> path and happens to be on a
+system without <code>openssl</code>. They didn't ask for <code>openssl</code>. The guard is
+penalising them for a function they never called.</p>
+<p>The same problem appears in larger files. <code>uuid.sh</code> spans eight UUID
+versions with meaningfully different implementations. <code>uuid_v1</code> uses
+<code>ip</code> or <code>ifconfig</code> for the MAC address component. <code>uuid_v3</code> and <code>uuid_v5</code>
+need <code>md5sum</code> and <code>sha1sum</code> respectively. <code>uuid_v7</code> and <code>uuid_v8</code> use
+<code>dd</code> and <code>awk</code>. A library-level requires covering all of that would demand
+five or six tools upfront, blocking any caller who only wanted
+<code>uuid_v4</code> — which is pure random and needs none of them.</p>
+<p>Library-level requires is a claim that the file is not useful without that
+tool. It's appropriate when it's true: <code>calc.sh</code> without <code>bc</code>, <code>service.sh</code>
+without <code>systemctl</code>, <code>ssl_diag.sh</code> without <code>openssl</code>. Files with a single
+dominant dependency that every function shares. For these, one line at the
+top of the file is honest.</p>
+<p>Function-level requires is appropriate when functions within the same file
+have different external dependencies, or when the library provides fallback
+chains. Putting <code>requires</code> at the top of the function means the check fires
+at the point where the tool is actually needed. A caller who loads the file
+but only calls one variant isn't blocked by tools they never touch.</p>
+<p>There's a subtlety with automated detection of what a file "requires". The
+obvious approach — scan for command names in the source — produces a noisy
+list. It picks up builtins (<code>test</code>, <code>echo</code>, <code>getopts</code>, <code>type</code>, <code>alias</code>,
+<code>false</code>, <code>hash</code>) that are always present and should never appear in requires.
+It picks up words that happen to match command names: <code>file</code> from variable
+names and <code># shellcheck shell=bash</code> in <code>#!/bin/false</code> shebangs; <code>pass</code> from
+the password manager appearing in comments; <code>last</code> from a function named
+<code>last</code>; <code>w</code> from a local variable. It picks up self-references in wrapper
+files that are themselves the replacement for the tool they appear to require
+(<code>seq.sh</code> requiring <code>seq</code>, <code>tac.sh</code> requiring <code>tac</code>, <code>mapfile.sh</code> requiring
+<code>mapfile</code>). And it misses the distinction between a tool that is a hard
+dependency and one that appears only in an optional fallback branch.</p>
+<p>Automated scanning is useful for generating a first-pass candidate list, but
+it requires a human pass before anything is committed. The signal-to-noise
+ratio in a raw scan is low enough that acting on it directly would introduce
+more incorrect guards than correct ones.</p>
+<p>The rule that came out of a full audit of the shellac library files:</p>
+<p><strong>Library level</strong> when every function in the file uses the same external
+tool, or when the file is so single-purpose that it is useless without it.</p>
+<p><strong>Function level</strong> when the file contains functions with different external
+dependencies, when the file provides fallback chains across multiple tools,
+or when a significant portion of the file's functions have no external
+dependencies at all.</p>
+<p><strong>No requires at all</strong> when the file is pure shell — parameter expansions,
+arithmetic, string tests, no external command calls. Requiring nothing is
+not a gap in the defensive posture; it is accurate documentation of what
+the code actually needs.</p>
+<p>This raises an apparent contradiction with the self-reference rule
+established earlier: shellac library code should avoid cross-library calls,
+because extracting a single function shouldn't drag in half the library.
+<code>requires</code> is a cross-library call. Every function that uses it depends on
+<code>core/requires.sh</code>.</p>
+<p>The justification is that <code>requires</code> is not utility code — it is
+infrastructure. The earlier self-reference rule targets calls like using
+<code>is_command</code> when <code>command -v</code> does the same job inline. The concern there
+is coupling: a caller who wants <code>str_toupper</code> shouldn't need <code>core/is.sh</code>
+just because the author preferred a shellac wrapper over a POSIX primitive.
+<code>requires</code> doesn't have a meaningful inline equivalent. The alternative is
+an open-coded block:</p>
+<pre class="highlight"><code class="language-bash">my_function() {
+  if ! command -v openssl &gt;/dev/null 2&gt;&amp;1; then
+    printf -- '%s\n' "my_function: openssl not found" &gt;&amp;2
+    return 127
+  fi
+  # ...
+}</code></pre>
+<p>That is not more extractable — it's just longer and less consistent. The
+shellac convention for dependency checking is <code>requires</code>, and that
+convention has value precisely because it's uniform. If library code
+sometimes uses <code>requires</code> and sometimes open-codes <code>command -v</code> blocks,
+callers can't rely on either form being present when they extract a
+function. Consistency wins here, and the coupling cost is accepted
+deliberately.</p>
+<p>What this means in practice: if you lift a shellac function into your own
+script and it contains a <code>requires</code> call, you need to handle it. The
+options are straightforward — either bring <code>core/requires.sh</code> along with
+it, replace the <code>requires</code> call with an inline <code>command -v</code> guard, or
+remove it entirely if you're confident the dependency is present in your
+environment. The <code>requires</code> call will fail with <code>command not found</code> (exit
+127) if <code>core/requires.sh</code> hasn't been loaded. It won't fail silently.
+That's intentional — a missing <code>requires</code> implementation is at least
+loud, even if the error message points to the wrong problem.</p></p>
+    </article>
+</section>
+<!-- endblock -->
+                    </div>
+                </div>
+            </div>
+            
+
+        </main>
+
+        
+        <!-- block preview -->
+    <div class="preview row row-cols-md-3 text-center pt-md-3" id="component-preview">
+        <div class="col themed-grid-col">
+            <a rel="prev" href="../shellac_in_practice/" class="nav-link">
+                <i class="fa fa-arrow-left"></i> Previous
+            </a>
+        </div>
+        <div class="col themed-grid-col"></div>
+        <div class="col themed-grid-col">
+            <a rel="next" href="../Other%20shell%20libraries/" class="nav-link">
+                Next <i class="fa fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+<!-- endblock -->
+        
+
+        
+        <!-- block footer -->
+<footer class="pt-4 my-md-5 pt-md-5 border-top" id="component-footer">
+    <div class="row">
+        <div class="col-12 col-md">
+                <!-- block copyright -->
+
+    <small class="d-block mb-3">
+        Made with
+        <a href="https://github.com/FernandoCelmer/mkdocs-simple-blog" target="_blank" rel="noopener">
+            Simple Blog for MkDocs
+        </a>
+    </small>
+
+<!-- endblock -->
+        </div>
+    </div>
+</footer>
+<!-- endblock -->
+        
+    </div>
+
+    <script src="../../assets/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/js/main.min.js"></script>
+    <script src="../../search/main.js" defer></script>
+
+</body>
+
+</html>

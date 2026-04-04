@@ -265,3 +265,120 @@ module; the dependency is the feature.
 The heuristic: if the dependency is invisible to the function's caller and
 could be replaced with a primitive, replace it. If the dependency is the
 reason the function exists, keep it and declare it explicitly.
+
+---
+
+## requires placement: library level versus function level
+
+`requires` exists to fail loudly when a dependency is missing rather than
+let execution continue into a cryptic error message or, worse, a silent
+wrong answer. The question that comes up when adding requires guards to
+library files is where to put them: at the top of the file so they fire
+at load time, or inside individual functions so they fire at call time.
+
+The instinct is to put them at the top of the file. A file named
+`ssl_inspect.sh` obviously requires `openssl`. A single `requires openssl`
+on line three is visible, obvious, and easy to audit. That instinct is
+correct for files where every function uses the same tool.
+
+The instinct breaks down as soon as the tool list is not uniform. Take
+`ssl_passwd.sh`: one function calls `openssl passwd`, another calls
+`/usr/bin/passwd`. A library-level `requires openssl passwd` blocks the
+caller who only needed the system `passwd` path and happens to be on a
+system without `openssl`. They didn't ask for `openssl`. The guard is
+penalising them for a function they never called.
+
+The same problem appears in larger files. `uuid.sh` spans eight UUID
+versions with meaningfully different implementations. `uuid_v1` uses
+`ip` or `ifconfig` for the MAC address component. `uuid_v3` and `uuid_v5`
+need `md5sum` and `sha1sum` respectively. `uuid_v7` and `uuid_v8` use
+`dd` and `awk`. A library-level requires covering all of that would demand
+five or six tools upfront, blocking any caller who only wanted
+`uuid_v4` — which is pure random and needs none of them.
+
+Library-level requires is a claim that the file is not useful without that
+tool. It's appropriate when it's true: `calc.sh` without `bc`, `service.sh`
+without `systemctl`, `ssl_diag.sh` without `openssl`. Files with a single
+dominant dependency that every function shares. For these, one line at the
+top of the file is honest.
+
+Function-level requires is appropriate when functions within the same file
+have different external dependencies, or when the library provides fallback
+chains. Putting `requires` at the top of the function means the check fires
+at the point where the tool is actually needed. A caller who loads the file
+but only calls one variant isn't blocked by tools they never touch.
+
+There's a subtlety with automated detection of what a file "requires". The
+obvious approach — scan for command names in the source — produces a noisy
+list. It picks up builtins (`test`, `echo`, `getopts`, `type`, `alias`,
+`false`, `hash`) that are always present and should never appear in requires.
+It picks up words that happen to match command names: `file` from variable
+names and `# shellcheck shell=bash` in `#!/bin/false` shebangs; `pass` from
+the password manager appearing in comments; `last` from a function named
+`last`; `w` from a local variable. It picks up self-references in wrapper
+files that are themselves the replacement for the tool they appear to require
+(`seq.sh` requiring `seq`, `tac.sh` requiring `tac`, `mapfile.sh` requiring
+`mapfile`). And it misses the distinction between a tool that is a hard
+dependency and one that appears only in an optional fallback branch.
+
+Automated scanning is useful for generating a first-pass candidate list, but
+it requires a human pass before anything is committed. The signal-to-noise
+ratio in a raw scan is low enough that acting on it directly would introduce
+more incorrect guards than correct ones.
+
+The rule that came out of a full audit of the shellac library files:
+
+**Library level** when every function in the file uses the same external
+tool, or when the file is so single-purpose that it is useless without it.
+
+**Function level** when the file contains functions with different external
+dependencies, when the file provides fallback chains across multiple tools,
+or when a significant portion of the file's functions have no external
+dependencies at all.
+
+**No requires at all** when the file is pure shell — parameter expansions,
+arithmetic, string tests, no external command calls. Requiring nothing is
+not a gap in the defensive posture; it is accurate documentation of what
+the code actually needs.
+
+This raises an apparent contradiction with the self-reference rule
+established earlier: shellac library code should avoid cross-library calls,
+because extracting a single function shouldn't drag in half the library.
+`requires` is a cross-library call. Every function that uses it depends on
+`core/requires.sh`.
+
+The justification is that `requires` is not utility code — it is
+infrastructure. The earlier self-reference rule targets calls like using
+`is_command` when `command -v` does the same job inline. The concern there
+is coupling: a caller who wants `str_toupper` shouldn't need `core/is.sh`
+just because the author preferred a shellac wrapper over a POSIX primitive.
+`requires` doesn't have a meaningful inline equivalent. The alternative is
+an open-coded block:
+
+```bash
+my_function() {
+  if ! command -v openssl >/dev/null 2>&1; then
+    printf -- '%s\n' "my_function: openssl not found" >&2
+    return 127
+  fi
+  # ...
+}
+```
+
+That is not more extractable — it's just longer and less consistent. The
+shellac convention for dependency checking is `requires`, and that
+convention has value precisely because it's uniform. If library code
+sometimes uses `requires` and sometimes open-codes `command -v` blocks,
+callers can't rely on either form being present when they extract a
+function. Consistency wins here, and the coupling cost is accepted
+deliberately.
+
+What this means in practice: if you lift a shellac function into your own
+script and it contains a `requires` call, you need to handle it. The
+options are straightforward — either bring `core/requires.sh` along with
+it, replace the `requires` call with an inline `command -v` guard, or
+remove it entirely if you're confident the dependency is present in your
+environment. The `requires` call will fail with `command not found` (exit
+127) if `core/requires.sh` hasn't been loaded. It won't fail silently.
+That's intentional — a missing `requires` implementation is at least
+loud, even if the error message points to the wrong problem.

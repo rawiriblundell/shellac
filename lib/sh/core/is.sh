@@ -163,6 +163,28 @@ is_command() {
     command -v "${1:-$RANDOM}" >/dev/null 2>&1
 }
 
+# @description Test whether a name exists as an executable file in PATH.
+#   Unlike is_command, this does not match shell functions, aliases, or builtins —
+#   only external binaries found on disk. Walks PATH entries directly using
+#   [ -x ] rather than relying on command -v or type.
+#
+# @arg $1 string Command name
+#
+# @exitcode 0 Executable found in PATH
+# @exitcode 1 Not found in PATH or not executable
+is_in_path() {
+    local _cmd
+    local _dir
+    local IFS
+    _cmd="${1:?is_in_path: command name required}"
+    IFS=':'
+    for _dir in ${PATH}; do
+        [ -z "${_dir}" ] && continue
+        [ -x "${_dir}/${_cmd}" ] && return 0
+    done
+    return 1
+}
+
 # @description Test whether a name is a defined shell function.
 #
 # @arg $1 string Name to test

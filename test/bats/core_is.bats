@@ -190,6 +190,34 @@ teardown() {
 }
 
 # ---------------------------------------------------------------------------
+# is_in_path
+# ---------------------------------------------------------------------------
+
+@test "is_in_path: ls is found in PATH" {
+  run shellac_run 'include "core/is"; is_in_path ls'
+  [ "${status}" -eq 0 ]
+}
+
+@test "is_in_path: non-existent command returns 1" {
+  run shellac_run 'include "core/is"; is_in_path __no_such_cmd_shellac__'
+  [ "${status}" -eq 1 ]
+}
+
+@test "is_in_path: shell function not in PATH returns 1" {
+  run shellac_run 'include "core/is"
+    __shellac_test_fn() { :; }
+    is_in_path __shellac_test_fn'
+  [ "${status}" -eq 1 ]
+}
+
+@test "is_in_path: shell function shadowing a binary still finds the binary" {
+  run shellac_run 'include "core/is"
+    ls() { :; }
+    is_in_path ls'
+  [ "${status}" -eq 0 ]
+}
+
+# ---------------------------------------------------------------------------
 # is_function
 # ---------------------------------------------------------------------------
 

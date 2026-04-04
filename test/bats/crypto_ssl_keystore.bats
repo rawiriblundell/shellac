@@ -2,6 +2,7 @@
 # Tests for ssl_create_jks in lib/sh/crypto/ssl_keystore.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 setup() {
   if ! command -v openssl >/dev/null 2>&1; then
@@ -146,12 +147,12 @@ teardown() {
 # ---------------------------------------------------------------------------
 
 @test "ssl_create_truststore: missing output arg exits 1" {
-  run shellac_run 'include "crypto/ssl_keystore"; ssl_create_truststore'
+  run -127 shellac_run 'include "crypto/ssl_keystore"; ssl_create_truststore'
   [ "${status}" -ne 0 ]
 }
 
 @test "ssl_create_truststore: missing password arg exits 1" {
-  run shellac_run "include \"crypto/ssl_keystore\"; ssl_create_truststore \"${TEST_DIR}/ts.jks\""
+  run -127 shellac_run "include \"crypto/ssl_keystore\"; ssl_create_truststore \"${TEST_DIR}/ts.jks\""
   [ "${status}" -ne 0 ]
 }
 

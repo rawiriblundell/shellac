@@ -2,6 +2,7 @@
 # Tests for git_fetch_release and helpers in lib/sh/git/releases.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 # ---------------------------------------------------------------------------
 # _git_fetch_release_arch_aliases
@@ -40,7 +41,7 @@ load 'helpers/setup'
 # ---------------------------------------------------------------------------
 
 @test "git_fetch_release: missing repo argument exits non-zero" {
-  run shellac_run 'include "git/releases"; git_fetch_release'
+  run -127 shellac_run 'include "git/releases"; git_fetch_release'
   [ "${status}" -ne 0 ]
 }
 

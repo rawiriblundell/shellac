@@ -2,6 +2,7 @@
 # Tests for crypto/ssl_convert in lib/sh/crypto/ssl_convert.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 setup() {
   if ! command -v openssl >/dev/null 2>&1; then
@@ -32,7 +33,7 @@ teardown() {
 }
 
 @test "ssl_pem_to_der: exits non-zero with no argument" {
-  run shellac_run 'include "crypto/ssl_convert"; ssl_pem_to_der'
+  run -127 shellac_run 'include "crypto/ssl_convert"; ssl_pem_to_der'
   [ "${status}" -ne 0 ]
 }
 
@@ -53,7 +54,7 @@ teardown() {
 }
 
 @test "ssl_der_to_pem: exits non-zero with no argument" {
-  run shellac_run 'include "crypto/ssl_convert"; ssl_der_to_pem'
+  run -127 shellac_run 'include "crypto/ssl_convert"; ssl_der_to_pem'
   [ "${status}" -ne 0 ]
 }
 

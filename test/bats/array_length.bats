@@ -3,6 +3,7 @@
 # array_has_key in lib/sh/array/length.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 # ---------------------------------------------------------------------------
 # array_length
@@ -27,7 +28,7 @@ load 'helpers/setup'
 }
 
 @test "array_length: missing array name fails" {
-  run shellac_run 'include "array/length"; array_length'
+  run -127 shellac_run 'include "array/length"; array_length'
   [ "${status}" -ne 0 ]
 }
 

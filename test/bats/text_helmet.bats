@@ -4,6 +4,8 @@
 
 load 'helpers/setup'
 
+bats_require_minimum_version 1.5.0
+
 @test "helmet: first line goes to stderr, remainder to stdout" {
   run --separate-stderr shellac_run 'include "text/helmet"; printf "header\nrow1\nrow2\n" | helmet'
   [ "${status}" -eq 0 ]

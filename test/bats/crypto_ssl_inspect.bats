@@ -2,6 +2,7 @@
 # Tests for crypto/ssl_inspect in lib/sh/crypto/ssl_inspect.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 setup() {
   if ! command -v openssl >/dev/null 2>&1; then
@@ -36,7 +37,7 @@ teardown() {
 }
 
 @test "ssl_cert_dates: fails with no argument" {
-  run shellac_run 'include "crypto/ssl_inspect"; ssl_cert_dates'
+  run -127 shellac_run 'include "crypto/ssl_inspect"; ssl_cert_dates'
   [ "${status}" -ne 0 ]
 }
 
@@ -56,7 +57,7 @@ teardown() {
 }
 
 @test "ssl_cert_subject: fails with no argument" {
-  run shellac_run 'include "crypto/ssl_inspect"; ssl_cert_subject'
+  run -127 shellac_run 'include "crypto/ssl_inspect"; ssl_cert_subject'
   [ "${status}" -ne 0 ]
 }
 
@@ -82,7 +83,7 @@ teardown() {
 }
 
 @test "ssl_cert_fingerprint: fails with no argument" {
-  run shellac_run 'include "crypto/ssl_inspect"; ssl_cert_fingerprint'
+  run -127 shellac_run 'include "crypto/ssl_inspect"; ssl_cert_fingerprint'
   [ "${status}" -ne 0 ]
 }
 
@@ -119,6 +120,6 @@ teardown() {
 }
 
 @test "ssl_verify_csr: fails with no argument" {
-  run shellac_run 'include "crypto/ssl_inspect"; ssl_verify_csr'
+  run -127 shellac_run 'include "crypto/ssl_inspect"; ssl_verify_csr'
   [ "${status}" -ne 0 ]
 }

@@ -2,6 +2,7 @@
 # Tests for num_abs, num_min, num_max, num_modulo, num_clamp in lib/sh/numbers/math.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 # ---------------------------------------------------------------------------
 # num_abs
@@ -64,7 +65,7 @@ load 'helpers/setup'
 }
 
 @test "num_min: missing second argument fails" {
-  run shellac_run 'include "numbers/math"; num_min 3'
+  run -127 shellac_run 'include "numbers/math"; num_min 3'
   [ "${status}" -ne 0 ]
 }
 
@@ -97,7 +98,7 @@ load 'helpers/setup'
 }
 
 @test "num_max: missing second argument fails" {
-  run shellac_run 'include "numbers/math"; num_max 3'
+  run -127 shellac_run 'include "numbers/math"; num_max 3'
   [ "${status}" -ne 0 ]
 }
 
@@ -129,7 +130,7 @@ load 'helpers/setup'
 }
 
 @test "num_modulo: missing divisor fails" {
-  run shellac_run 'include "numbers/math"; num_modulo 10'
+  run -127 shellac_run 'include "numbers/math"; num_modulo 10'
   [ "${status}" -ne 0 ]
 }
 
@@ -168,6 +169,6 @@ load 'helpers/setup'
 }
 
 @test "num_clamp: missing max argument fails" {
-  run shellac_run 'include "numbers/math"; num_clamp 5 0'
+  run -127 shellac_run 'include "numbers/math"; num_clamp 5 0'
   [ "${status}" -ne 0 ]
 }

@@ -2,6 +2,7 @@
 # Tests for utils/mkcd in lib/sh/utils/mkcd.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 setup() {
   TEST_DIR="$(mktemp -d)"
@@ -40,6 +41,6 @@ teardown() {
 }
 
 @test "mkcd: no argument exits non-zero" {
-  run shellac_run 'include "utils/mkcd"; mkcd'
+  run -127 shellac_run 'include "utils/mkcd"; mkcd'
   [ "${status}" -ne 0 ]
 }

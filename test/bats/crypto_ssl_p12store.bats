@@ -3,6 +3,7 @@
 # in lib/sh/crypto/ssl_p12store.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 setup() {
   if ! command -v openssl >/dev/null 2>&1; then
@@ -116,7 +117,7 @@ teardown() {
 # ---------------------------------------------------------------------------
 
 @test "ssl_create_p12_truststore: missing output exits non-zero" {
-  run shellac_run 'include "crypto/ssl_p12store"; ssl_create_p12_truststore'
+  run -127 shellac_run 'include "crypto/ssl_p12store"; ssl_create_p12_truststore'
   [ "${status}" -ne 0 ]
 }
 

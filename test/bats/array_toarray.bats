@@ -2,6 +2,7 @@
 # Tests for toarray in lib/sh/array/toarray.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 @test "toarray: collects stdin lines into named array" {
   run shellac_run 'include "array/toarray"
@@ -36,6 +37,6 @@ load 'helpers/setup'
 }
 
 @test "toarray: missing array name fails" {
-  run shellac_run 'include "array/toarray"; printf "a\n" | toarray'
+  run -127 shellac_run 'include "array/toarray"; printf "a\n" | toarray'
   [ "${status}" -ne 0 ]
 }

@@ -3,6 +3,7 @@
 # url_build_query in lib/sh/net/url.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 # ---------------------------------------------------------------------------
 # url_encode
@@ -97,7 +98,7 @@ load 'helpers/setup'
 }
 
 @test "url_parse_query: missing argument exits non-zero" {
-  run shellac_run 'include "net/url"; url_parse_query'
+  run -127 shellac_run 'include "net/url"; url_parse_query'
   [ "${status}" -ne 0 ]
 }
 

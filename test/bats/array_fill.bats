@@ -2,6 +2,7 @@
 # Tests for array_fill, array_pad, array_range in lib/sh/array/fill.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 # ---------------------------------------------------------------------------
 # array_fill
@@ -33,7 +34,7 @@ load 'helpers/setup'
 }
 
 @test "array_fill: missing args fails" {
-  run shellac_run 'include "array/fill"; array_fill arr'
+  run -127 shellac_run 'include "array/fill"; array_fill arr'
   [ "${status}" -ne 0 ]
 }
 

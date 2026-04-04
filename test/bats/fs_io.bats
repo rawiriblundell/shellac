@@ -3,6 +3,7 @@
 # in lib/sh/fs/io.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 # ---------------------------------------------------------------------------
 # fs_read_file
@@ -29,7 +30,7 @@ load 'helpers/setup'
 }
 
 @test "fs_read_file: missing argument exits non-zero" {
-  run shellac_run 'include "fs/io"; fs_read_file'
+  run -127 shellac_run 'include "fs/io"; fs_read_file'
   [ "${status}" -ne 0 ]
 }
 

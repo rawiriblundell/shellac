@@ -2,6 +2,7 @@
 # Tests for calc in lib/sh/numbers/calc.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 @test "calc: simple addition" {
   run shellac_run 'include "numbers/calc"; calc "4 + 2"'
@@ -34,6 +35,6 @@ load 'helpers/setup'
 }
 
 @test "calc: missing argument fails" {
-  run shellac_run 'include "numbers/calc"; calc'
+  run -127 shellac_run 'include "numbers/calc"; calc'
   [ "${status}" -ne 0 ]
 }

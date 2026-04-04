@@ -2,6 +2,7 @@
 # Tests for crypto/ssl_generate in lib/sh/crypto/ssl_generate.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 setup() {
   if ! command -v openssl >/dev/null 2>&1; then
@@ -77,7 +78,7 @@ teardown() {
 }
 
 @test "ssl_gencsr: exits non-zero with no key argument" {
-  run shellac_run 'include "crypto/ssl_generate"; ssl_gencsr'
+  run -127 shellac_run 'include "crypto/ssl_generate"; ssl_gencsr'
   [ "${status}" -ne 0 ]
 }
 

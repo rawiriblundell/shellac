@@ -2,6 +2,7 @@
 # Tests for utils/validate_config in lib/sh/utils/validate_config.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 setup() {
   TEST_DIR="$(mktemp -d)"
@@ -52,7 +53,7 @@ teardown() {
 }
 
 @test "validate_config: no argument exits non-zero" {
-  run shellac_run 'include "utils/validate_config"; validate_config'
+  run -127 shellac_run 'include "utils/validate_config"; validate_config'
   [ "${status}" -ne 0 ]
 }
 

@@ -2,6 +2,7 @@
 # Tests for array_split and array_join in lib/sh/array/join.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 # ---------------------------------------------------------------------------
 # array_split
@@ -32,7 +33,7 @@ load 'helpers/setup'
 }
 
 @test "array_split: missing args fails" {
-  run shellac_run 'include "array/join"; array_split arr'
+  run -127 shellac_run 'include "array/join"; array_split arr'
   [ "${status}" -ne 0 ]
 }
 

@@ -2,6 +2,7 @@
 # Tests for array_sum, array_min, array_max, array_product in lib/sh/array/aggregate.sh
 
 load 'helpers/setup'
+bats_require_minimum_version 1.5.0
 
 # ---------------------------------------------------------------------------
 # array_sum
@@ -26,7 +27,7 @@ load 'helpers/setup'
 }
 
 @test "array_sum: missing array name fails" {
-  run shellac_run 'include "array/aggregate"; array_sum'
+  run -127 shellac_run 'include "array/aggregate"; array_sum'
   [ "${status}" -ne 0 ]
 }
 

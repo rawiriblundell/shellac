@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_contains+x}" ] && return 0
 _SHELLAC_LOADED_array_contains=1
+requires BASH43
 
 # Functions for searching and testing array membership
 

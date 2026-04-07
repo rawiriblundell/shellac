@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_mapfile+x}" ] && return 0
 _SHELLAC_LOADED_array_mapfile=1
+requires BASH43
 
 command -v mapfile >/dev/null 2>&1 && return 0
 

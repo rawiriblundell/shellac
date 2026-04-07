@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_shift+x}" ] && return 0
 _SHELLAC_LOADED_array_shift=1
+requires BASH43
 
 # @description Remove the first n elements from a named array in place.
 #   From https://www.reddit.com/r/bash/comments/aj0xm0/quicktip_shifting_arrays/

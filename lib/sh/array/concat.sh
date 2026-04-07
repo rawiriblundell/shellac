@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_concat+x}" ] && return 0
 _SHELLAC_LOADED_array_concat=1
+requires BASH43
 
 # @description Copy a named array to another named array.
 #

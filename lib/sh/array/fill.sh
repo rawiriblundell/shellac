@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_fill+x}" ] && return 0
 _SHELLAC_LOADED_array_fill=1
+requires BASH43
 
 # @description Fill a named array with a value repeated n times.
 #   Replaces any existing contents.

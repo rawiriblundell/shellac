@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_fs_io+x}" ] && return 0
 _SHELLAC_LOADED_fs_io=1
+requires BASH43
 
 # @description Read an entire file to stdout with error handling.
 #

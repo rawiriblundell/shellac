@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_readlist+x}" ] && return 0
 _SHELLAC_LOADED_array_readlist=1
+requires BASH43
 
 # @description Read a comma-separated list into an indexed array, modelled on
 #   readarray/mapfile. Accepts bare words, quoted strings, or Python-style

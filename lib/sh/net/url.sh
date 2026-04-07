@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_net_url+x}" ] && return 0
 _SHELLAC_LOADED_net_url=1
+requires BASH43
 
 # @description Percent-encode a string for use in a URL query string.
 #   Encodes all characters except unreserved: A-Z a-z 0-9 - _ . ~

@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_join+x}" ] && return 0
 _SHELLAC_LOADED_array_join=1
+requires BASH43
 
 # @description Split a string on a delimiter into a named array.
 #   The delimiter must be a single character.

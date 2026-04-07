@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_set+x}" ] && return 0
 _SHELLAC_LOADED_array_set=1
+requires BASH43
 
 # @description Print elements present in arr_a but not in arr_b.
 #

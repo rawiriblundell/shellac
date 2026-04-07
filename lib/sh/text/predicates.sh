@@ -21,6 +21,7 @@
 
 [ -n "${_SHELLAC_LOADED_text_predicates+x}" ] && return 0
 _SHELLAC_LOADED_text_predicates=1
+requires BASH43
 
 # @description Test if a string is empty (zero length).
 #

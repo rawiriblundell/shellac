@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_sort+x}" ] && return 0
 _SHELLAC_LOADED_array_sort=1
+requires BASH43
 
 # @description Sort a named array in place using lexicographic order.
 #

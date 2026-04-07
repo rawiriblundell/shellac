@@ -99,7 +99,7 @@ debug_breakpoint() {
             (o) shopt -s; set -o ;;
             (p) declare -p | less ;;
             (a) declare -a ;;
-            (A) declare -A ;;
+            (A) (( BASH_VERSINFO >= 4 )) && declare -A ;;
             (x) set -x ;;
             (X) set +x ;;
             (q) return ;;

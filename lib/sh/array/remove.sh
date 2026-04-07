@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_remove+x}" ] && return 0
 _SHELLAC_LOADED_array_remove=1
+requires BASH43
 
 # @description Empty a named array in place.
 #

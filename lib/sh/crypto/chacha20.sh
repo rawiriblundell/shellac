@@ -3,6 +3,7 @@
 
 [ -n "${_SHELLAC_LOADED_crypto_chacha20+x}" ] && return 0
 _SHELLAC_LOADED_crypto_chacha20=1
+requires BASH43
 # Copyright (C) 2020 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
 
 

@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_hash_hash+x}" ] && return 0
 _SHELLAC_LOADED_hash_hash=1
+requires BASH43
 
 # Requires bash 4.0+ for associative arrays (declare -A).
 

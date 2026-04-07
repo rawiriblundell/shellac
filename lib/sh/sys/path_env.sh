@@ -87,13 +87,13 @@ sys_path_remove() {
 #
 # @exitcode 0 Always
 sys_path_dedup() {
-  local _new_path _seen _component
+  local _new_path _component
   _new_path=
-  declare -A _seen
   while IFS= read -r -d ':' _component; do
     [[ -z "${_component}" ]] && continue
-    [[ -n "${_seen[${_component}]+x}" ]] && continue
-    _seen["${_component}"]=1
+    case ":${_new_path}:" in
+      (*":${_component}:"*) continue ;;
+    esac
     [[ -z "${_new_path}" ]] && _new_path="${_component}" || _new_path="${_new_path}:${_component}"
   done <<< "${PATH}:"
   PATH="${_new_path}"

@@ -20,6 +20,7 @@
 
 [ -n "${_SHELLAC_LOADED_core_stacktrace+x}" ] && return 0
 _SHELLAC_LOADED_core_stacktrace=1
+requires BASH43
 
 # Note: this file requires bash (FUNCNAME, BASH_SOURCE, BASH_LINENO arrays).
 # It is intentionally separate from core/debug to keep that file portable to

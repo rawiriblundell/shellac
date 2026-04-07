@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_aggregate+x}" ] && return 0
 _SHELLAC_LOADED_array_aggregate=1
+requires BASH43
 
 # @description Sum all numeric elements in a named array.
 #

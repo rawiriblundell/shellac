@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_array_functional+x}" ] && return 0
 _SHELLAC_LOADED_array_functional=1
+requires BASH43
 
 # @description Remove empty elements from a named array in place.
 #

@@ -33,10 +33,25 @@ tasks:
   to canonical `str_*` names; adding `text_*` aliases to display-oriented
   functions in `str_*` and `line_*`; replacing internal `is_command` calls
   with `command -v` to improve individual function extractability
-- **Documentation** — writing `shellac_in_practice.md` (two real scripts
-  rewritten side-by-side), `musings.md` (design tensions that don't have clean
-  resolutions), `on_vibe_coding.md` (a conversation about AI-assisted
-  engineering versus vibe coding), and structural docs like `.pages` nav ordering
+- **New introspection functions** — `is_builtin`, `is_keyword`, and `is_alias`
+  added to `core/is.sh`, completing the shell-type introspection set alongside
+  the existing `is_function`, `is_command`, and `is_in_path`
+- **Bug fix: `include --force`** — the `--force` flag correctly bypassed
+  `include`'s own loaded-check but not the guard sentinel at the top of the
+  target file itself; fixed by unsetting the sentinel before sourcing in all
+  three resolution branches; `sh_stack_add` tracing improved in the relative
+  path branch to aid debugging
+- **Dependency scanner** — a shellac-native script for auditing external
+  command dependencies across library files, developed iteratively from a
+  grep pipeline to a fully idiomatic shellac implementation; documented as
+  Example 3 in `shellac_in_practice.md` and drove the addition of
+  `is_builtin`/`is_keyword` as practical tools for filtering scan results
+- **Documentation** — writing `shellac_in_practice.md` (three real scripts
+  rewritten side-by-side, including a worked example of progressive shellac
+  adoption developed iteratively during a live session), `musings.md` (design
+  tensions that don't have clean resolutions), `on_vibe_coding.md` (a
+  conversation about AI-assisted engineering versus vibe coding), and structural
+  docs like `.pages` nav ordering
 - **GitHub issues** — drafting and filing issues for new modules, with
   counterparts in other languages documented for context
 - **MkDocs configuration** — adding `md_in_html` for side-by-side code layout
@@ -123,7 +138,7 @@ audit of 58 competing projects; cross-language stdlib coverage gap analysis.
 | Functions in codebase | 741 unique (+7 since snapshot 1) |
 
 Additional work since snapshot 1: 84 bats test files covering the full module
-surface (1,412 tests); 16 source fixes found by those tests spanning arithmetic
+surface (1,412 tests, growing to 1,432 with subsequent additions); 16 source fixes found by those tests spanning arithmetic
 exit codes, circular namerefs, timezone-dependent date arithmetic, missing
 includes, and logic errors; `str_*`/`text_*` naming refactor in `style.sh`
 with backward-compatible aliases; `is_command` → `command -v` replacement to
@@ -246,6 +261,20 @@ Mandatory practices include: `lower_snake_case` for all variables, always
 masking exit codes), `(( ))` for all numeric comparisons, and the specific case
 statement format with opening parentheses on patterns and `;;` vertically
 aligned.
+
+### Shellac library standards (`~/.claude/rules/shellac.md`)
+
+Shellac-specific rules that layer on top of the general bash standards:
+
+- `requires` placement: library-level when every function shares the same
+  external dependency; function-level when dependencies vary within a file;
+  none at all for pure-shell files. Derived from the full library audit
+  documented in `musings.md`.
+- What counts as an external dependency — excludes builtins, keywords,
+  shellac functions (use `include` for those), and words in string literals.
+  `is_builtin` and `is_keyword` from `core/is` are the canonical test.
+- Self-reference rules: no shellac wrappers where a native primitive works;
+  `requires` is explicitly exempted as infrastructure.
 
 ### De-slop guide (`~/.claude/rules/deslop.md`)
 

@@ -80,7 +80,7 @@ signum() {
   _name="${1:?signum: missing signal _name}"
   # Strip leading SIG (case-insensitive) and uppercase
   _name="${_name#[Ss][Ii][Gg]}"
-  _name="${_name^^}"
+  _name="$(printf -- '%s' "${_name}" | tr '[:lower:]' '[:upper:]')"
   case "${_name}" in
     (EXIT) printf -- '0\n'  ;;
     (HUP)  printf -- '1\n'  ;;

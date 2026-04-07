@@ -61,16 +61,16 @@ tui_confirm() {
   local _question _default _prompt _reply
   _question="${1:-Confirm?}"
   _default="${2:-n}"
-  case "${_default,,}" in
-    (y|yes) _prompt="${_question} [Y/n]: " ;;
-    (*)     _prompt="${_question} [y/N]: " ;;
+  case "${_default}" in
+    ([yY]|[yY][eE][sS]) _prompt="${_question} [Y/n]: " ;;
+    (*)                  _prompt="${_question} [y/N]: " ;;
   esac
   printf -- '%s' "${_prompt}" >&2
   read -r _reply
   _reply="${_reply:-${_default}}"
-  case "${_reply,,}" in
-    (y|yes) return 0 ;;
-    (*)     return 1 ;;
+  case "${_reply}" in
+    ([yY]|[yY][eE][sS]) return 0 ;;
+    (*)                  return 1 ;;
   esac
 }
 

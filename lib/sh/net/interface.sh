@@ -298,7 +298,7 @@ _net_nics_state() {
   _iface="${1:?}"
   if [[ -r "/sys/class/net/${_iface}/operstate" ]]; then
     _state=$(< "/sys/class/net/${_iface}/operstate")
-    printf -- '%s\n' "${_state^^}"
+    printf -- '%s\n' "${_state}" | tr '[:lower:]' '[:upper:]'
     return 0
   fi
   if command -v ip >/dev/null 2>&1; then

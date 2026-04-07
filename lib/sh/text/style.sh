@@ -568,6 +568,8 @@ str_capitalise() {
   GLOBIGNORE=
 }
 text_capitalise() { str_capitalise "${@}"; }
+str_capitalize() { str_capitalise "${@}"; }
+text_capitalize() { str_capitalise "${@}"; }
 
 # @description Convert text to lowercase. Accepts a string argument, file path, or stdin.
 #   Tries Bash 4 parameter expansion, then awk, then tr as fallbacks.
@@ -579,31 +581,22 @@ text_capitalise() { str_capitalise "${@}"; }
 # @exitcode 1 No available conversion method found
 str_tolower() {
   if [[ -n "${1}" ]] && [[ ! -r "${1}" ]]; then
-    if (( BASH_VERSINFO >= 4 )); then
-      printf -- '%s ' "${*,,}" | paste -sd '\0' -
-    elif command -v awk >/dev/null 2>&1; then
-      printf -- '%s ' "$*" | awk '{print tolower($0)}'
-    elif command -v tr >/dev/null 2>&1; then
-      printf -- '%s ' "$*" | tr '[:upper:]' '[:lower:]'
-    else
-      printf -- '%s\n' "str_tolower - no available method found" >&2
-      return 1
-    fi
-  else
-    if (( BASH_VERSINFO >= 4 )); then
-      while read -r; do
-        printf -- '%s\n' "${REPLY,,}"
-      done
-      [[ -n "${REPLY}" ]] && printf -- '%s\n' "${REPLY,,}"
-    elif command -v awk >/dev/null 2>&1; then
-      awk '{print tolower($0)}'
-    elif command -v tr >/dev/null 2>&1; then
-      tr '[:upper:]' '[:lower:]'
-    else
-      printf -- '%s\n' "str_tolower - no available method found" >&2
-      return 1
-    fi < "${1:-/dev/stdin}"
+    printf -- '%s\n' "${*}" | str_tolower
+    return
   fi
+  if (( BASH_VERSINFO >= 4 )); then
+    while read -r; do
+      printf -- '%s\n' "${REPLY,,}"
+    done
+    [[ -n "${REPLY}" ]] && printf -- '%s\n' "${REPLY,,}"
+  elif command -v awk >/dev/null 2>&1; then
+    awk '{print tolower($0)}'
+  elif command -v tr >/dev/null 2>&1; then
+    tr '[:upper:]' '[:lower:]'
+  else
+    printf -- '%s\n' "str_tolower - no available method found" >&2
+    return 1
+  fi < "${1:-/dev/stdin}"
 }
 text_tolower() { str_tolower "${@}"; }
 
@@ -617,31 +610,22 @@ text_tolower() { str_tolower "${@}"; }
 # @exitcode 1 No available conversion method found
 str_toupper() {
   if [[ -n "${1}" ]] && [[ ! -r "${1}" ]]; then
-    if (( BASH_VERSINFO >= 4 )); then
-      printf -- '%s ' "${*^^}" | paste -sd '\0' -
-    elif command -v awk >/dev/null 2>&1; then
-      printf -- '%s ' "$*" | awk '{print toupper($0)}'
-    elif command -v tr >/dev/null 2>&1; then
-      printf -- '%s ' "$*" | tr '[:lower:]' '[:upper:]'
-    else
-      printf -- '%s\n' "str_toupper - no available method found" >&2
-      return 1
-    fi
-  else
-    if (( BASH_VERSINFO >= 4 )); then
-      while read -r; do
-        printf -- '%s\n' "${REPLY^^}"
-      done
-      [[ -n "${REPLY}" ]] && printf -- '%s\n' "${REPLY^^}"
-    elif command -v awk >/dev/null 2>&1; then
-      awk '{print toupper($0)}'
-    elif command -v tr >/dev/null 2>&1; then
-      tr '[:lower:]' '[:upper:]'
-    else
-      printf -- '%s\n' "str_toupper - no available method found" >&2
-      return 1
-    fi < "${1:-/dev/stdin}"
+    printf -- '%s\n' "${*}" | str_toupper
+    return
   fi
+  if (( BASH_VERSINFO >= 4 )); then
+    while read -r; do
+      printf -- '%s\n' "${REPLY^^}"
+    done
+    [[ -n "${REPLY}" ]] && printf -- '%s\n' "${REPLY^^}"
+  elif command -v awk >/dev/null 2>&1; then
+    awk '{print toupper($0)}'
+  elif command -v tr >/dev/null 2>&1; then
+    tr '[:lower:]' '[:upper:]'
+  else
+    printf -- '%s\n' "str_toupper - no available method found" >&2
+    return 1
+  fi < "${1:-/dev/stdin}"
 }
 text_toupper() { str_toupper "${@}"; }
 

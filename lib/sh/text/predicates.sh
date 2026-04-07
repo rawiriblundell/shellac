@@ -112,7 +112,7 @@ str_contains() {
   [[ "${_str}" = *"${_substr}"* ]]
 }
 
-# @description Test if two strings are equal ignoring case. Requires bash 4+.
+# @description Test if two strings are equal ignoring case.
 #
 # @arg $1 string First string
 # @arg $2 string Second string
@@ -123,7 +123,11 @@ str_equal_fold() {
   local _a _b
   _a="${1:?No first string given}"
   _b="${2:?No second string given}"
-  [[ "${_a,,}" = "${_b,,}" ]]
+  if (( BASH_VERSINFO >= 4 )); then
+    [[ "${_a,,}" = "${_b,,}" ]]
+  else
+    [[ "$(printf -- '%s' "${_a}" | tr '[:upper:]' '[:lower:]')" = "$(printf -- '%s' "${_b}" | tr '[:upper:]' '[:lower:]')" ]]
+  fi
 }
 
 # @description Test whether a string matches a regex pattern (ERE).

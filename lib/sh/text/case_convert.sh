@@ -50,6 +50,7 @@ str_snake_case() {
 # @description Convert a string to camelCase. Handles space-separated,
 #   underscore-separated, and hyphen-separated words. Input that is already
 #   camelCase will be normalised to all-lowercase then re-cased.
+#   Requires bash 4+.
 #
 # @arg $@ string The string to convert
 #

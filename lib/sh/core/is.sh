@@ -195,6 +195,40 @@ is_function() {
     typeset -f "${1:-grobblegobble}" >/dev/null 2>&1
 }
 
+# @description Test whether a name is a shell builtin.
+#
+# @arg $1 string Name to test
+#
+# @exitcode 0 Name is a builtin
+# @exitcode 1 Name is not a builtin
+is_builtin() {
+    [[ "$(builtin type -t "${1:?is_builtin: name required}" 2>/dev/null)" = "builtin" ]]
+}
+
+# @description Test whether a name is a shell reserved keyword (e.g. if, while, case).
+#
+# @arg $1 string Name to test
+#
+# @exitcode 0 Name is a keyword
+# @exitcode 1 Name is not a keyword
+is_keyword() {
+    [[ "$(type -t "${1:?is_keyword: name required}" 2>/dev/null)" = "keyword" ]]
+}
+
+# @description Test whether a name is a defined alias.
+#   Note: aliases are not inherited by subshells or non-interactive shells.
+#   In a non-interactive script context this will almost always return false
+#   unless the alias was defined in the same shell session or sourced file.
+#   Useful for interactive shells and sourced library testing.
+#
+# @arg $1 string Name to test
+#
+# @exitcode 0 Name is an alias
+# @exitcode 1 Name is not an alias (or shell is non-interactive)
+is_alias() {
+    [[ "$(type -t "${1:?is_alias: name required}" 2>/dev/null)" = "alias" ]]
+}
+
 # @description Test whether the shell is running interactively.
 #
 # @exitcode 0 Shell is interactive

@@ -1,4 +1,4 @@
-Two real scripts, rewritten with shellac. Each rewrite is functionally
+Three real scripts, rewritten with shellac. Each rewrite is functionally
 equivalent to the original — the goal is not to reimagine the logic but
 to show what shellac handles so the script doesn't have to.
 
@@ -477,3 +477,171 @@ immediate and readable.
 
 **`try`** — `mkdir -p ... || die "..."` and `cd ... || die "..."` collapse
 to `try mkdir -p ...` and `try cd ...`. Same semantics, less noise.
+
+---
+
+## Example 3: find_requires
+
+A script that scans all `.sh` files under the current directory and
+reports which external commands each file depends on. It already uses
+shellac — `array_join` and `is_in_path` — but still leans on a chain of
+external processes (`find`, `grep`, `tr`, `sort`, `uniq`) where shellac
+has direct equivalents. The rewrite shows what progressive adoption looks
+like: not a first conversion, but leaning in further.
+
+---
+
+<div markdown="block" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+
+<div markdown="block">
+
+**Partial shellac**
+
+```bash
+#!/bin/bash
+
+source shellac
+
+include core/is
+include array/join
+
+exclude_list=(
+    - '\.' '\.\.' '\.\./\.\.' '\[' '\]' '\{' '\}' '/'
+    alias
+    bash
+    case cd clear clock command
+    dir do done
+    echo esac
+    false fi file
+    getopts
+    hash
+    if in
+    last less link local
+    kill
+    more
+    pass passwd printf
+    rand read rename replacements return
+    script shellcheck shift sleep source split sum
+    test then timeout top true trust type
+    w wait waitpid wheel which while write
+)
+
+grep_filter=$(array_join '|' "${exclude_list[@]}")
+
+while read -r file; do
+    found_cmds=""
+    while read -r; do
+        is_in_path "${REPLY}" && found_cmds+="${REPLY} "
+    done < <(
+        grep -Ev "^$|^#" "${file}" |
+            tr " " "\n" |
+            grep -Ev -- "${grep_filter}" |
+            grep . |
+            sort |
+            uniq
+    )
+    (( "${#found_cmds}" > 0 )) && printf -- '%s: requires %s\n' "${file}" "${found_cmds}"
+done < <(find . -name "*.sh")
+```
+
+</div>
+
+<div markdown="block">
+
+**Idiomatic shellac**
+
+```bash
+#!/bin/bash
+
+source shellac
+
+include core/is
+include array/join
+include array/set
+
+exclude_list=(
+    - . .. ../.. '[' ']' '{' '}' '/'
+    alias
+    bash
+    case cd clear clock command
+    dir do done
+    echo esac
+    false fi file
+    getopts
+    hash
+    if in
+    last less link local
+    kill
+    more
+    pass passwd printf
+    rand read rename replacements return
+    script shellcheck shift sleep source split sum
+    test then timeout top true trust type
+    w wait waitpid wheel which while write
+)
+
+shopt -s globstar nullglob
+
+# Recursively match all .sh files
+for file in ./**/*.sh; do
+    # Word-split each non-blank, non-comment line into candidates
+    declare -a candidates=()
+    while IFS= read -r line; do
+        case "${line}" in
+            ('#'*|'') continue ;;
+        esac
+        read -ra words <<< "${line}"
+        candidates+=( "${words[@]}" )
+    done < "${file}"
+
+    # Deduplicate candidates
+    array_unique candidates
+
+    # Collect words that resolve to an external command
+    declare -a found_cmds=()
+    for word in "${candidates[@]}"; do
+        var_is_one_of "${word}" "${exclude_list[@]}" && continue
+        # Catch any builtins etc that we might have missed from exclude_list
+        is_builtin "${word}" && continue
+        is_keyword "${word}" && continue
+        # Last, check if the word resolves to an item in $PATH
+        is_in_path "${word}" && found_cmds+=( "${word}" )
+    done
+
+    (( ${#found_cmds[@]} > 0 )) || continue
+    printf -- '%s: requires %s\n' "${file}" "$(array_join ' ' "${found_cmds[@]}")"
+done
+```
+
+</div>
+
+</div>
+
+---
+
+### What changed and why
+
+**`find . -name "*.sh"` → `shopt -s globstar nullglob` + `for file in ./**/*.sh`** —
+`find` spawns a subprocess and feeds a `while read` loop via process
+substitution. A bash glob with `globstar` is native, needs no subshell,
+and `nullglob` means an empty match produces nothing rather than a
+literal `**/*.sh` entry.
+
+**The grep/tr/sort/uniq pipeline → inline loop + `array_unique`** —
+`grep -Ev "^$|^#" | tr " " "\n" | grep -Ev ... | grep . | sort | uniq`
+is five external processes per file. The rewrite reads the file once with
+a `while read` loop, uses `read -ra` to word-split each line (no `tr`),
+skips blanks and comments with a `case` statement, and deduplicates with
+`array_unique`. No subshells, no pipelines.
+
+**`grep_filter` regex → `var_is_one_of` exact match** — the original
+builds a regex alternation string (`bash|shellcheck|...`) and passes it
+to `grep -Ev`. This works, but it does substring matching: a word like
+`interface` would match the `in` pattern. `var_is_one_of` does exact
+whole-word comparison, which is both more correct and eliminates the
+need for the escaped entries (`'\{'`, `'\['`) in the exclude list — they
+become plain `{` and `[`.
+
+**`found_cmds` string → array + `array_join`** — `found_cmds+="${REPLY} "`
+appends to a string with a trailing space. An array carries no trailing
+whitespace and `array_join` formats it cleanly for output.

@@ -54,6 +54,7 @@ _include_sentinel() {
     # Fallback for full paths not under any known SH_LIBPATH element
     : "${_rel:=$(basename "$(dirname "${_path}")")/$(basename "${_path}")}"
     _rel="${_rel%.sh}"
+    _rel="${_rel%.bash}"
     _rel="${_rel//\//_}"
     _rel="${_rel//-/_}"
     printf -- '%s\n' "_SHELLAC_LOADED_${_rel}"
@@ -72,8 +73,8 @@ _include_is_loaded() {
 #
 # @example
 #   include /opt/company/libs/sh/library.sh   # full path
-#   include units                              # load all .sh files in a subdir
-#   include text/puts                          # relative path, defaults to .sh
+#   include units                              # load all shell-matched files in a subdir
+#   include text/puts                          # relative path; prefers .bash in bash, falls back to .sh
 #   include text/puts.bash                     # relative path with explicit extension
 #
 # @exitcode 0 Library loaded successfully
@@ -154,12 +155,30 @@ include() {
     # Is it a subdir/library with an implicit extension (i.e. ".sh" default) e.g. include text/puts
     for _element in "${SH_LIBPATH_ARRAY[@]}"; do
         # Is the given target a subdir within $_element?  If so, load everything within that path.
-        # Note: we only load everything with a .sh extension
-        # We don't want to try loading library.zsh into bash, for example
+        # In bash, .bash variants are preferred over .sh; the shared sentinel prevents double-loading.
+        # In other shells, only .sh files are loaded.
         sh_stack_add "Is '${_include_target}' a sub-directory within ${_element}?"
         if [ -d "${_element}/${_include_target}" ]; then
             _subdir="${_element}/${_include_target}"
             sh_stack_add "Loading all libraries and functions from '${_subdir}'"
+            if [ -n "${BASH_VERSION}" ]; then
+                for _load_target in "${_subdir}"/*.bash; do
+                    [ -f "${_load_target}" ] || continue
+                    (( _force )) || { _include_is_loaded "${_load_target}" && continue; }
+                    (( _force )) && unset "$(_include_sentinel "${_load_target}")"
+                    if [ -r "${_load_target}" ]; then
+                        _include_source "${_load_target}" "${_verbose}" || {
+                            _shellac_stack dump
+                            printf -- 'include: %s\n' "Failed to load '${_load_target}'" >&2
+                            return 1
+                        }
+                    else
+                        _shellac_stack dump
+                        printf -- 'include: %s\n' "Insufficient permissions while including '${_load_target}'" >&2
+                        return 1
+                    fi
+                done
+            fi
             for _load_target in "${_subdir}"/*.sh; do
                 (( _force )) || { _include_is_loaded "${_load_target}" && continue; }
                 (( _force )) && unset "$(_include_sentinel "${_load_target}")"
@@ -185,11 +204,16 @@ include() {
         # include subdir/library           (e.g. include text/tolower)
         #     This scenario defaults to the .sh extension i.e. text/tolower = text/tolower.sh
         sh_stack_add "Is '${_include_target}' a relative path within ${_element}?"
-        if [ -f "${_element}/${_include_target}" ] || [ -f "${_element}/${_include_target}.sh" ]; then
+        if [ -f "${_element}/${_include_target}" ]      ||
+           [ -f "${_element}/${_include_target}.bash" ] ||
+           [ -f "${_element}/${_include_target}.sh" ];  then
             sh_stack_add "Relative path: '${_element}/${_include_target}' exists.  Is it readable?"
             if [ -r "${_element}/${_include_target}" ]; then
                 sh_stack_add "Relative path: '${_element}/${_include_target}' is readable.  Loading."
                 _load_target="${_element}/${_include_target}"
+            elif [ -n "${BASH_VERSION}" ] && [ -r "${_element}/${_include_target}.bash" ]; then
+                sh_stack_add "Relative path: '${_element}/${_include_target}.bash' is readable.  Loading."
+                _load_target="${_element}/${_include_target}.bash"
             elif [ -r "${_element}/${_include_target}.sh" ]; then
                 sh_stack_add "Relative path: '${_element}/${_include_target}.sh' is readable.  Loading."
                 _load_target="${_element}/${_include_target}.sh"

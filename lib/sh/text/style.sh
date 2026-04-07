@@ -22,7 +22,7 @@
 _SHELLAC_LOADED_text_style=1
 
 # References:
-# * https://gist.github.com/XVilka/8346728
+# * https://github.com/termstandard/colors
 # * https://stackoverflow.com/a/33206814
 # * https://cubicspot.blogspot.com/2019/05/designing-better-terminal-text-color.html
 

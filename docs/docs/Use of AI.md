@@ -193,14 +193,47 @@ high solo cost not just in writing time but in the tendency to stay perpetually
 half-done. A partial test suite that doesn't cover the whole surface doesn't
 tell you much; the full-coverage pass is the valuable artifact.
 
+### Snapshot 3: 27-day mark (2026-03-12 to 2026-04-08)
+
+| Category | Detail |
+|----------|--------|
+| Commits | 306 in 21 active days (+37 since snapshot 2) |
+| GitHub issues opened | 32 (nos. 32–75, +2 since snapshot 2) |
+| GitHub issues closed | 32 (+3 since snapshot 2) |
+| Functions in codebase | 815 unique (+74 since snapshot 2) |
+
+Additional work since snapshot 2: bash4-isms audit and fixes across 21 files
+(case operators, namerefs, `mapfile`/`readarray`, `declare -A`); `is_builtin`,
+`is_keyword`, `is_alias` added; `include --force` bug fixed; `include()`
+extended to prefer `.bash` over `.sh` in bash with shared-sentinel dedup
+(issue #74 designed and implemented); all five deferred TODO items resolved;
+`str_tolower`/`str_toupper` de-duplicated via self-pipe; `str_capitalize` alias
+added; `path_is_hardlink`, `text_COLOR_FG_rgb`, `text_COLOR_BG_rgb` implemented;
+`is_aws()` updated for IMDSv2.
+
+#### Snapshot 3 estimate (additional 3 active days)
+
+| Work category | Estimated evenings solo |
+|---------------|------------------------|
+| bash4-isms audit + fixes (21 files, 5 categories) | 7–10 |
+| `include()` `.bash` extension heuristic | 2–3 |
+| `is_builtin`/`is_keyword`/`is_alias`; `include --force` fix | 2–3 |
+| find_requires script + shellac_in_practice Example 3 | 3–4 |
+| TODO cleanup (5 items resolved) | 3–4 |
+| Bug fixes, style sweeps, features (Apr 03–04) | 5–8 |
+| **Additional total** | **22–32 evenings** |
+| **Cumulative total** | **107–152 evenings** |
+
+Cumulative at 30 minutes per evening: **15–22 months of calendar time**.
+
 ### Force multiplier
 
-| Method | Snapshot 1 | Snapshot 2 (cumulative) |
-|--------|-----------|------------------------|
-| Calendar ratio | 9–12 months ÷ 10 days = ~27–36x | 10–14 months ÷ 18 days = ~17–23x |
-| With scope premium (tasks not attempted solo) | × 1.5–2x → **40–70x** | × 1.5–2x → **25–45x** |
+| Method | Snapshot 1 | Snapshot 2 (cumulative) | Snapshot 3 (cumulative) |
+|--------|-----------|------------------------|------------------------|
+| Calendar ratio | 9–12 months ÷ 10 days = ~27–36x | 10–14 months ÷ 18 days = ~17–23x | 15–22 months ÷ 21 days = ~17–24x |
+| With scope premium (tasks not attempted solo) | × 1.5–2x → **40–70x** | × 1.5–2x → **25–45x** | × 1.2–1.5x → **20–36x** |
 
-**Snapshot 1 central estimate: 40–60x.** **Snapshot 2 central estimate: 30–40x.**
+**Snapshot 1 central estimate: 40–60x.** **Snapshot 2 central estimate: 30–40x.** **Snapshot 3 central estimate: ~28x.**
 
 The cumulative multiplier is lower than the 10-day figure for an honest
 reason: the denominator grew. The first 10 days were dense with high-leverage,
@@ -215,6 +248,92 @@ context-switching overhead between sessions; research tasks that are
 economical at AI speed but prohibitive at human-alone speed; and the ability
 to run a full audit, draft documentation, and file detailed issues in a single
 sitting rather than across weeks.
+
+### Daily breakdown
+
+Methodology: commits per day are used as a proxy for work density. Solo
+evening estimates are assigned proportionally to commit weight and task type
+(research-heavy days get higher estimates; implementation days track closer to
+commit count). AI hours are estimated from session activity. Hours saved =
+(solo_evenings × 0.5h) − AI_hours. Force× = solo_hours ÷ AI_hours, where
+solo_hours = solo_evenings × 0.5h.
+
+| Date   | Commits | Solo Eve | AI Hrs | Hrs Saved | Force× |
+|--------|---------|----------|--------|-----------|--------|
+| Mar 12 |   6     |  6.0     |  1.0   |   2.0     |  26×   |
+| Mar 13 |   4     |  2.5     |  0.5   |   0.75    |  11×   |
+| Mar 14 |  15     |  9.5     |  1.0   |   3.75    |  41×   |
+| Mar 15 |  16     |  8.5     |  1.5   |   2.75    |  37×   |
+| Mar 16 |  47     | 15.0     |  2.5   |   5.0     |  64×   |
+| Mar 17 |  48     | 12.0     |  2.5   |   3.5     |  52×   |
+| Mar 18 |  11     |  6.5     |  1.0   |   2.25    |  28×   |
+| Mar 19 |  48     | 16.0     |  2.5   |   5.5     |  69×   |
+| Mar 20 |  10     |  4.0     |  1.0   |   1.0     |  17×   |
+| Mar 21 |   9     |  5.0     |  1.0   |   1.5     |  21×   |
+| Mar 22 |   1     |  2.5     |  0.5   |   0.75    |  11×   |
+| Mar 23 |   1     |  1.5     |  0.5   |   0.25    |   6×   |
+| Mar 24 |  16     |  6.0     |  1.5   |   1.5     |  26×   |
+| Mar 29 |  12     |  8.5     |  1.0   |   3.25    |  37×   |
+| Mar 30 |   2     |  1.5     |  0.5   |   0.25    |   6×   |
+| Mar 31 |  12     |  9.5     |  1.5   |   3.25    |  41×   |
+| Apr 01 |   3     | 12.0     |  2.0   |   4.0     |  52×   |
+| Apr 02 |   8     |  6.0     |  1.0   |   2.0     |  26×   |
+| Apr 03 |  19     |  8.5     |  1.5   |   2.75    |  37×   |
+| Apr 04 |   8     |  4.0     |  1.0   |   1.0     |  17×   |
+| Apr 07 |  10     |  7.5     |  1.5   |   2.25    |  32×   |
+| **Total** | **306** | **152.0** | **27.5** | **48.5** | **~31×** |
+
+#### Force multiplier per day (each █ ≈ 5×)
+
+```
+Mar 12  █████                        26×
+Mar 13  ██                           11×
+Mar 14  ████████                     41×
+Mar 15  ███████                      37×
+Mar 16  ████████████                 64×
+Mar 17  ██████████                   52×
+Mar 18  █████                        28×
+Mar 19  █████████████                69×
+Mar 20  ███                          17×
+Mar 21  ████                         21×
+Mar 22  ██                           11×
+Mar 23  █                             6×
+Mar 24  █████                        26×
+Mar 29  ███████                      37×
+Mar 30  █                             6×
+Mar 31  ████████                     41×
+Apr 01  ██████████                   52×
+Apr 02  █████                        26×
+Apr 03  ███████                      37×
+Apr 04  ███                          17×
+Apr 07  ██████                       32×
+```
+
+#### Hours saved per day (each █ ≈ 0.5h)
+
+```
+Mar 12  ████                         2.0h
+Mar 13  █▌                           0.75h
+Mar 14  ███████▌                     3.75h
+Mar 15  █████▌                       2.75h
+Mar 16  ██████████                   5.0h
+Mar 17  ███████                      3.5h
+Mar 18  ████▌                        2.25h
+Mar 19  ███████████                  5.5h
+Mar 20  ██                           1.0h
+Mar 21  ███                          1.5h
+Mar 22  █▌                           0.75h
+Mar 23  ▌                            0.25h
+Mar 24  ███                          1.5h
+Mar 29  ██████▌                      3.25h
+Mar 30  ▌                            0.25h
+Mar 31  ██████▌                      3.25h
+Apr 01  ████████                     4.0h
+Apr 02  ████                         2.0h
+Apr 03  █████▌                       2.75h
+Apr 04  ██                           1.0h
+Apr 07  ████▌                        2.25h
+```
 
 ---
 

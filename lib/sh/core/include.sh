@@ -121,6 +121,7 @@ include() {
         sh_stack_add "Full path: '${_include_target}' exists.  Is it readable?"
         if [ -r "${_include_target}" ]; then
             (( _force )) || { _include_is_loaded "${_include_target}" && return 0; }
+            (( _force )) && unset "$(_include_sentinel "${_include_target}")"
             sh_stack_add "Full path: '${_include_target}' readable.  Loading."
             if _include_source "${_include_target}" "${_verbose}"; then
                 return 0
@@ -161,6 +162,7 @@ include() {
             sh_stack_add "Loading all libraries and functions from '${_subdir}'"
             for _load_target in "${_subdir}"/*.sh; do
                 (( _force )) || { _include_is_loaded "${_load_target}" && continue; }
+                (( _force )) && unset "$(_include_sentinel "${_load_target}")"
                 if [ -r "${_load_target}" ]; then
                     _include_source "${_load_target}" "${_verbose}" || {
                         _shellac_stack dump
@@ -186,8 +188,10 @@ include() {
         if [ -f "${_element}/${_include_target}" ] || [ -f "${_element}/${_include_target}.sh" ]; then
             sh_stack_add "Relative path: '${_element}/${_include_target}' exists.  Is it readable?"
             if [ -r "${_element}/${_include_target}" ]; then
+                sh_stack_add "Relative path: '${_element}/${_include_target}' is readable.  Loading."
                 _load_target="${_element}/${_include_target}"
             elif [ -r "${_element}/${_include_target}.sh" ]; then
+                sh_stack_add "Relative path: '${_element}/${_include_target}.sh' is readable.  Loading."
                 _load_target="${_element}/${_include_target}.sh"
             else
                 _shellac_stack dump
@@ -196,6 +200,7 @@ include() {
             fi
 
             (( _force )) || { _include_is_loaded "${_load_target}" && return 0; }
+            (( _force )) && unset "$(_include_sentinel "${_load_target}")"
 
             _include_source "${_load_target}" "${_verbose}" || {
                 printf -- 'include: %s\n' "Failed to load '${_load_target}'" >&2

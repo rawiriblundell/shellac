@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_text_helmet+x}" ] && return 0
 _SHELLAC_LOADED_text_helmet=1
+requires BASH4
 
 # @description Protect header lines from being filtered by downstream pipes.
 #   Reads stdin into an array, emits the first n lines (default: 1) to stderr,

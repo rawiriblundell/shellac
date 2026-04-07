@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_utils_wrap+x}" ] && return 0
 _SHELLAC_LOADED_utils_wrap=1
+requires BASH4
 
 # @description Format a long command into multi-line with vertically aligned backslash continuations.
 #   Each flag/option starting with ' -' is placed on its own line, indented by two spaces.

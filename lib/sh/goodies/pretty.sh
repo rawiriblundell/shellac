@@ -26,7 +26,11 @@ _SHELLAC_LOADED_goodies_pretty=1
 _pretty_blocked_colors=(0 1 7 9 11 {15..18} {154..161} {190..197} {226..235} {250..255})
 
 # Define another array that is an inversion of the above
-mapfile -t _pretty_allowed_colors < <(printf -- '%d\n' {0..255} "${_pretty_blocked_colors[@]}" | sort -n | uniq -u)
+_pretty_allowed_colors=()
+while IFS= read -r _pretty_color_n; do
+  _pretty_allowed_colors+=( "${_pretty_color_n}" )
+done < <(printf -- '%d\n' {0..255} "${_pretty_blocked_colors[@]}" | sort -n | uniq -u)
+unset _pretty_color_n
 
 # @internal
 _pretty_select_random_color() {

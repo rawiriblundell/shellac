@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_net_download+x}" ] && return 0
 _SHELLAC_LOADED_net_download=1
+requires BASH4
 
 # @description Follow redirects on a URL and download the final target file,
 #   saving it under its remote filename in the current directory.

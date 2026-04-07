@@ -25,7 +25,11 @@ _SHELLAC_LOADED_text_color=1
 BLOCKED_COLORS=(0 1 7 9 11 {15..18} {154..161} {190..197} {226..235} {250..255})
 
 # Define another array that is an inversion of the above
-mapfile -t ALLOWED_COLORS < <(printf -- '%d\n' {0..255} "${BLOCKED_COLORS[@]}" | sort -n | uniq -u)
+ALLOWED_COLORS=()
+while IFS= read -r _color_n; do
+  ALLOWED_COLORS+=( "${_color_n}" )
+done < <(printf -- '%d\n' {0..255} "${BLOCKED_COLORS[@]}" | sort -n | uniq -u)
+unset _color_n
 
 # @description Generate a random foreground color code from the allowed (visible) set.
 #   Excludes colors that are hard to see on black or white terminal backgrounds.

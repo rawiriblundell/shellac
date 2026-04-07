@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_git_releases+x}" ] && return 0
 _SHELLAC_LOADED_git_releases=1
+requires BASH4
 
 # Requires: curl, jq
 

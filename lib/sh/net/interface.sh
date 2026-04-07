@@ -19,6 +19,7 @@
 
 [ -n "${_SHELLAC_LOADED_net_interface+x}" ] && return 0
 _SHELLAC_LOADED_net_interface=1
+requires BASH4
 
 # @description Get the local IP address of the host. Supports IPv4 (default)
 #   and IPv6 via flags. Falls back through 'ip', 'ifconfig', and 'nslookup'.

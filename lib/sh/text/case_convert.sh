@@ -62,6 +62,7 @@ str_snake_case() {
 # @stdout camelCase string
 # @exitcode 0 Always
 str_camel_case() {
+  requires BASH4
   local _input _result _word _first
   if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
     IFS= read -r _input
@@ -206,6 +207,7 @@ str_altcaps() {
 # @stdout String with first character uppercased
 # @exitcode 0 Always
 str_ucfirst() {
+  requires BASH4
   local _input
   if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
     IFS= read -r _input
@@ -225,6 +227,7 @@ str_ucfirst() {
 # @stdout String with first character lowercased
 # @exitcode 0 Always
 str_lcfirst() {
+  requires BASH4
   local _input
   if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
     IFS= read -r _input
@@ -244,6 +247,7 @@ str_lcfirst() {
 # @stdout String with first character of each word uppercased
 # @exitcode 0 Always
 str_ucwords() {
+  requires BASH4
   local _input
   local _word
   local _result
@@ -272,6 +276,7 @@ str_ucwords() {
 # @stdout Title-cased string
 # @exitcode 0 Always
 str_title_case() {
+  requires BASH4
   local _input
   if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
     IFS= read -r _input

@@ -106,148 +106,33 @@ collaborative tool, not a copy-and-paste crux.
 
 ## Productivity metrics
 
-These figures are presented at two snapshots and are intended as an honest,
-methodology-transparent estimate rather than marketing copy.
+The baseline for these estimates: solo maintenance ran at roughly 30 minutes
+per evening, with ~20% of each session spent re-orienting after context
+switches. High-overhead research tasks (multi-repo audits, cross-language
+comparisons) rarely got started at that pace — the setup cost exceeded what
+fits in a 30-minute window, so they stayed on the "someday" list.
 
-### Snapshot 1: 10-day mark (2026-03-12 to 2026-03-21)
+The daily breakdown below shows hours saved per session against that baseline.
+The force multiplier (solo hours ÷ AI hours) is consistently high on
+research-heavy days and lower on pure implementation days, which is expected.
+Cumulative over 21 active days: **~31×**.
 
-| Category | Detail |
-|----------|--------|
-| Commits | 214 in 10 active days |
-| GitHub issues opened | 28 (nos. 32–59) |
-| GitHub issues closed | 19 — bugs, style sweeps, audits, rename, tests, standardisation passes |
-| Functions in codebase | 734 unique |
+### Highlights (21 active days, 2026-03-12 to 2026-04-07)
 
-Work covered in that period: targeted bug fixes in three files; codebase-wide
-`echo` → `printf` sweep; camelCase → snake\_case rename across `lib/sh/`;
-case pattern style enforcement; `text/` global scope removal; third-party
-library audit; project rename; tests framework; `net/` and `fs/`
-standardisation; major refactors of `core/is.sh` and `units/temperature.sh`;
-new functions (`array/readlist`, `text/encode`, `fs/base64`,
-`net_wait_for_port`, `ssl_view_cert` days case); complete MkDocs overhaul
-including CI pipeline; five documentation pages written from scratch; license
-audit of 58 competing projects; cross-language stdlib coverage gap analysis.
-
-### Snapshot 2: 21-day mark (2026-03-12 to 2026-04-02)
-
-| Category | Detail |
-|----------|--------|
-| Commits | 267 in 18 active days (+52 since snapshot 1) |
-| GitHub issues opened | 30 (nos. 32–61, +2 since snapshot 1) |
-| GitHub issues closed | 29 (+10 since snapshot 1) |
-| Functions in codebase | 741 unique (+7 since snapshot 1) |
-
-Additional work since snapshot 1: 84 bats test files covering the full module
-surface (1,412 tests, growing to 1,432 with subsequent additions); 16 source fixes found by those tests spanning arithmetic
-exit codes, circular namerefs, timezone-dependent date arithmetic, missing
-includes, and logic errors; `str_*`/`text_*` naming refactor in `style.sh`
-with backward-compatible aliases; `is_command` → `command -v` replacement to
-improve individual function extractability; `on_vibe_coding.md` and two new
-`musings.md` entries on prefix boundary tension and DRY versus extractability.
-
-### Manual baseline
-
-Prior to this collaboration the codebase was maintained at roughly 30 minutes
-per evening, with occasional spikes when interest ran high. At that pace,
-accounting for context-switching overhead (~20% of each session spent
-re-orienting) and the realistic tendency for high-overhead research tasks to
-get deprioritised indefinitely:
-
-#### Snapshot 1 estimate (10-day work)
-
-| Work category | Estimated evenings solo |
-|---------------|------------------------|
-| Code refactors + bug fixes | 10–13 |
-| New functions | 6–8 |
-| Style sweeps (echo, camelCase, case patterns) | 8–12 |
-| `text/` global scope + other audits | 5–7 |
-| Project rename | 3–5 |
-| Tests framework | 4–6 |
-| MkDocs overhaul + CI | 6–8 |
-| Documentation (5 pages) | 8–12 |
-| License audit + cross-language gap analysis | 8–12 |
-| GitHub issues (28, several with detailed specs) | 6–7 |
-| **Total** | **64–90 evenings** |
-
-At 30 minutes per evening that is **9–12 months of calendar time**. Several
-of the research tasks (the 58-repo license audit, the four-language stdlib
-comparison) likely would not have been attempted at all solo — the setup cost
-exceeds what fits in a 30-minute window, so they would have stayed on the
-"someday" list.
-
-#### Snapshot 2 estimate (additional 8 active days)
-
-| Work category | Estimated evenings solo |
-|---------------|------------------------|
-| 84 bats test files (written; running; iterating) | 10–14 |
-| 16 source fixes found by tests | 4–6 |
-| `str_*`/`text_*` naming refactor | 2–3 |
-| Documentation (`on_vibe_coding`, musings entries) | 4–5 |
-| `is_command` → `command -v`; other small fixes | 1–2 |
-| **Additional total** | **21–30 evenings** |
-| **Cumulative total** | **85–120 evenings** |
-
-Cumulative at 30 minutes per evening: **10–14 months of calendar time**.
-The test suite in particular — 84 files across the full module surface — has a
-high solo cost not just in writing time but in the tendency to stay perpetually
-half-done. A partial test suite that doesn't cover the whole surface doesn't
-tell you much; the full-coverage pass is the valuable artifact.
-
-### Snapshot 3: 27-day mark (2026-03-12 to 2026-04-08)
-
-| Category | Detail |
-|----------|--------|
-| Commits | 306 in 21 active days (+37 since snapshot 2) |
-| GitHub issues opened | 32 (nos. 32–75, +2 since snapshot 2) |
-| GitHub issues closed | 32 (+3 since snapshot 2) |
-| Functions in codebase | 815 unique (+74 since snapshot 2) |
-
-Additional work since snapshot 2: bash4-isms audit and fixes across 21 files
-(case operators, namerefs, `mapfile`/`readarray`, `declare -A`); `is_builtin`,
-`is_keyword`, `is_alias` added; `include --force` bug fixed; `include()`
-extended to prefer `.bash` over `.sh` in bash with shared-sentinel dedup
-(issue #74 designed and implemented); all five deferred TODO items resolved;
-`str_tolower`/`str_toupper` de-duplicated via self-pipe; `str_capitalize` alias
-added; `path_is_hardlink`, `text_COLOR_FG_rgb`, `text_COLOR_BG_rgb` implemented;
-`is_aws()` updated for IMDSv2.
-
-#### Snapshot 3 estimate (additional 3 active days)
-
-| Work category | Estimated evenings solo |
-|---------------|------------------------|
-| bash4-isms audit + fixes (21 files, 5 categories) | 7–10 |
-| `include()` `.bash` extension heuristic | 2–3 |
-| `is_builtin`/`is_keyword`/`is_alias`; `include --force` fix | 2–3 |
-| find_requires script + shellac_in_practice Example 3 | 3–4 |
-| TODO cleanup (5 items resolved) | 3–4 |
-| Bug fixes, style sweeps, features (Apr 03–04) | 5–8 |
-| **Additional total** | **22–32 evenings** |
-| **Cumulative total** | **107–152 evenings** |
-
-Cumulative at 30 minutes per evening: **15–22 months of calendar time**.
-
-### Force multiplier
-
-| Method | Snapshot 1 | Snapshot 2 (cumulative) | Snapshot 3 (cumulative) |
-|--------|-----------|------------------------|------------------------|
-| Calendar ratio | 9–12 months ÷ 10 days = ~27–36x | 10–14 months ÷ 18 days = ~17–23x | 15–22 months ÷ 21 days = ~17–24x |
-| With scope premium (tasks not attempted solo) | × 1.5–2x → **40–70x** | × 1.5–2x → **25–45x** | × 1.2–1.5x → **20–36x** |
-
-**Snapshot 1 central estimate: 40–60x.** **Snapshot 2 central estimate: 30–40x.** **Snapshot 3 central estimate: ~28x.**
-
-The cumulative multiplier is lower than the 10-day figure for an honest
-reason: the denominator grew. The first 10 days were dense with high-leverage,
-high-scope-premium work — a 58-repo license audit, a four-language stdlib
-comparison, a complete test framework from scratch. The next 8 active days
-were still productive but weighted toward implementation and refinement rather
-than research tasks with outsized setup cost. A sustained 40–60x is not
-realistic; a sustained 30–40x over a longer working period is.
-
-The multiplier is not primarily about typing speed. It comes from: no
-context-switching overhead between sessions; research tasks that are
-economical at AI speed but prohibitive at human-alone speed; and the ability
-to run a full audit, draft documentation, and file detailed issues in a single
-sitting rather than across weeks.
+- **306 commits**, 32 GitHub issues opened, 32 closed
+- Functions: ~700 → **815** (+115 unique functions added)
+- **84 bats test files** covering the full module surface (1,432 tests); those
+  tests found and fixed **16 source bugs** spanning arithmetic exit codes,
+  circular namerefs, timezone-dependent date arithmetic, missing includes, and
+  logic errors
+- **58-repo license audit** and **4-language stdlib gap analysis** — both tasks
+  too high-overhead to attempt in 30-minute solo sessions
+- Codebase-wide `echo` → `printf` sweep; camelCase → `snake_case` rename
+  across `lib/sh/`; bash4-isms audit and fixes across 21 files
+- Complete MkDocs overhaul including CI pipeline; 5 documentation pages written
+  from scratch
+- Architecture work: `include()` `.bash`/`.sh` extension convention; `requires`
+  placement audit; `is_builtin`, `is_keyword`, `is_alias` introspection functions
 
 ### Daily breakdown
 

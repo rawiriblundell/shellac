@@ -21,13 +21,10 @@
 [ -n "${_SHELLAC_LOADED_text_style+x}" ] && return 0
 _SHELLAC_LOADED_text_style=1
 
-# TODO:
-# * Check for $COLORTERM and fail out if/when possible
-# * Something with this:
-# ** https://cubicspot.blogspot.com/2019/05/designing-better-terminal-text-color.html
-# References: 
+# References:
 # * https://gist.github.com/XVilka/8346728
 # * https://stackoverflow.com/a/33206814
+# * https://cubicspot.blogspot.com/2019/05/designing-better-terminal-text-color.html
 
 
 # @description Apply slow blink ANSI formatting to text.

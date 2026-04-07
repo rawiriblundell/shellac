@@ -52,7 +52,25 @@ path_is_directory() {
     [ -d "${1:-$RANDOM}" ] >/dev/null 2>&1
 }
 
-# TODO: path_is_hardlink()
+# @description Test whether a path has more than one hard link (i.e. shares an
+#   inode with at least one other name). Uses stat; tries GNU format first,
+#   then BSD format.
+#
+# @arg $1 string Path to test
+#
+# @exitcode 0 Path has a link count greater than 1
+# @exitcode 1 Path does not, is not a regular file, or stat is unavailable
+path_is_hardlink() {
+    local _path _links
+    _path="${1:?path_is_hardlink: path required}"
+    [ -f "${_path}" ] || return 1
+    command -v stat >/dev/null 2>&1 || return 1
+    _links=$(stat --format='%h' "${_path}" 2>/dev/null) ||
+        _links=$(stat -f '%l' "${_path}" 2>/dev/null) ||
+        return 1
+    (( _links > 1 ))
+}
+
 # @description Test whether a path is a symbolic link.
 #
 # @arg $1 string Path to test

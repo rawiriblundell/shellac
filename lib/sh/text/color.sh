@@ -48,10 +48,33 @@ text_COLOR_FG_random() {
   printf -- '%d\n' "${_color}"
 }
 
-# For true color, we give rgb values in the 0-255 range
-# TODO: Build a function for this
-#foreground: \x1b[38;2;${red};${green};${blue}m
-#background: \x1b[48;2;${red};${green};${blue}m
+# @description Emit a 24-bit (true color) ANSI foreground color escape sequence.
+#
+# @arg $1 integer Red value (0-255)
+# @arg $2 integer Green value (0-255)
+# @arg $3 integer Blue value (0-255)
+#
+# @stdout ANSI foreground color escape sequence
+# @exitcode 0 Always
+text_COLOR_FG_rgb() {
+  printf -- '\x1b[38;2;%d;%d;%dm' "${1:?text_COLOR_FG_rgb: red required}" \
+                                   "${2:?text_COLOR_FG_rgb: green required}" \
+                                   "${3:?text_COLOR_FG_rgb: blue required}"
+}
+
+# @description Emit a 24-bit (true color) ANSI background color escape sequence.
+#
+# @arg $1 integer Red value (0-255)
+# @arg $2 integer Green value (0-255)
+# @arg $3 integer Blue value (0-255)
+#
+# @stdout ANSI background color escape sequence
+# @exitcode 0 Always
+text_COLOR_BG_rgb() {
+  printf -- '\x1b[48;2;%d;%d;%dm' "${1:?text_COLOR_BG_rgb: red required}" \
+                                   "${2:?text_COLOR_BG_rgb: green required}" \
+                                   "${3:?text_COLOR_BG_rgb: blue required}"
+}
 
 # Define the standard 8 Colors
 COLOR_FG_BLACK='\x1b[1;30m'

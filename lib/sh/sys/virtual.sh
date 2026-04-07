@@ -60,19 +60,26 @@ is_azure() {
 # From https://serverfault.com/a/903599
 # See also:
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/identify_ec2_instances.html
-# TODO: Update for IMDSv2
 is_aws() {
-  local _doc_url
+  local _doc_url _token
   _doc_url="http://169.254.169.254/latest/dynamic/instance-identity/document"
   if grep -q "^ec2" /sys/hypervisor/uuid 2>/dev/null; then
     return 0
   elif grep -q "^EC2" /sys/devices/virtual/dmi/id/product_uuid 2>/dev/null; then
     return 0
-  elif curl -s -m 5 "${_doc_url}" | grep -q availabilityZone; then
-    return 0
-  else
-    return 1
+  elif command -v curl >/dev/null 2>&1; then
+    # Try IMDSv2 first (token-based); fall back to IMDSv1 for older instances
+    _token=$(curl -s -m 5 -X PUT \
+      -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
+      "http://169.254.169.254/latest/api/token" 2>/dev/null)
+    if [ -n "${_token}" ]; then
+      curl -s -m 5 -H "X-aws-ec2-metadata-token: ${_token}" \
+        "${_doc_url}" 2>/dev/null | grep -q availabilityZone && return 0
+    else
+      curl -s -m 5 "${_doc_url}" 2>/dev/null | grep -q availabilityZone && return 0
+    fi
   fi
+  return 1
 }
 
 # @description Detect the hypervisor or container runtime type.

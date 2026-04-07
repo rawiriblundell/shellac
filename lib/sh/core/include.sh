@@ -21,8 +21,6 @@
 [ -n "${_SHELLAC_LOADED_core_include+x}" ] && return 0
 _SHELLAC_LOADED_core_include=1
 
-# TODO: include [url] --> download code to temporary location, source, destroy afterwards?
-
 # @internal
 # Source a file and, when verbose, print any functions newly defined by it.
 _include_source() {

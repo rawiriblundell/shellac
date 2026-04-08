@@ -60,7 +60,7 @@ If that discussion is resolved to our mutual satisfaction, or if you're going to
 
 Create a new branch off the `main` branch e.g. `git checkout -b my_new_feature`
 
-Work on your code improvements inside this new branch..  Try to make smaller commits rather than large ones.  This makes it easier to trace the process of the code's development.
+Work on your code improvements inside this new branch.  Try to make smaller commits rather than large ones.  This makes it easier to trace the process of the code's development.
 
 When you're ready, put in a Pull Request with a small explanation of what you're submitting and why.
 

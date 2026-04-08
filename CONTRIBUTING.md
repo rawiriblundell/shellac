@@ -88,160 +88,269 @@ Ubuntu's [DashAsBinSh](https://wiki.ubuntu.com/DashAsBinSh) wiki page can give y
 
 ## Coding Style
 
-Please look at some of the other code and try to be consistent with it.
+Style references in rough priority order:
 
-Broadly we will try to use the same style as [ChromiumOS](https://chromium.googlesource.com/chromiumos/docs/+/HEAD/styleguide/shell.md)
+1. The rules below — these take precedence
+2. [ChromiumOS Shell Style Guide](https://chromium.googlesource.com/chromiumos/docs/+/HEAD/styleguide/shell.md)
+3. [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html)
 
-Failing that, we will refer to the [Google Shell Style Guide.](https://google.github.io/styleguide/shellguide.html)
+### Formatting
 
-Any prescribed advice below supersedes the advice given in these two guides.
+Two or four spaces per indent level — pick one and stay consistent within a file.  Hard tabs are not acceptable.
 
-### Indendation and column width
+Aim for 80 characters per line; 120 is the hard limit.
 
-Two or four space soft-tabs - whichever you prefer, just keep them consistent within each file.  Try to limit to 80 chars width, but up to 120ish is fine.
+`do` and `then` go on the same line as their control construct:
 
-`do` and `then` go on the same line rather than the next.  The same applies for opening braces and parens.
+```bash
+for file in ./*; do
+    ...
+done
 
-Hard tabs are a hard no.
+if [[ -n "${var}" ]]; then
+    ...
+fi
+```
 
-### Function names
+Long pipelines split at the pipe character, which stays at the end of each line:
 
-Function names are in lower `snake_case()`.  The project uses a `<module>_<noun>` convention: the module name is the namespace and the noun describes what the function operates on.  See [naming conventions](docs/naming-conventions.md) for the full rationale, patterns, and named exceptions.
-
-For helper functions that won't be used directly by a human, prepend with a single underscore: `_my_helper()`.
-
-Do not use the `function` keyword.  It is non-portable and considered obsolete.
+```bash
+some_command |
+    second_stage |
+    third_stage
+```
 
 ### Variables
 
-Variables should generally be in lowercase, snake_case if possible.
+All variables use `lower_snake_case`.  Never camelCase.  `UPPER_CASE` is reserved for environment variables and shell builtins (`PATH`, `HOME`, `RANDOM`, etc.) — collisions with those cause subtle, hard-to-trace bugs.
 
-Curly braces are used on `${arrays[@]}` and `${variable/modif/ications}`. For consistency, we use curly braces on normal variables too.
+Always use curly braces: `"${variable}"` not `"$variable"`.  The exception is inside `$(( ))` arithmetic, where `$(( time + 10 ))` is fine.
 
-Curly braces around variables also improves readability when syntax colouring is not available. ${this_variable} stands out within this block of text, for example.
+Always quote variable expansions and command substitutions: `"${var}"` and `"$(command)"`.  Unquoted variables are word-split and glob-expanded, which is almost never what you want.
 
-Exception: When you're in an arithmetic context e.g. `$(( time_metric + 10 ))`
+Use descriptive names.  `${block_device}` is a name; `${f}` is not.  Single-character names are acceptable only for C-style loop counters (`i`) and shell special parameters (`$1`, `$#`, `$?`).
 
-Exceptions to the exception: If your var is an array element or requires transformation e.g.
-
-```bash
-$(( ${time_metrics[2]} + 20 ))
-$(( ${10#time_metric} + 10 ))
-```
-
-Try, also, to use meaningful names. This is meaningless:
-
-```bash
-for f in $(lsblk -ln -o NAME); do
-    ...
-```
-
-Whereas this is better:
-
-```bash
-for block_device in $(lsblk -ln -o NAME); do
-    ...
-```
-
-This also reduces/eliminates unexpected in-scope collisions.
-
-Exception: C-Style `for (( i=0; i<max_count; i++ )); do` style loops, as the var `i` is usually self-contained and is short-hand for 'integer' or 'iteration'
-
-It's generally good, but a highly uncommon, habit to unset your variables once you're done with them.  We should aspire to do this where we can.
-
-#### Typing
-
-Variables in Linux/UNIX shells are untyped. `typeset` and `declare` and similar tools have been developed to bring some form of typing, but these are not portable solutions, so should be avoided.
-
-If you need a variable to be of a specific type, the best advice right now is to validate it before you use it.
-
-We do already have some code for this kind of validation.
+`for i in ...` loops are expressly discouraged — use `for file in`, `for item in`, `for host in`, etc.  Reserve `i` for C-style `for (( i=0; i<count; i++ ))`.
 
 #### Scoping
 
-Shell uses dynamic scoping, which can really throw off a lot of people.  Practically speaking: it's not great.  But, with some simple practices, we can mitigate the potential issues caused by this.
+Shell has three pseudo-scopes worth keeping in mind:
 
-Typically in a shell script you have 3, maybe 4 pseudo-scopes:
+- **Environment** (`UPPER_CASE`) — `$PATH`, `$HOME`, shell builtins.  Don't create new uppercase variables unless you intend them to live in the environment.
+- **Script** (`lower_snake_case`) — script-level variables.
+- **Function / local** (`_lower_snake_case`) — variables local to a function, prefixed with an underscore to signal they are private to that function.
 
-* Environment level (e.g. `$PATH`) / Shell (e.g. `$RANDOM`)
-* Script level
-* Function level
+#### Local variables
 
-A lot of badly written articles imply that using UPPERCASE is a good thing.  It's best avoided if at all possible.
-
-We practice psuedoscoping to minimise the chances of variables within scripts or functions from clobbering variables within the environment and vice versa.
-
-Variables must be in the appropriate format for its "scope" as defined below:
-
-#### Environment
-
-We know from long-established convention that environment variables are almost always in UPPERCASE. You can see this in e.g. `bash` by running `set` and/or `printenv`.
-
-We generally shouldn't need to put any variables into the environment, so you should avoid UPPERCASE as much as possible. If you do need a variable in the environment "scope" for whatever reason, namespace your variables by using a prefixed form like IDENTIFIER_VARNAME e.g. `MATH_SCRIPT_VERSION`
-
-You might often see this "scope" referred to as the global scope, or shell scope. This scope also contains shell builtin variables.
-
-#### Script
-
-Variables in the script "scope" tend often to be mistakenly written in UPPERCASE, which gives rise to the possibility of clobbering a legitimate variable in the environment "scope". This can have results that are potentially hilarious, or potentially bad depending on your point of view.
-
-For that reason, UPPERCASE variable names are strongly discouraged outside of the environment scope.
-
-Instead, use lowercase, with underscores to separate words i.e. snake_case.
-
-GNU Autoconf's documentation also states:
-
-As a general rule, shell variable names containing a lower-case letter are safe; you can define and use these variables without worrying about their effect on the underlying system, and without worrying about whether the shell changes them unexpectedly.
-
-#### local
-
-`bash` and others allow you to define variables as local within a function e.g.
+All library functions must declare variables with `local`.  Always declare and assign on separate lines — combining them with `local var="$(cmd)"` discards the exit code of the command:
 
 ```bash
-get_api_user() {
-    local username
-    username=Shelly
-    ...
-}
-```
-
-All library functions must declare local variables with `local`.  Declare and assign separately — never combine them — so that exit codes are not masked:
-
-```bash
+# Right
 my_func() {
-    local username
-    local result
-    username="${1}"
-    result="$(some_command)"
+    local _name
+    local _result
+    _name="${1}"
+    _result="$(some_command)"
+}
+
+# Wrong — the exit code of some_command is lost
+my_func() {
+    local _result="$(some_command)"
 }
 ```
 
 #### Constants
 
-_a.k.a. immutable variable_
-
-Define a constant in its appropriate scope with `readonly`.  Define and set separately e.g.
+Declare first, then make readonly on a separate line:
 
 ```bash
-my_variable="Polaris"
-readonly my_variable
+config_file="/etc/myapp/config"
+readonly config_file
 ```
 
-Variable pseudoscopes re-cap:
-Environment: ${SH_UPPERCASE}
-Script: ${meaningful_snake_case}
-Function / Local: ${_underscore_prepended_snake_case} with unset -v
-Constants: The appropriate above form set to readonly
+### Output
+
+Never use `echo`.  Use `printf` instead — `echo`'s behaviour across shells and its `-n`/`-e` flags are not portable.
+
+Always include `--` after the format string:
+
+```bash
+printf -- '%s\n' "${var}"      # right
+printf '%s\n' "${var}"         # wrong — missing --
+```
+
+This applies inside pipelines, subshells, and fallback branches too — no exceptions.
+
+Never use backticks for command substitution.  Use `$()`:
+
+```bash
+result="$(some_command)"      # right
+result=`some_command`         # wrong — doesn't nest, harder to read
+```
+
+### Arithmetic
+
+Use `$(( ))` for all arithmetic.  Never `let` or `expr`:
+
+```bash
+(( count += 1 ))              # right
+result=$(( a + b ))           # right
+let count++                   # wrong
+result=$(expr "$a" + "$b")    # wrong — expr is an external command
+```
+
+### Functions
+
+Function names use `lower_snake_case` following a `<module>_<noun>` convention.  See [naming conventions](docs/naming-conventions.md) for the full rationale.
+
+Never use the `function` keyword — it is non-portable and obsolete:
+
+```bash
+my_function() {               # right
+    ...
+}
+
+function myFunction() {       # wrong
+    ...
+}
+```
+
+Private/helper functions that are not part of the public API start with a single underscore: `_my_helper()`.
+
+For functions that need strong variable isolation (e.g. they `cd` and must not affect the caller's working directory), use subshell syntax:
+
+```bash
+isolated_task() (
+    cd /some/directory || return 1
+    do_work
+)
+```
+
+### Conditionals
+
+Use `[[` for all bash conditionals.  Use `[` only when writing for POSIX `sh`.
+
+Use `=` for string equality (not `==`).  For numeric comparisons, always use `(( ))` — never `-lt`, `-gt`, `-eq` inside `[[`:
+
+```bash
+[[ "${a}" = "${b}" ]]         # string equality — right
+(( a > b ))                   # numeric comparison — right
+[[ a -gt b ]]                 # numeric inside [[ — wrong
+```
+
+Be explicit with string tests:
+
+```bash
+[[ -z "${var}" ]]             # preferred — clearly "zero length"
+[[ -n "${var}" ]]             # preferred — clearly "non-zero length"
+[[ "${var}" ]]                # valid but less explicit
+```
+
+Prefer `case` over `[[ =~ ]]` regex matching where pattern matching suffices — it is faster and more portable.
+
+### Case statement formatting
+
+This exact format is required — opening `(` on the pattern line, `;;` vertically aligned with it:
+
+```bash
+case "${variable}" in
+    (option1)
+        # commands
+    ;;
+    (option2|option3)
+        # commands
+    ;;
+    (*)
+        # default
+    ;;
+esac
+```
+
+Always include a `(*)` default case unless there is a clear reason not to.
+
+### Pipelines and loops
+
+Never pipe into a `while read` loop if the variables inside need to persist — pipes create a subshell, so those variables are discarded when the pipe ends:
+
+```bash
+# Wrong — $count is 0 after the loop
+some_command | while read -r line; do
+    (( count++ ))
+done
+
+# Right — process substitution keeps variables in scope
+while read -r line; do
+    (( count++ ))
+done < <(some_command)
+```
+
+Never use bare `*` for glob expansion — files starting with `-` will be misinterpreted as options.  Use `./*`:
+
+```bash
+for file in ./*; do ...        # right
+for file in *; do ...          # wrong
+```
+
+### Error handling
+
+Check return codes explicitly.  Do not rely on `set -e` or `set -euo pipefail` — see [The Unofficial Strict Mode](#the-unofficial-strict-mode) below for why.
+
+All error messages, warnings, and diagnostics go to stderr:
+
+```bash
+printf -- '%s\n' "Error: something failed" >&2
+return 1
+```
+
+Idiomatic guard patterns:
+
+```bash
+if ! command_that_might_fail; then
+    printf -- '%s\n' "Error: operation failed" >&2
+    return 1
+fi
+
+# Inline for simple cases
+cd /target || { printf -- '%s\n' "cd failed" >&2; exit 1; }
+```
+
+Use parameter expansion for default values rather than `if` blocks:
+
+```bash
+: "${foo:=default}"           # assign default if unset or empty
+: "${foo=default}"            # assign default only if unset
+```
+
+### Idempotence
+
+Scripts should be safe to run more than once.  Check state before making changes:
+
+```bash
+# Wrong — appends a duplicate entry on every run
+printf -- '%s\n' "nameserver 1.2.3.4" >> /etc/resolv.conf
+
+# Right
+ns_line="nameserver 1.2.3.4"
+if ! grep -qF "${ns_line}" /etc/resolv.conf; then
+    printf -- '%s\n' "${ns_line}" >> /etc/resolv.conf
+fi
+
+mkdir -p /opt/myapp            # right — idempotent
+mkdir /opt/myapp               # wrong — fails on second run
+```
+
+### Security
+
+- Never log sensitive data (passwords, keys, tokens, PII)
+- Never use `eval` — if eval is the answer, you are asking the wrong question
+- Never use `which` — use `command -v`
+- Never use SUID/SGID on shell scripts — use `sudo` for elevation
+- Always use `--` to separate options from filenames: `rm -- "${file}"`
+- Validate and sanitize all external input
 
 ### Compartmentalisation
 
-I was just looking for an excuse to use that word.
-
-One of the flaws - I think - with some of the other shell library projects, is that they get bogged down with too much re-use.  And so you get library upon library upon library dependant on one-another.  For example, one function supplied by this project is `puts()`, which fixes the mess of `echo` and the verbosity of `printf` for everyday use.  You'd think that such a function would be re-used throughout other library files, and you'd be wrong.
-
-This practise should be heavily discouraged.
-
-Each library file should be as self-contained as possible, and should try as much as possible not to require the inclusion of any other library.  This ultimately keeps the end-user interface simple, it ultimately keeps simple the core functionality of `include()`, it improves code re-use for derivative works, and it doesn't bog the codebase down with frustrating and highly obnoxious namespacing.
+Each library file should be as self-contained as possible.  Don't call other shellac library functions from within a library function — use `include` at the consumer level instead.  This keeps individual functions extractable and avoids dependency chains that make the codebase harder to reason about.
 
 ## Library structure
 
@@ -301,6 +410,48 @@ bats test/bats/
 ```
 
 All submissions should include tests for new functions or behaviour.  Existing tests must continue to pass.  The `lint.bats` file runs shellcheck across all library files automatically — new code must be shellcheck-clean or include a justified `# shellcheck disable` directive.
+
+## Shellac library rules
+
+### `requires` declarations
+
+Every library file must declare its external command dependencies with `requires`.  Placement depends on the file's structure:
+
+**Library-level** (after the sentinel, before any function definitions): use when every function in the file shares the same external dependency, or the file is single-purpose and useless without that tool.  Example: `calc.sh` always needs `bc`.
+
+**Function-level** (inside the function body): use when functions in the same file have different external dependencies, or when a significant portion of the file has no external dependencies at all.
+
+**No `requires`**: pure-shell files — parameter expansions, arithmetic, and builtins only.
+
+Do not add `requires` for:
+- Bash builtins: `printf`, `read`, `cd`, `test`, `kill`, `wait`, etc.
+- Shell keywords: `if`, `while`, `case`, `do`, `then`, `in`, `esac`, etc.
+- Shellac functions from other modules (use `include` for those instead)
+- Words that appear only in string literals or comments
+
+Bash version tokens are supported: `requires BASH4` (associative arrays, `mapfile`, case `${,,}`/`${^^}`), `requires BASH43` (namerefs: `local -n`, `declare -n`).
+
+The `musings.md` entry on `requires` placement documents the full rationale and edge cases.
+
+### Self-reference
+
+Library files must not call shellac wrappers where a native shell or POSIX primitive does the same job:
+
+- `command -v tool >/dev/null 2>&1` — not `is_command tool`
+- `[[ -n "${var}" ]]` — not `var_is_set`
+- `typeset -f name >/dev/null 2>&1` — not `is_function`
+
+`requires` itself is infrastructure and is explicitly permitted as a cross-library call.
+
+### Attribution
+
+When adapting code from a third-party source, add a comment directly in the file:
+
+```bash
+# Adapted from ProjectName (LICENSE) https://url
+```
+
+And add an entry to `NOTICE.md` under the appropriate license section listing which files and functions were derived from that source.
 
 ## The Unofficial Strict Mode
 

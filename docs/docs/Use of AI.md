@@ -119,7 +119,7 @@ Cumulative over 23 active days: **~27×**.
 
 ### Highlights (23 active days, 2026-03-12 to 2026-04-09)
 
-- **315 commits**, 32 GitHub issues opened, 32 closed
+- **315 commits**, 44 GitHub issues opened, 59 closed (including 16 pre-existing issues cleared during the collaboration)
 - Functions: ~700 → **828** (+128 unique functions added)
 - **84 bats test files** covering the full module surface (1,432 tests); those
   tests found and fixed **16 source bugs** spanning arithmetic exit codes,

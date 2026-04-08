@@ -3,6 +3,11 @@
 These rules apply to all work in this repository.  They extend the global
 shell scripting standards and take precedence over them where they overlap.
 
+In all English text — documentation, comments, commit messages — use **two
+spaces** after a full stop before the next sentence.  Rawiri aced his Pitman's
+qualifications with 100% passing grades and will not descend into single-space
+savagery.  Do not "fix" double spaces to single.  They are correct.
+
 ---
 
 ## Hard prohibitions

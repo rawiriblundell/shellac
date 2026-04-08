@@ -115,12 +115,12 @@ fits in a 30-minute window, so they stayed on the "someday" list.
 The daily breakdown below shows hours saved per session against that baseline.
 The force multiplier (solo hours ÷ AI hours) is consistently high on
 research-heavy days and lower on pure implementation days, which is expected.
-Cumulative over 21 active days: **~31×**.
+Cumulative over 23 active days: **~27×**.
 
-### Highlights (21 active days, 2026-03-12 to 2026-04-07)
+### Highlights (23 active days, 2026-03-12 to 2026-04-09)
 
-- **306 commits**, 32 GitHub issues opened, 32 closed
-- Functions: ~700 → **815** (+115 unique functions added)
+- **315 commits**, 32 GitHub issues opened, 32 closed
+- Functions: ~700 → **828** (+128 unique functions added)
 - **84 bats test files** covering the full module surface (1,432 tests); those
   tests found and fixed **16 source bugs** spanning arithmetic exit codes,
   circular namerefs, timezone-dependent date arithmetic, missing includes, and
@@ -133,6 +133,10 @@ Cumulative over 21 active days: **~31×**.
   from scratch
 - Architecture work: `include()` `.bash`/`.sh` extension convention; `requires`
   placement audit; `is_builtin`, `is_keyword`, `is_alias` introspection functions
+- **13 functions** adapted from pure-bash-bible (MIT) across `array/`, `numbers/`,
+  `sys/`, `path/`, and `text/` — all pure bash, no external deps
+- Project `CLAUDE.md` created; `CONTRIBUTING.md` coding style section restructured
+  from basics up through minutiae for human and AI readability
 
 ### Daily breakdown
 
@@ -166,7 +170,9 @@ solo_hours = solo_evenings × 0.5h.
 | Apr 03 |  19     |  8.5     |  1.5   |   2.75    |  37×   |
 | Apr 04 |   8     |  4.0     |  1.0   |   1.0     |  17×   |
 | Apr 07 |  10     |  7.5     |  1.5   |   2.25    |  32×   |
-| **Total** | **306** | **152.0** | **27.5** | **48.5** | **~31×** |
+| Apr 08 |   3     |  5.5     |  1.0   |   1.75    |  28×   |
+| Apr 09 |   6     |  7.0     |  1.5   |   2.0     |  23×   |
+| **Total** | **315** | **164.5** | **30.0** | **52.25** | **~27×** |
 
 #### Force multiplier per day (each █ ≈ 5×)
 
@@ -192,6 +198,8 @@ Apr 02  █████                        26×
 Apr 03  ███████                      37×
 Apr 04  ███                          17×
 Apr 07  ██████                       32×
+Apr 08  █████                        28×
+Apr 09  ████▌                        23×
 ```
 
 #### Hours saved per day (each █ ≈ 0.5h)
@@ -218,6 +226,8 @@ Apr 02  ████                         2.0h
 Apr 03  █████▌                       2.75h
 Apr 04  ██                           1.0h
 Apr 07  ████▌                        2.25h
+Apr 08  ███▌                         1.75h
+Apr 09  ████                         2.0h
 ```
 
 ---

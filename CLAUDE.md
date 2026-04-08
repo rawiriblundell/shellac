@@ -170,3 +170,30 @@ When adapting code from a third-party source, add a comment in the file:
 ```
 
 And add an entry to `NOTICE.md` under the appropriate section.
+
+### Shellcheck
+
+All library files must be shellcheck-clean.  Any `# shellcheck disable=SCXXXX`
+directive must be accompanied by a comment explaining why it is correct to
+suppress that warning.
+
+### Testing
+
+Tests live in `test/bats/` and use bats-core.  Run the full suite with:
+
+```bash
+bats test/bats/
+```
+
+New functions need tests.  Existing tests must continue to pass.
+
+### Discovery
+
+Before adding a new function, check whether it already exists:
+
+```bash
+shellac modules                   # list all modules
+shellac info <module>             # list libraries and functions in a module
+shellac info <function>           # full documentation for a function
+shellac provides <function>       # which library defines a function
+```

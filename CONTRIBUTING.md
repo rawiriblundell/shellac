@@ -2,6 +2,13 @@
 
 Contributions are welcome!
 
+This file documents the conventions and standards for contributing to shellac.
+A companion file, [CLAUDE.md](CLAUDE.md), covers the same ground in a compact
+format intended for use with [Claude Code](https://claude.com/claude-code) —
+if you work with AI-assisted tooling, drop that file into your session and the
+rules will be applied automatically.  It is also a useful quick-reference if
+you find this document too long to skim.
+
 ## License
 
 Any contributed code that is accepted into this repo will be published under the same license as the repo i.e. Apache 2.0 License, unless you choose to submit it under a compatible license like MIT.

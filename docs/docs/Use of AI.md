@@ -107,15 +107,19 @@ collaborative tool, not a copy-and-paste crux.
 ## Productivity metrics
 
 The baseline for these estimates: solo maintenance ran at roughly 30 minutes
-per evening, with ~20% of each session spent re-orienting after context
-switches. High-overhead research tasks (multi-repo audits, cross-language
-comparisons) rarely got started at that pace — the setup cost exceeded what
-fits in a 30-minute window, so they stayed on the "someday" list.
+per evening, at a realistic hobby pace of around 8 working evenings per month
+(not every evening — context-switching overhead meant roughly 20% of each
+session was spent re-orienting, and high-overhead research tasks rarely got
+started at all because the setup cost exceeded what fits in a 30-minute window).
 
-The daily breakdown below shows hours saved per session against that baseline.
+The daily breakdown table counts solo evenings and AI hours per session.
+To convert evenings to calendar months, divide by 8 (the assumed hobby pace).
 The force multiplier (solo hours ÷ AI hours) is consistently high on
 research-heavy days and lower on pure implementation days, which is expected.
-Cumulative over 23 active days: **~27×**.
+
+Cumulative over 23 active days: **164.5 solo evenings ≈ 20 months of calendar
+time delivered; 104.5 evenings saved ≈ 13 months not spent; ~27× force
+multiplier**.
 
 ### Highlights (23 active days, 2026-03-12 to 2026-04-09)
 
@@ -143,9 +147,11 @@ Cumulative over 23 active days: **~27×**.
 Methodology: commits per day are used as a proxy for work density. Solo
 evening estimates are assigned proportionally to commit weight and task type
 (research-heavy days get higher estimates; implementation days track closer to
-commit count). AI hours are estimated from session activity. Hours saved =
-(solo_evenings × 0.5h) − AI_hours. Force× = solo_hours ÷ AI_hours, where
-solo_hours = solo_evenings × 0.5h.
+commit count). AI hours are estimated from session activity.
+
+- Hours saved = (solo_evenings × 0.5h) − AI_hours
+- Force× = solo_hours ÷ AI_hours, where solo_hours = solo_evenings × 0.5h
+- Calendar months = evenings ÷ 8 (hobby pace: ~8 working evenings/month)
 
 | Date   | Commits | Solo Eve | AI Hrs | Hrs Saved | Force× |
 |--------|---------|----------|--------|-----------|--------|

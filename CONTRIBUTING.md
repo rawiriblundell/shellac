@@ -352,6 +352,13 @@ mkdir /opt/myapp               # wrong — fails on second run
 
 Each library file should be as self-contained as possible.  Don't call other shellac library functions from within a library function — use `include` at the consumer level instead.  This keeps individual functions extractable and avoids dependency chains that make the codebase harder to reason about.
 
+There are two permitted exceptions:
+
+- **`requires`** — infrastructure, always permitted anywhere in a library file.
+- **`include`** — permitted within a library file when there is a genuine functional dependency that cannot be inlined (e.g. `crypto/uuid.sh` depends on `time/epoch`, `sys/hogs.sh` aggregates `sys/cpuhogs`, `sys/memhogs`, and `sys/swaphogs`).  It is not a licence to pull in convenience wrappers; use it only when the library genuinely cannot function without the other.
+
+`core/stdlib.sh` is a special case — its entire purpose is to be an include manifest, so it consists almost entirely of `include` calls by design.
+
 ## Library structure
 
 Shellac organises code in a three-level hierarchy: **module** (directory) → **library** (`.sh` file) → **function**.  See [docs/structure.md](docs/structure.md) for the full explanation.

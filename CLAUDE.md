@@ -123,13 +123,22 @@ Use native primitives inside library code — not shellac wrappers:
 - `[[ -n "${var}" ]]` — not `var_is_set`
 - `typeset -f name >/dev/null 2>&1` — not `is_function`
 
-Exception: `requires` is infrastructure and is explicitly permitted.
+Permitted exceptions to the self-reference rule:
+- `requires` — infrastructure, always permitted
+- `include` — permitted when a library has a genuine functional dependency on
+  another module (e.g. `crypto/uuid.sh` needs `time/epoch`); not a licence to
+  pull in convenience wrappers
 
 ### Compartmentalisation
 
 Each library file must be self-contained.  Do not call other shellac library
 functions from within a library function — use `include` at the consumer level.
 This keeps individual functions extractable and avoids dependency chains.
+
+Permitted exceptions: `requires` (infrastructure) and `include` when a genuine
+inter-module dependency exists.  `core/stdlib.sh` is a manifest file by design
+and consists almost entirely of `include` calls — do not treat it as a model
+for ordinary library files.
 
 ### Documentation
 

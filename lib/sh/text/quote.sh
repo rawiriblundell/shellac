@@ -66,3 +66,27 @@ str_quote() {
     fi
     printf -- '%s\n' "${_str_quote_left}${_input}${_str_quote_right}"
 }
+
+# @description Remove all single-quote, double-quote, and backtick characters from a string.
+#   This strips every occurrence, not just surrounding pairs.
+#
+# @arg $1 string Input string
+#
+# @stdout The string with all quote characters removed
+# @exitcode 0 Always
+#
+# @example
+#   str_unquote "'Hello', \"World\""   # => Hello, World
+#   str_unquote '"wrapped"'            # => wrapped
+# Adapted from dylanaraps/pure-bash-bible (MIT) https://github.com/dylanaraps/pure-bash-bible
+str_unquote() {
+    local _str _tmp
+    if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
+        IFS= read -r _str
+    else
+        _str="${*}"
+    fi
+    _tmp="${_str//\'}"
+    _tmp="${_tmp//\"}"
+    printf -- '%s\n' "${_tmp//\`}"
+}

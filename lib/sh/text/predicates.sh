@@ -422,3 +422,29 @@ str_is_email() {
   _email_re="^([A-Za-z]+[A-Za-z0-9]*\+?((\.|\-|\_)?[A-Za-z]+[A-Za-z0-9]*)*)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
   [[ "${_str}" =~ ${_email_re} ]]
 }
+
+# @description Test whether a string matches a regex, and print the first capture group if it does.
+#   Uses bash's =~ operator.  Stick to POSIX ERE features for portability across
+#   systems, as bash delegates to the system's regex engine.
+#
+# @arg $1 string String to test
+# @arg $2 string Extended regular expression
+#
+# @stdout First capture group from BASH_REMATCH if the string matches
+# @exitcode 0 String matches the regex
+# @exitcode 1 String does not match
+#
+# @example
+#   str_matches "hello world" "^hello (.+)"   # prints "world", exit 0
+#   str_matches "foo" "^bar"                  # exit 1
+# Adapted from dylanaraps/pure-bash-bible (MIT) https://github.com/dylanaraps/pure-bash-bible
+str_matches() {
+    local _str _regex
+    _str="${1:?str_matches: string required}"
+    _regex="${2:?str_matches: regex required}"
+    if [[ "${_str}" =~ ${_regex} ]]; then
+        [[ -n "${BASH_REMATCH[1]}" ]] && printf -- '%s\n' "${BASH_REMATCH[1]}"
+        return 0
+    fi
+    return 1
+}

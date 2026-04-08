@@ -394,3 +394,47 @@ path_relative() {
 
   printf -- '%s\n' "${_rel:-.}"
 }
+
+# @description Test whether path A is newer than path B (mtime comparison).
+#
+# @arg $1 string Path A
+# @arg $2 string Path B
+#
+# @exitcode 0 A is newer than B
+# @exitcode 1 A is not newer than B, or either path does not exist
+#
+# @example
+#   path_is_newer /etc/passwd /etc/shadow
+path_is_newer() {
+    [ "${1:?path_is_newer: path required}" -nt "${2:?path_is_newer: path required}" ]
+}
+
+# @description Test whether path A is older than path B (mtime comparison).
+#
+# @arg $1 string Path A
+# @arg $2 string Path B
+#
+# @exitcode 0 A is older than B
+# @exitcode 1 A is not older than B, or either path does not exist
+#
+# @example
+#   path_is_older /etc/shadow /etc/passwd
+path_is_older() {
+    [ "${1:?path_is_older: path required}" -ot "${2:?path_is_older: path required}" ]
+}
+
+# @description Test whether two paths refer to the same file (same device and inode).
+#   Returns true for hard links to the same underlying inode.
+#
+# @arg $1 string First path
+# @arg $2 string Second path
+#
+# @exitcode 0 Both paths refer to the same file
+# @exitcode 1 Paths differ, or either path does not exist
+#
+# @example
+#   ln /etc/passwd /tmp/passwd_link
+#   path_is_same_file /etc/passwd /tmp/passwd_link   # => exit 0
+path_is_same_file() {
+    [ "${1:?path_is_same_file: path required}" -ef "${2:?path_is_same_file: path required}" ]
+}

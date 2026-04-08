@@ -267,6 +267,20 @@ MIT — https://github.com/adrg/xdg
 
 - `sys/os.sh` — XDG variable references
 
+---
+
+### dylanaraps/pure-bash-bible
+MIT — https://github.com/dylanaraps/pure-bash-bible
+Copyright (c) 2018 Dylan Araps
+
+- `array/dedupe.sh` — array_dedup (adapted from "Remove duplicate array elements")
+- `array/random.sh` — array_random_element (adapted from "Random array element")
+- `array/reverse.sh` — array_reverse (inspired by "Reverse an array"; clean-room implementation using index loop rather than extdebug/BASH_ARGV)
+- `numbers/bitwise.sh` — bitwise_and, bitwise_or, bitwise_xor, bitwise_not, bitwise_lshift, bitwise_rshift (adapted from "Bitwise" section)
+- `sys/sleep.sh` — sys_sleep (adapted from "Use read as an alternative to the sleep command")
+- `text/predicates.sh` — str_matches (adapted from "Use regex on a string")
+- `text/quote.sh` — str_unquote (adapted from "Trim quotes from a string")
+
 ## Unlicense
 
 ```bash

@@ -116,3 +116,52 @@ str_cut() {
     ;;
   esac
 }
+
+# @description Return the text on a specific line number (1-based).
+#   The string may be passed as an argument or piped via stdin.
+#
+# @arg $1 int    Line number (1-based)
+# @arg $2 string Optional: string to search (reads stdin if omitted)
+#
+# @example
+#   str_get_line 2 $'line one\nline two\nline three'   # => line two
+#   printf '%s\n' "line one" "line two" | str_get_line 1   # => line one
+#
+# @stdout The text on the specified line
+# @exitcode 0 Always
+str_get_line() {
+  local _line_no
+  _line_no="${1:?str_get_line: line number required}"
+  shift
+  if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
+    sed -n "${_line_no}p"
+  else
+    printf -- '%s\n' "${*}" | sed -n "${_line_no}p"
+  fi
+}
+
+# @description Return a range of lines from a string (1-based start, line count).
+#   The string may be passed as an argument or piped via stdin.
+#
+# @arg $1 int    First line number (1-based)
+# @arg $2 int    Number of lines to return
+# @arg $3 string Optional: string to search (reads stdin if omitted)
+#
+# @example
+#   str_get_lines 2 2 $'line one\nline two\nline three'   # => line two\nline three
+#   printf '%s\n' one two three four | str_get_lines 2 2  # => two\nthree
+#
+# @stdout The specified lines of text
+# @exitcode 0 Always
+str_get_lines() {
+  local _start _count _end
+  _start="${1:?str_get_lines: start line required}"
+  _count="${2:?str_get_lines: line count required}"
+  _end="$(( _start + _count - 1 ))"
+  shift 2
+  if (( ${#} == 0 )) && [[ ! -t 0 ]]; then
+    sed -n "${_start},${_end}p"
+  else
+    printf -- '%s\n' "${*}" | sed -n "${_start},${_end}p"
+  fi
+}

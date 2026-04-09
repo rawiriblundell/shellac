@@ -281,6 +281,17 @@ Copyright (c) 2018 Dylan Araps
 - `text/predicates.sh` — str_matches (adapted from "Use regex on a string")
 - `text/quote.sh` — str_unquote (adapted from "Trim quotes from a string")
 
+---
+
+### Koalephant Co., Ltd / shell-script-library
+BSD 3-Clause — originally at https://bitbucket.org/koalephant/shell-script-library (now defunct)
+Copyright 2014–2017, Koalephant Co., Ltd
+Author: Stephen Reay <stephen@koalephant.com>
+
+- `crypto/gpg.sh` — gpg_list_keys_public, gpg_list_keys_secret, gpg_create, gpg_password_prompt, gpg_export_armored, gpg_export, gpg_search_keys, gpg_receive_keys (adapted from gpg.lib.sh); gpg_keyid_valid (clean-room reimplementation of k_gpg_keyid_valid using parameter expansion)
+- `fs/io.sh` — fs_temp_predictable_file, fs_temp_predictable_dir, fs_temp_register, fs_temp_cleanup, fs_temp_exit, fs_temp_abort (adapted from fs.lib.sh predictable temp pattern)
+- `text/substr.sh` — str_get_line, str_get_lines (adapted from string.lib.sh)
+
 ## Unlicense
 
 ```bash

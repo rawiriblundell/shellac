@@ -142,3 +142,106 @@ fs_read_lines() {
   # shellcheck disable=SC2034
   mapfile -t _fs_read_lines_target < "${_path}"
 }
+
+# Manifest file for tracking temp paths registered for cleanup.
+# PID-scoped so it is unique per process and stable across trap callbacks.
+_FS_TEMP_MANIFEST="${TMPDIR:-/tmp}/.shellac_fs_temp_${$}"
+
+# @description Register one or more paths for automatic cleanup by fs_temp_cleanup.
+#
+# @arg $@ string  One or more file or directory paths to register
+#
+# @exitcode 0 Always
+fs_temp_register() {
+  printf -- '%s\n' "$@" >> "${_FS_TEMP_MANIFEST}"
+}
+
+# @description Create a predictable PID-scoped temporary file and register it for cleanup.
+#   Because the path is derived from the current PID, it can be reconstructed
+#   inside trap callbacks without passing the path through variables.
+#
+# @arg $1 string  Base name for the file (e.g. "myapp-config")
+# @arg $2 string  Optional suffix (e.g. ".json")
+#
+# @stdout Full path to the created file
+# @exitcode 0 Success
+# @exitcode 1 A directory already exists at the generated path
+fs_temp_predictable_file() {
+  local _name _suffix _tmp_file
+  _name="${1:?fs_temp_predictable_file: name required}"
+  _suffix="${2:-}"
+  _tmp_file="${TMPDIR:-/tmp}/${_name}.${$}${_suffix}"
+
+  if ! (set -C; : > "${_tmp_file}" 2>/dev/null); then
+    if [[ -d "${_tmp_file}" ]]; then
+      printf -- '%s\n' "fs_temp_predictable_file: directory exists at path: ${_tmp_file}" >&2
+      return 1
+    fi
+  fi
+
+  fs_temp_register "${_tmp_file}"
+  printf -- '%s\n' "${_tmp_file}"
+}
+
+# @description Create a predictable PID-scoped temporary directory and register it for cleanup.
+#   Because the path is derived from the current PID, it can be reconstructed
+#   inside trap callbacks without passing the path through variables.
+#
+# @arg $1 string  Base name for the directory (e.g. "myapp-work")
+# @arg $2 string  Optional suffix
+#
+# @stdout Full path to the created directory
+# @exitcode 0 Success
+# @exitcode 1 A file already exists at the generated path
+fs_temp_predictable_dir() {
+  local _name _suffix _tmp_dir
+  _name="${1:?fs_temp_predictable_dir: name required}"
+  _suffix="${2:-}"
+  _tmp_dir="${TMPDIR:-/tmp}/${_name}.${$}${_suffix}"
+
+  if ! mkdir -p "${_tmp_dir}" 2>/dev/null; then
+    if [[ -f "${_tmp_dir}" ]]; then
+      printf -- '%s\n' "fs_temp_predictable_dir: file exists at path: ${_tmp_dir}" >&2
+      return 1
+    fi
+  fi
+
+  fs_temp_register "${_tmp_dir}"
+  printf -- '%s\n' "${_tmp_dir}"
+}
+
+# @description Remove all paths registered via fs_temp_register, then remove the manifest.
+#
+# @exitcode 0 Always
+fs_temp_cleanup() {
+  local _entry
+  [[ ! -f "${_FS_TEMP_MANIFEST}" ]] && return 0
+  while IFS= read -r _entry; do
+    rm -rf -- "${_entry}"
+  done < "${_FS_TEMP_MANIFEST}"
+  rm -f -- "${_FS_TEMP_MANIFEST}"
+}
+
+# @description Register fs_temp_cleanup to run when the process exits normally
+#   (INT, TERM, QUIT, EXIT, HUP).  Does not cover ABRT; use fs_temp_abort for that.
+#
+# @exitcode 0 Always
+fs_temp_exit() {
+  _fs_temp_cleanup_exit() {
+    trap - INT TERM QUIT EXIT HUP
+    fs_temp_cleanup
+  }
+  trap _fs_temp_cleanup_exit INT TERM QUIT EXIT HUP
+}
+
+# @description Register fs_temp_cleanup to run when the process receives ABRT.
+#   Use alongside fs_temp_exit to cover all common exit paths.
+#
+# @exitcode 0 Always
+fs_temp_abort() {
+  _fs_temp_cleanup_abort() {
+    trap - ABRT
+    fs_temp_cleanup
+  }
+  trap _fs_temp_cleanup_abort ABRT
+}

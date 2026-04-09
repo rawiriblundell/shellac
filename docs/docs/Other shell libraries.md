@@ -25,6 +25,7 @@ In alphabetical order only for readability:
 * <https://github.com/elibs/ebash>
 * <https://github.com/ElectricRCAircraftGuy/eRCaGuy_hello_world/tree/master/bash>
 * <https://github.com/fidian/ansi>
+* <https://github.com/gavinlyonsrepo/bashmultitool>
 * <https://github.com/gruntwork-io/bash-commons>
 * <https://github.com/HariSekhon/DevOps-Bash-tools>
 * <https://github.com/hastec-fr/apash>

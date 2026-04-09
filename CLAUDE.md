@@ -58,6 +58,8 @@ Default values via parameter expansion, not `if`:
 - String equality: `[[ "${a}" = "${b}" ]]` — `=` not `==`
 - Numeric: `(( a > b ))` — never `[[ a -gt b ]]`
 - Explicit string tests: `[[ -z "${var}" ]]` / `[[ -n "${var}" ]]`
+- Prefer `case` over bash regex (`[[ =~ ]]`) where possible — more portable and easier to read
+- If you find yourself reaching for `elif`, consider whether a `case` statement fits better.  Two or more branches on the same variable is a strong signal to switch.
 
 ---
 

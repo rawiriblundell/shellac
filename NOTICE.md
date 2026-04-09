@@ -292,6 +292,14 @@ Author: Stephen Reay <stephen@koalephant.com>
 - `fs/io.sh` — fs_temp_predictable_file, fs_temp_predictable_dir, fs_temp_register, fs_temp_cleanup, fs_temp_exit, fs_temp_abort (adapted from fs.lib.sh predictable temp pattern)
 - `text/substr.sh` — str_get_line, str_get_lines (adapted from string.lib.sh)
 
+### Felix Lee / ASCII sphere
+
+- `goodies/8ball.sh` — ASCII 8-ball art retrieved from https://www.asciiart.eu/sports-and-outdoors/billiards,
+  which appears to be derived from an ASCII sphere attributed to Felix Lee <flee@cse.psu.edu>.
+  Used with attribution per the asciiart.eu terms of use.
+
+---
+
 ## Unlicense
 
 ```bash

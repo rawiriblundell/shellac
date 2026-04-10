@@ -178,7 +178,7 @@ logmsg() {
         [[ -n "${_log_ident:-}" ]]    && _dispatch_args+=( -t "${_log_ident}" )
         [[ -n "${_log_priority:-}" ]] && _dispatch_args+=( --priority="${_log_priority}" )
         systemd-cat "${_dispatch_args[@]}" <<< "${*}"
-        return 0
+        return "${?}"
     fi
 
     if command -v logger >/dev/null 2>&1; then
@@ -187,7 +187,7 @@ logmsg() {
         [[ -n "${_log_ident:-}" ]]    && _dispatch_args+=( -t "${_log_ident}" )
         [[ -n "${_log_priority:-}" ]] && _dispatch_args+=( -p "user.${_log_priority}" )
         logger "${_dispatch_args[@]}" "${*}"
-        return 0
+        return "${?}"
     fi
 
    # If neither systemd-cat or logger are present, we fall-back to this. 

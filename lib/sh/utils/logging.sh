@@ -178,20 +178,25 @@ logmsg() {
         [[ -n "${_log_ident:-}" ]]    && _dispatch_args+=( -t "${_log_ident}" )
         [[ -n "${_log_priority:-}" ]] && _dispatch_args+=( --priority="${_log_priority}" )
         systemd-cat "${_dispatch_args[@]}" <<< "${*}"
-    elif command -v logger >/dev/null 2>&1; then
+        return 0
+    fi
+
+    if command -v logger >/dev/null 2>&1; then
         (( _std_out )) && printf -- '%s\n' "${_print_fmt} ${*}"
         _dispatch_args=()
         [[ -n "${_log_ident:-}" ]]    && _dispatch_args+=( -t "${_log_ident}" )
         [[ -n "${_log_priority:-}" ]] && _dispatch_args+=( -p "user.${_log_priority}" )
         logger "${_dispatch_args[@]}" "${*}"
+        return 0
+    fi
+
+   # If neither systemd-cat or logger are present, we fall-back to this. 
+    [[ -w /var/log/messages ]] && _log_file=/var/log/messages
+    [[ -z "${_log_file}" && -w /var/log/syslog ]] && _log_file=/var/log/syslog
+    : "${_log_file:=/var/log/logmsg}"
+    if (( _std_out )); then
+        printf -- '%s\n' "${_print_fmt} ${*}" | tee -a "${_log_file}"
     else
-        [[ -w /var/log/messages ]] && _log_file=/var/log/messages
-        [[ -z "${_log_file}" && -w /var/log/syslog ]] && _log_file=/var/log/syslog
-        : "${_log_file:=/var/log/logmsg}"
-        if (( _std_out )); then
-            printf -- '%s\n' "${_print_fmt} ${*}" | tee -a "${_log_file}"
-        else
-            printf -- '%s\n' "${_print_fmt} ${*}" >> "${_log_file}"
-        fi
+        printf -- '%s\n' "${_print_fmt} ${*}" >> "${_log_file}"
     fi
 }

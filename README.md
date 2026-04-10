@@ -61,18 +61,18 @@ This project adds a library ecosystem for shell scripts.
 * `SHELLAC_LOADED` - sentinel variable set when `shellac` is sourced, preventing re-initialisation
 * `_SHELLAC_LOADED_<category>_<name>` - per-library sentinel variables set when each library is sourced, preventing duplicate loads
 
-The library structure supports full pathing, and relative pathing using `$SH_LIBPATH`
+It adds the following functions:
+
+### `include`
+
+Similar to its `python` cousin `import` and its `perl` cousin `use`, this is intended for loading libraries.
+
+Both full paths and relative paths (resolved via `$SH_LIBPATH`) are supported:
 
 ```bash
 include /opt/contoso/lib/sh/monolithic.sh # loads /opt/contoso/lib/sh/monolithic.sh
 include text/padding                      # loads /opt/shellac/lib/sh/text/padding.sh
 ```
-
-It adds the following functions:
-
-### `include`
-
-Similar to its `python` cousin `import` and its `perl` cousin `use`, this is intended for loading libraries
 
 ### `requires`
 
@@ -127,7 +127,7 @@ The people quickest to reach for Python or Ruby are often unaware that what they
 
 A concrete example — converting a string to uppercase:
 
-```
+```bash
 s.upper()                                            # Python
 s.upcase                                             # Ruby
 strings.ToUpper(s)                                   # Go

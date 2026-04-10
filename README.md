@@ -21,7 +21,7 @@ No `curl | bash`. No package manager. No build step. `shellac init` detects
 whether you have write access to `/etc/profile.d/` and configures a
 system-wide or per-user install accordingly, reporting every change it makes.
 
-## TL;DR?
+## TL;DR
 
 ```bash
 #!/usr/bin/env bash
@@ -50,9 +50,9 @@ requires BASH51 git jq curl osstr=Linux
 wants /opt/secrets/squirrels.conf
 ```
 
-## OK... Do you have more information?
+## What does it do?
 
-This project proposes adding a library ecosystem for shell scripts.
+This project adds a library ecosystem for shell scripts.
 
 `shellac` bootstraps a few environment vars, most importantly:
 
@@ -61,32 +61,31 @@ This project proposes adding a library ecosystem for shell scripts.
 * `SHELLAC_LOADED` - sentinel variable set when `shellac` is sourced, preventing re-initialisation
 * `_SHELLAC_LOADED_<category>_<name>` - per-library sentinel variables set when each library is sourced, preventing duplicate loads
 
-The proposed library structure caters for both monolithic libraries e.g.
+The library structure supports full pathing, and relative pathing using `$SH_LIBPATH`
 
-`/usr/local/lib/sh/monolithic.sh`
+```bash
+include /opt/contoso/lib/sh/monolithic.sh # loads /opt/contoso/lib/sh/monolithic.sh
+include text/padding                      # loads /opt/shellac/lib/sh/text/padding.sh
+```
 
-As well as hierarchical e.g.
-
-`/usr/local/lib/sh/text/string_function.sh`
-
-It also adds the following functions:
+It adds the following functions:
 
 ### `include`
 
-Similar to its `python` cousin `import` and/or its `perl` cousin `use`, this is intended for loading libraries
+Similar to its `python` cousin `import` and its `perl` cousin `use`, this is intended for loading libraries
 
 ### `requires`
 
 This function serves multiple purposes.  A lot of shell scripts:
 
-* just _assume_ that binaries are present
+* just *assume* that binaries are present
 * don't fail nicely if these binaries aren't
 * don't really serve themselves well in terms of internal documentation
-* don't fail-early.
+* don't fail early
 
-`requires()` fixes all of that and more.
+`requires()` fixes all of that.
 
-First, it works through multiple items so you only need to declare it once if you choose to.  It would typically be used to check for the existence of commands in `PATH` like this:
+First, it works through multiple items so you only need to declare it once.  It would typically be used to check for the existence of commands in `PATH` like this:
 
 ```bash
 requires git jq sed awk
@@ -104,21 +103,21 @@ It can also check for a particular version of `bash`, for example to require `ba
 requires BASH41
 ```
 
-It also handles checking full paths for e.g. executable scripts, config files and SH_LIBPATH libraries.
+It also handles checking full paths for executable scripts, config files and SH_LIBPATH libraries.
 
-By dealing with this at the very start of the script, we ensure that we fail early.  It abstracts away messy `command -v`/`which`/`type` tests and when someone reads a line like:
+By dealing with this at the very start of the script, we ensure that we fail early.  It abstracts away messy `command -v`/`which`/`type` tests, and when someone reads a line like:
 
 ```bash
 requires BASH42 git jq storcli /etc/multipath.conf
 ```
 
-It's clear what the script _requires_ in order to run i.e. it's self-documenting code.
+It's clear what the script *requires* in order to run i.e. it's self-documenting code.
 
 ### `wants`
 
 Sources a file if it exists; silent no-op if not.  A lazy-loader for config files.
 
-Some scripts contain logic to detect environmental facts — OS version quirks, available tools, site-specific paths — that rarely changes between runs.  Wrapping that detection behind a variable and caching the result in a config file means subsequent invocations skip straight past it.  Load that config file with `wants` at the top of your script and the short-circuit is free.
+Some scripts contain logic to detect environmental facts — OS version quirks, available tools, site-specific paths — that rarely change between runs.  Wrapping that detection behind a variable and caching the result in a config file means subsequent invocations skip straight past it.  Load that config file with `wants` at the top of your script and the short-circuit is free.
 
 ## Why
 
@@ -126,7 +125,7 @@ Shell is the first language most *nix practitioners reach for, the go-to for sys
 
 The people quickest to reach for Python or Ruby are often unaware that what they're really reaching for is the library ecosystem those languages carry.  The language itself isn't the point — the abstraction is.  Shell can have that too.
 
-A concrete example. Converting a string to uppercase:
+A concrete example — converting a string to uppercase:
 
 ```
 s.upper()                                            # Python
@@ -148,16 +147,16 @@ This project aims for something simpler: a permissively licensed, broadly portab
 
 ## Why use libraries and not just a package of scripts
 
-That's a good question.  The main reasons for using functions over standalone scripts are:
+The main reasons for using functions over standalone scripts are:
 
-* Once loaded into memory, functions can be called a lot faster than on-disk scripts.  So functions are advantageous for repeated use.
-* Functions assist with chunking shell code in a modular and organised way.  This makes them easier to develop and maintain.
+* Once loaded into memory, functions are called directly without forking a new process.  For anything called repeatedly, that adds up.
+* Functions impose structure — code is organised into named, testable units rather than a flat sequence of commands.
 
-Libraries, insofar as they're presented in this project, are simply collections of functions.
+In this project, libraries are simply collections of functions.
 
 ### Story time
 
-At a former job I inherited a slow shell script — a very long pipeline of chained `grep -v` calls.  I refactored it: put the filter strings in an array, built a function named `array::join()` to join them into a single `grep -Ev` pattern.  Cleaner, documented, measurably faster.  The PR was not well received.  Apparently the function was proof that shell is the language of the Nazis, I had brought shame upon the company, and so forth.
+At a former job I inherited a slow shell script — a very long pipeline of chained `grep -v` calls.  I refactored it: put the filter strings in an array, built a function named `array::join()` to join them into a single `grep -Ev` pattern.  Cleaner, documented, measurably faster.  The PR was not well received.  Apparently the function was proof that shell is the language of the Nazis; I had brought shame upon the company, and so forth.
 
 Had my PR instead been:
 
@@ -172,4 +171,15 @@ Had my PR instead been:
 
 There would have been no controversy at all.
 
-If you're a `python`ista or a `perl` guru: when did you last read the source code of a library you depend on?  And when did you last include the lines-of-code of said libraries into your lines-of-code arguments?  "Approximately never" is the honest answer.  QED.
+If you're a Pythonista or a `perl` guru: when did you last read the source code of a library you depend on?  And when did you last include the lines-of-code of said libraries into your lines-of-code arguments?  "Approximately never" is the honest answer.  QED.
+
+## Further reading
+
+* [Library structure](docs/structure.md) — module/library/function hierarchy explained
+* [Naming conventions](docs/naming-conventions.md) — why functions are named the way they are
+* [Contributing](CONTRIBUTING.md) — coding standards and how to submit changes
+* [Notice](NOTICE.md) — third-party attributions and licences
+
+## License
+
+[Apache 2.0](LICENSE)

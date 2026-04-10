@@ -32,9 +32,15 @@ command -v tac >/dev/null 2>&1 && return 0
 tac() {
   if command -v perl >/dev/null 2>&1; then
     perl -e 'print reverse<>' < "${1:-/dev/stdin}"
-  elif command -v awk >/dev/null 2>&1; then
+    return "${?}"
+  fi
+
+  if command -v awk >/dev/null 2>&1; then
     awk '{line[NR]=$0} END {for (i=NR; i>=1; i--) print line[i]}' < "${1:-/dev/stdin}"
-  elif command -v sed >/dev/null 2>&1; then
+    return "${?}"
+  fi
+
+  if command -v sed >/dev/null 2>&1; then
     sed -e '1!G;h;$!d' < "${1:-/dev/stdin}"
   fi
 }

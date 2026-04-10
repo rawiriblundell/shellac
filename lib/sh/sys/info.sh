@@ -31,22 +31,26 @@ sys_info_manufacturer() {
     ([lL]inux)
       if [[ -s /sys/devices/virtual/dmi/id/sys_vendor ]]; then
         printf -- '%s\n' "$(< /sys/devices/virtual/dmi/id/sys_vendor)"
-      elif dmidecode 2>/dev/null | grep -q -m 1 "Manufacturer"; then
-        dmidecode 2>/dev/null | awk -F ': ' '/Manufacturer/ { print $2; exit }'
-      elif dmidecode 2>/dev/null | grep -q -m 1 "Vendor"; then
-        dmidecode 2>/dev/null | awk -F ': ' '/Vendor/ { print $2; exit }'
-      else
-        printf -- 'Generic or unknown\n'
+        return "${?}"
       fi
+      if dmidecode 2>/dev/null | grep -q -m 1 "Manufacturer"; then
+        dmidecode 2>/dev/null | awk -F ': ' '/Manufacturer/ { print $2; exit }'
+        return "${?}"
+      fi
+      if dmidecode 2>/dev/null | grep -q -m 1 "Vendor"; then
+        dmidecode 2>/dev/null | awk -F ': ' '/Vendor/ { print $2; exit }'
+        return "${?}"
+      fi
+      printf -- 'Generic or unknown\n'
     ;;
     (SunOS|solaris)
       if command -v smbios >/dev/null 2>&1 && smbios -t SMB_TYPE_SYSTEM >/dev/null 2>&1; then
         smbios -t SMB_TYPE_SYSTEM |
           awk -F ': ' '/Manufacturer|Product/ { printf "%s ", $2 }' |
           awk '{$1=$1; print}'
-      else
-        printf -- 'Sun Inc\n'
+        return "${?}"
       fi
+      printf -- 'Sun Inc\n'
     ;;
   esac
 }
@@ -62,11 +66,13 @@ sys_info_model() {
     ([lL]inux)
       if [[ -s /sys/devices/virtual/dmi/id/product_name ]]; then
         printf -- '%s\n' "$(< /sys/devices/virtual/dmi/id/product_name)"
-      elif dmidecode 2>/dev/null | grep -q -m 1 "Product"; then
-        dmidecode 2>/dev/null | awk -F ': ' '/Product/ { print $2; exit }'
-      else
-        printf -- 'Generic or unknown\n'
+        return "${?}"
       fi
+      if dmidecode 2>/dev/null | grep -q -m 1 "Product"; then
+        dmidecode 2>/dev/null | awk -F ': ' '/Product/ { print $2; exit }'
+        return "${?}"
+      fi
+      printf -- 'Generic or unknown\n'
     ;;
     (SunOS|solaris)
       uname -i | cut -d, -f2- | tr '-' ' '
@@ -151,13 +157,15 @@ sys_info_bios() {
     (SunOS|solaris)
       if command -v prtdiag >/dev/null 2>&1 && prtdiag >/dev/null 2>&1; then
         prtdiag -v | grep -E '^OBP|^BIOS'
-      elif smbios -t SMB_TYPE_BIOS >/dev/null 2>&1; then
+        return "${?}"
+      fi
+      if smbios -t SMB_TYPE_BIOS >/dev/null 2>&1; then
         smbios -t SMB_TYPE_BIOS |
           awk -F ': ' '/Vendor|Version|Release/ { printf "%s ", $2 }' |
           awk '{$1=$1; print}'
-      else
-        printf -- 'unknown\n'
+        return "${?}"
       fi
+      printf -- 'unknown\n'
     ;;
   esac
 }

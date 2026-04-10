@@ -20,72 +20,125 @@
 [ -n "${_SHELLAC_LOADED_utils_logging+x}" ] && return 0
 _SHELLAC_LOADED_utils_logging=1
 
-# Log level filter. Set before including this library or at any time to control
-# which messages are emitted. Valid values: DEBUG INFO WARN ERROR (default: INFO)
+# Log level filter.  Uses the RFC 5424 syslog convention: lower number = more
+# severe.  Valid values: EMERG ALERT CRIT ERR ERROR WARNING WARN NOTICE INFO DEBUG
+# (default: INFO).  ERROR is an alias for ERR; WARN is an alias for WARNING.
 : "${LOG_LEVEL:=INFO}"
 
-# @description Map a log level name to a numeric value for comparison.
-#   Returns 0=DEBUG 1=INFO 2=WARN 3=ERROR; unknown levels map to INFO.
-#
-# @arg $1 string Level name
-# @stdout Numeric level value
+# @internal
+# Map a log level name to its RFC 5424 numeric severity.
+# EMERG=0 ALERT=1 CRIT=2 ERR=3 WARNING=4 NOTICE=5 INFO=6 DEBUG=7
+# Aliases: ERROR=ERR=3, WARN=WARNING=4.  Unknown values map to INFO (6).
 _log_level_num() {
     case "${1}" in
-        (DEBUG) printf '0' ;;
-        (INFO)  printf '1' ;;
-        (WARN)  printf '2' ;;
-        (ERROR) printf '3' ;;
-        (*)     printf '1' ;;
+        (EMERG)         printf -- '%s\n' '0' ;;
+        (ALERT)         printf -- '%s\n' '1' ;;
+        (CRIT)          printf -- '%s\n' '2' ;;
+        (ERR|ERROR)     printf -- '%s\n' '3' ;;
+        (WARN|WARNING)  printf -- '%s\n' '4' ;;
+        (NOTICE)        printf -- '%s\n' '5' ;;
+        (INFO)          printf -- '%s\n' '6' ;;
+        (DEBUG)         printf -- '%s\n' '7' ;;
+        (*)             printf -- '%s\n' '6' ;;
     esac
+}
+
+# @description Log an emergency-level message via logmsg.
+#   Only suppressed when LOG_LEVEL is EMERG itself — in practice never filtered.
+#
+# @arg $@ string Message text
+# @exitcode 0 Always
+log_emerg() {
+    (( 0 > $(_log_level_num "${LOG_LEVEL}") )) && return 0
+    logmsg -p emerg -t "${0##*/}" "EMERG: ${*}"
+}
+
+# @description Log an alert-level message via logmsg.
+#   Suppressed when LOG_LEVEL is EMERG.
+#
+# @arg $@ string Message text
+# @exitcode 0 Always
+log_alert() {
+    (( 1 > $(_log_level_num "${LOG_LEVEL}") )) && return 0
+    logmsg -p alert -t "${0##*/}" "ALERT: ${*}"
+}
+
+# @description Log a critical-level message via logmsg.
+#   Suppressed when LOG_LEVEL is ALERT or EMERG.
+#
+# @arg $@ string Message text
+# @exitcode 0 Always
+log_crit() {
+    (( 2 > $(_log_level_num "${LOG_LEVEL}") )) && return 0
+    logmsg -p crit -t "${0##*/}" "CRIT: ${*}"
+}
+
+# @description Log an error message via logmsg.
+#   Suppressed when LOG_LEVEL is CRIT, ALERT, or EMERG.
+#
+# @arg $@ string Message text
+# @exitcode 0 Always
+log_error() {
+    (( 3 > $(_log_level_num "${LOG_LEVEL}") )) && return 0
+    logmsg -p err -t "${0##*/}" "ERROR: ${*}"
+}
+
+# @description Alias for log_error (RFC 5424 priority name).
+log_err() { log_error "${@}"; }
+
+# @description Log a warning message via logmsg.
+#   Suppressed when LOG_LEVEL is ERR/ERROR, CRIT, ALERT, or EMERG.
+#
+# @arg $@ string Message text
+# @exitcode 0 Always
+log_warn() {
+    (( 4 > $(_log_level_num "${LOG_LEVEL}") )) && return 0
+    logmsg -p warning -t "${0##*/}" "WARN: ${*}"
+}
+
+# @description Alias for log_warn (RFC 5424 priority name).
+log_warning() { log_warn "${@}"; }
+
+# @description Log a notice message via logmsg.
+#   Suppressed when LOG_LEVEL is WARNING/WARN, ERR/ERROR, CRIT, ALERT, or EMERG.
+#
+# @arg $@ string Message text
+# @exitcode 0 Always
+log_notice() {
+    (( 5 > $(_log_level_num "${LOG_LEVEL}") )) && return 0
+    logmsg -p notice -t "${0##*/}" "NOTICE: ${*}"
+}
+
+# @description Log an informational message via logmsg.
+#   Suppressed when LOG_LEVEL is NOTICE or more severe.
+#
+# @arg $@ string Message text
+# @exitcode 0 Always
+log_info() {
+    (( 6 > $(_log_level_num "${LOG_LEVEL}") )) && return 0
+    logmsg -p info -t "${0##*/}" "INFO: ${*}"
 }
 
 # @description Log a debug message via logmsg. Suppressed unless LOG_LEVEL=DEBUG.
 #
 # @arg $@ string Message text
-#
 # @exitcode 0 Always
 log_debug() {
-    (( $(_log_level_num "${LOG_LEVEL}") > 0 )) && return 0
-    logmsg -t "${0##*/}" "DEBUG: ${*}"
+    (( 7 > $(_log_level_num "${LOG_LEVEL}") )) && return 0
+    logmsg -p debug -t "${0##*/}" "DEBUG: ${*}"
 }
 
-# @description Log an informational message via logmsg.
-#   Suppressed when LOG_LEVEL is WARN or ERROR.
+# @description Log a message to the system log using systemd-cat, logger, or a
+#   fallback file.  Accepts an optional -p priority, -t tag, and -s flag to
+#   also print to stdout.
 #
-# @arg $@ string Message text
+#   When -p is given, the priority is forwarded to the underlying transport:
+#   systemd-cat receives --priority=<level>; logger receives -p user.<level>.
 #
-# @exitcode 0 Always
-log_info() {
-    (( $(_log_level_num "${LOG_LEVEL}") > 1 )) && return 0
-    logmsg -t "${0##*/}" "INFO: ${*}"
-}
-
-# @description Log a warning message via logmsg.
-#   Suppressed when LOG_LEVEL is ERROR.
-#
-# @arg $@ string Message text
-#
-# @exitcode 0 Always
-log_warn() {
-    (( $(_log_level_num "${LOG_LEVEL}") > 2 )) && return 0
-    logmsg -t "${0##*/}" "WARN: ${*}"
-}
-
-# @description Log an error message via logmsg. Never suppressed by LOG_LEVEL.
-#
-# @arg $@ string Message text
-#
-# @exitcode 0 Always
-log_error() {
-    logmsg -t "${0##*/}" "ERROR: ${*}"
-}
-
-# @description Log a message to the system log using systemd-cat, logger, or a fallback
-#   file. Accepts an optional -t tag and -s flag to also print to stdout.
-#
-# @arg $1 string Optional: -s to echo to stdout
-# @arg $1 string Optional: -t <tag> to set a syslog identifier
-# @arg $@ string Message text
+# @option -p string  Syslog priority name (emerg alert crit err warning notice info debug)
+# @option -s         Also print to stdout
+# @option -t string  Syslog identifier / tag
+# @arg $@ string     Message text
 #
 # @stdout Message line when -s is given
 # @exitcode 0 Message logged successfully
@@ -93,18 +146,21 @@ log_error() {
 logmsg() {
     local _opt
     local _log_ident
+    local _log_priority
     local _print_fmt
     local _std_out
     local _log_file
+    local _dispatch_args
     local OPTIND
     _std_out=0
 
-    while getopts ":t:s" _opt; do
+    while getopts ":p:t:s" _opt; do
         case "${_opt}" in
+            (p)     _log_priority="${OPTARG}" ;;
             (s)     _std_out=1 ;;
             (t)     _log_ident="${OPTARG}" ;;
             (\?|:|*)
-                printf -- '%s\n' "Usage: logmsg [-s(tdout) -t tag] message" >&2
+                printf -- '%s\n' "Usage: logmsg [-p priority] [-s] [-t tag] message" >&2
                 return 1
             ;;
         esac
@@ -118,16 +174,16 @@ logmsg() {
 
     if command -v systemd-cat >/dev/null 2>&1; then
         (( _std_out )) && printf -- '%s\n' "${_print_fmt} ${*}"
-        case "${_log_ident:-}" in
-            ('') systemd-cat <<< "${*}" ;;
-            (*)  systemd-cat -t "${_log_ident}" <<< "${*}" ;;
-        esac
+        _dispatch_args=()
+        [[ -n "${_log_ident:-}" ]]    && _dispatch_args+=( -t "${_log_ident}" )
+        [[ -n "${_log_priority:-}" ]] && _dispatch_args+=( --priority="${_log_priority}" )
+        systemd-cat "${_dispatch_args[@]}" <<< "${*}"
     elif command -v logger >/dev/null 2>&1; then
         (( _std_out )) && printf -- '%s\n' "${_print_fmt} ${*}"
-        case "${_log_ident:-}" in
-            ('') logger "${*}" ;;
-            (*)  logger -t "${_log_ident}" "${*}" ;;
-        esac
+        _dispatch_args=()
+        [[ -n "${_log_ident:-}" ]]    && _dispatch_args+=( -t "${_log_ident}" )
+        [[ -n "${_log_priority:-}" ]] && _dispatch_args+=( -p "user.${_log_priority}" )
+        logger "${_dispatch_args[@]}" "${*}"
     else
         [[ -w /var/log/messages ]] && _log_file=/var/log/messages
         [[ -z "${_log_file}" && -w /var/log/syslog ]] && _log_file=/var/log/syslog

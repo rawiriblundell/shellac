@@ -60,6 +60,23 @@ Default values via parameter expansion, not `if`:
 - Explicit string tests: `[[ -z "${var}" ]]` / `[[ -n "${var}" ]]`
 - Prefer `case` over bash regex (`[[ =~ ]]`) where possible — more portable and easier to read
 - If you find yourself reaching for `elif`, consider whether a `case` statement fits better.  Two or more branches on the same variable is a strong signal to switch.
+- For fallback chains (command detection, feature probing, priority dispatch), prefer sequential `if ... return` blocks over `if ... elif ... else ... fi`.  Each branch handles its case and returns; the fallback sits unindented as the natural continuation:
+
+```bash
+# preferred
+if command -v systemd-cat >/dev/null 2>&1; then
+    systemd-cat ...
+    return 0
+fi
+
+if command -v logger >/dev/null 2>&1; then
+    logger ...
+    return 0
+fi
+
+# fallback
+printf -- ...
+```
 
 ---
 

@@ -195,6 +195,26 @@ When adapting code from a third-party source, add a comment in the file:
 
 And add an entry to `NOTICE.md` under the appropriate section.
 
+### Licensing
+
+Shellac is Apache-2.0 licensed.  **Never adapt or incorporate third-party code
+whose licence is incompatible with Apache-2.0.**  Incompatible licences include
+(but are not limited to) GPL, LGPL, AGPL, EUPL, and any licence that requires
+derivative works to be distributed under the same terms.
+
+If you encounter third-party code that would be genuinely useful but carries an
+incompatible licence, **do not adapt it**.  Instead, open a GitHub issue that:
+
+- Names the function or behaviour to be implemented
+- Describes its specification: inputs, outputs, exit codes, edge cases
+- Describes its observable behaviour with concrete examples
+- Does **not** quote, paraphrase, or structurally reproduce the incompatible source
+
+The issue gives a human enough information to produce a clean-room
+implementation without reference to the original.  Note in the issue that the
+motivation came from an incompatible source, and record the source URL so the
+clean-room author knows what to avoid reading.
+
 ### Shellcheck
 
 All library files must be shellcheck-clean.  Any `# shellcheck disable=SCXXXX`

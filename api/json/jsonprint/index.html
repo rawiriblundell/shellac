@@ -1,0 +1,2148 @@
+<!doctype html>
+<html data-bs-theme="">
+
+<head>
+    <title>Jsonprint - Shellac
+    </title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    
+    <link rel="canonical" href="https://rawiriblundell.github.io/shellac/api/json/jsonprint/">
+    
+
+    
+    <link rel="icon" type="image/x-icon" href="../../../assets/img/favicon.ico">
+    
+    
+
+    <script>var base_url = '../../..';</script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../assets/css/root.min.css">
+    <link rel="stylesheet" href="../../../assets/css/main.min.css">
+    <link rel="stylesheet" href="../../../assets/css/media.min.css">
+    <link rel="stylesheet" href="../../../assets/css/mkdocstrings.min.css">
+    <script src="../../../search/main.js"></script>
+
+    
+    
+    
+    
+</head>
+
+<body>
+    <div class="container py-3">
+        <header>
+            <!-- block header -->
+<nav class="navbar navbar-expand-xl border-bottom">
+    <div class="container-fluid">
+        
+            <img class="logo" src="../../../images/shellac-light.png">
+        
+
+        
+            <span class=" fs-4 title-color site-name" id="component-site-name" style="text-transform: uppercase;">Shellac</span>
+        
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsMenu"
+            aria-controls="navbarsMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse flex-column ml-auto" id="navbarsMenu">
+            <ul class="navbar-nav">
+
+                <!-- block menu -->
+                <li class="nav-item">
+                    <!-- block menu -->
+    
+        <li class="nav-item" id="component-menu">
+            <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="
+                            nav-link text-gray text-decoration-none" href="../../..">[Home]</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Docs]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/installation/" class="dropdown-item text-decoration-none ">Installation</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/structure/" class="dropdown-item text-decoration-none ">Structure</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/naming-conventions/" class="dropdown-item text-decoration-none ">Naming conventions</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/shell_scopes/" class="dropdown-item text-decoration-none ">Shell scopes</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/variable_precedence/" class="dropdown-item text-decoration-none ">Variable precedence</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/shellac_in_practice/" class="dropdown-item text-decoration-none ">Shellac in practice</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/musings/" class="dropdown-item text-decoration-none ">Musings</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/Other%20shell%20libraries/" class="dropdown-item text-decoration-none ">Other shell libraries</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/Use%20of%20AI/" class="dropdown-item text-decoration-none ">Use of AI</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../../docs/on_vibe_coding/" class="dropdown-item text-decoration-none ">On vibe coding</a>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class=" active 
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Module Reference]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../" class="dropdown-item text-decoration-none ">Index</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Args &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../args/arg_count/" class="dropdown-item text-decoration-none ">Arg count</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../args/arg_grep/" class="dropdown-item text-decoration-none ">Arg grep</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Array &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/aggregate/" class="dropdown-item text-decoration-none ">Aggregate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/concat/" class="dropdown-item text-decoration-none ">Concat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/contains/" class="dropdown-item text-decoration-none ">Contains</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/dedupe/" class="dropdown-item text-decoration-none ">Dedupe</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/fill/" class="dropdown-item text-decoration-none ">Fill</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/functional/" class="dropdown-item text-decoration-none ">Functional</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/join/" class="dropdown-item text-decoration-none ">Join</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/length/" class="dropdown-item text-decoration-none ">Length</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/mapfile/" class="dropdown-item text-decoration-none ">Mapfile</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/random/" class="dropdown-item text-decoration-none ">Random</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/readlist/" class="dropdown-item text-decoration-none ">Readlist</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/remove/" class="dropdown-item text-decoration-none ">Remove</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/reverse/" class="dropdown-item text-decoration-none ">Reverse</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/set/" class="dropdown-item text-decoration-none ">Set</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/shift/" class="dropdown-item text-decoration-none ">Shift</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/slice/" class="dropdown-item text-decoration-none ">Slice</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/sort/" class="dropdown-item text-decoration-none ">Sort</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../array/toarray/" class="dropdown-item text-decoration-none ">Toarray</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Core &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/assert/" class="dropdown-item text-decoration-none ">Assert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/debug/" class="dropdown-item text-decoration-none ">Debug</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/die/" class="dropdown-item text-decoration-none ">Die</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/include/" class="dropdown-item text-decoration-none ">Include</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/is/" class="dropdown-item text-decoration-none ">Is</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/open/" class="dropdown-item text-decoration-none ">Open</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/requires/" class="dropdown-item text-decoration-none ">Requires</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/save_function/" class="dropdown-item text-decoration-none ">Save function</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/stacktrace/" class="dropdown-item text-decoration-none ">Stacktrace</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/status/" class="dropdown-item text-decoration-none ">Status</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/stdlib/" class="dropdown-item text-decoration-none ">Stdlib</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/trap/" class="dropdown-item text-decoration-none ">Trap</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/types/" class="dropdown-item text-decoration-none ">Types</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../core/wants/" class="dropdown-item text-decoration-none ">Wants</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Crypto &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/chacha20/" class="dropdown-item text-decoration-none ">Chacha20</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/genpasswd/" class="dropdown-item text-decoration-none ">Genpasswd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/genphrase/" class="dropdown-item text-decoration-none ">Genphrase</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/gpg/" class="dropdown-item text-decoration-none ">Gpg</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/random/" class="dropdown-item text-decoration-none ">Random</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssh_fingerprint/" class="dropdown-item text-decoration-none ">Ssh fingerprint</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_cert_join/" class="dropdown-item text-decoration-none ">Ssl cert join</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_cert_split/" class="dropdown-item text-decoration-none ">Ssl cert split</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_connect/" class="dropdown-item text-decoration-none ">Ssl connect</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_convert/" class="dropdown-item text-decoration-none ">Ssl convert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_decrypt/" class="dropdown-item text-decoration-none ">Ssl decrypt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_dgst/" class="dropdown-item text-decoration-none ">Ssl dgst</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_diag/" class="dropdown-item text-decoration-none ">Ssl diag</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_encrypt/" class="dropdown-item text-decoration-none ">Ssl encrypt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_generate/" class="dropdown-item text-decoration-none ">Ssl generate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_hpkp/" class="dropdown-item text-decoration-none ">Ssl hpkp</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_inspect/" class="dropdown-item text-decoration-none ">Ssl inspect</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_keystore/" class="dropdown-item text-decoration-none ">Ssl keystore</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_p12store/" class="dropdown-item text-decoration-none ">Ssl p12store</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_passwd/" class="dropdown-item text-decoration-none ">Ssl passwd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_pkcs12/" class="dropdown-item text-decoration-none ">Ssl pkcs12</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_ppk/" class="dropdown-item text-decoration-none ">Ssl ppk</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_validate_cert/" class="dropdown-item text-decoration-none ">Ssl validate cert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_view_cert/" class="dropdown-item text-decoration-none ">Ssl view cert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_view_csr/" class="dropdown-item text-decoration-none ">Ssl view csr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_view_key/" class="dropdown-item text-decoration-none ">Ssl view key</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/ssl_view_pkcs12/" class="dropdown-item text-decoration-none ">Ssl view pkcs12</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../crypto/uuid/" class="dropdown-item text-decoration-none ">Uuid</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Fs &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../fs/archive/" class="dropdown-item text-decoration-none ">Archive</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../fs/backup/" class="dropdown-item text-decoration-none ">Backup</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../fs/base64/" class="dropdown-item text-decoration-none ">Base64</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../fs/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../fs/ini_val/" class="dropdown-item text-decoration-none ">Ini val</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../fs/io/" class="dropdown-item text-decoration-none ">Io</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../fs/permissions/" class="dropdown-item text-decoration-none ">Permissions</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../fs/stat_file/" class="dropdown-item text-decoration-none ">Stat file</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Git &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../git/base/" class="dropdown-item text-decoration-none ">Base</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../git/releases/" class="dropdown-item text-decoration-none ">Releases</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Goodies &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/8ball/" class="dropdown-item text-decoration-none ">8ball</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/ansi_cursor/" class="dropdown-item text-decoration-none ">Ansi cursor</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/bash_loading_animations/" class="dropdown-item text-decoration-none ">Bash loading animations</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/hex/" class="dropdown-item text-decoration-none ">Hex</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/hr/" class="dropdown-item text-decoration-none ">Hr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/larson/" class="dropdown-item text-decoration-none ">Larson</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/linenoise/" class="dropdown-item text-decoration-none ">Linenoise</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/pretty/" class="dropdown-item text-decoration-none ">Pretty</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/rounded_box/" class="dropdown-item text-decoration-none ">Rounded box</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/spinner/" class="dropdown-item text-decoration-none ">Spinner</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../goodies/tui_prompts/" class="dropdown-item text-decoration-none ">Tui prompts</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Hash &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../hash/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Json &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="./" class="dropdown-item text-decoration-none  active ">Jsonprint</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Line &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/behead/" class="dropdown-item text-decoration-none ">Behead</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/filter/" class="dropdown-item text-decoration-none ">Filter</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/first/" class="dropdown-item text-decoration-none ">First</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/indent/" class="dropdown-item text-decoration-none ">Indent</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/last/" class="dropdown-item text-decoration-none ">Last</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/line/" class="dropdown-item text-decoration-none ">Line</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/line_immutable/" class="dropdown-item text-decoration-none ">Line immutable</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/longest/" class="dropdown-item text-decoration-none ">Longest</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/printline/" class="dropdown-item text-decoration-none ">Printline</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/reverse_words/" class="dropdown-item text-decoration-none ">Reverse words</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../line/scroll/" class="dropdown-item text-decoration-none ">Scroll</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Markdown &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../markdown/markdown/" class="dropdown-item text-decoration-none ">Markdown</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Misc &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../misc/aws_costs/" class="dropdown-item text-decoration-none ">Aws costs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../misc/brew/" class="dropdown-item text-decoration-none ">Brew</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../misc/brew_use_gnu_coreutils/" class="dropdown-item text-decoration-none ">Brew use gnu coreutils</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../misc/greet/" class="dropdown-item text-decoration-none ">Greet</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../misc/nagios_output/" class="dropdown-item text-decoration-none ">Nagios output</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../misc/strict/" class="dropdown-item text-decoration-none ">Strict</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Net &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/cidr/" class="dropdown-item text-decoration-none ">Cidr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/dns/" class="dropdown-item text-decoration-none ">Dns</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/download/" class="dropdown-item text-decoration-none ">Download</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/http_status_codes/" class="dropdown-item text-decoration-none ">Http status codes</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/interface/" class="dropdown-item text-decoration-none ">Interface</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/open_link/" class="dropdown-item text-decoration-none ">Open link</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/probe/" class="dropdown-item text-decoration-none ">Probe</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/query/" class="dropdown-item text-decoration-none ">Query</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/url/" class="dropdown-item text-decoration-none ">Url</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../net/validate/" class="dropdown-item text-decoration-none ">Validate</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Numbers &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/bitwise/" class="dropdown-item text-decoration-none ">Bitwise</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/calc/" class="dropdown-item text-decoration-none ">Calc</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/compare/" class="dropdown-item text-decoration-none ">Compare</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/math/" class="dropdown-item text-decoration-none ">Math</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/numeric/" class="dropdown-item text-decoration-none ">Numeric</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/primes/" class="dropdown-item text-decoration-none ">Primes</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/range/" class="dropdown-item text-decoration-none ">Range</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/rounding/" class="dropdown-item text-decoration-none ">Rounding</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/seq/" class="dropdown-item text-decoration-none ">Seq</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/stats/" class="dropdown-item text-decoration-none ">Stats</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../numbers/sum/" class="dropdown-item text-decoration-none ">Sum</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Path &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../path/base/" class="dropdown-item text-decoration-none ">Base</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../path/realpaths/" class="dropdown-item text-decoration-none ">Realpaths</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Sys &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/cpu/" class="dropdown-item text-decoration-none ">Cpu</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/cpuhogs/" class="dropdown-item text-decoration-none ">Cpuhogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/hogs/" class="dropdown-item text-decoration-none ">Hogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/info/" class="dropdown-item text-decoration-none ">Info</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/mem/" class="dropdown-item text-decoration-none ">Mem</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/memhogs/" class="dropdown-item text-decoration-none ">Memhogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/mount/" class="dropdown-item text-decoration-none ">Mount</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/os/" class="dropdown-item text-decoration-none ">Os</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/path_env/" class="dropdown-item text-decoration-none ">Path env</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/process/" class="dropdown-item text-decoration-none ">Process</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/service/" class="dropdown-item text-decoration-none ">Service</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/shell/" class="dropdown-item text-decoration-none ">Shell</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/signals/" class="dropdown-item text-decoration-none ">Signals</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/sleep/" class="dropdown-item text-decoration-none ">Sleep</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/swaphogs/" class="dropdown-item text-decoration-none ">Swaphogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/terminal_size/" class="dropdown-item text-decoration-none ">Terminal size</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/timeout/" class="dropdown-item text-decoration-none ">Timeout</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/uptime/" class="dropdown-item text-decoration-none ">Uptime</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/virtual/" class="dropdown-item text-decoration-none ">Virtual</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../sys/what/" class="dropdown-item text-decoration-none ">What</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Text &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/carve/" class="dropdown-item text-decoration-none ">Carve</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/case_convert/" class="dropdown-item text-decoration-none ">Case convert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/chr/" class="dropdown-item text-decoration-none ">Chr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/collapse/" class="dropdown-item text-decoration-none ">Collapse</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/color/" class="dropdown-item text-decoration-none ">Color</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/csvwrap/" class="dropdown-item text-decoration-none ">Csvwrap</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/dos2unix/" class="dropdown-item text-decoration-none ">Dos2unix</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/encode/" class="dropdown-item text-decoration-none ">Encode</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/first/" class="dropdown-item text-decoration-none ">First</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/helmet/" class="dropdown-item text-decoration-none ">Helmet</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/len/" class="dropdown-item text-decoration-none ">Len</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/padding/" class="dropdown-item text-decoration-none ">Padding</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/predicates/" class="dropdown-item text-decoration-none ">Predicates</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/prefix_suffix/" class="dropdown-item text-decoration-none ">Prefix suffix</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/puts/" class="dropdown-item text-decoration-none ">Puts</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/quote/" class="dropdown-item text-decoration-none ">Quote</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/repeat/" class="dropdown-item text-decoration-none ">Repeat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/replace/" class="dropdown-item text-decoration-none ">Replace</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/rev/" class="dropdown-item text-decoration-none ">Rev</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/rot13/" class="dropdown-item text-decoration-none ">Rot13</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/rotate/" class="dropdown-item text-decoration-none ">Rotate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/sanitize/" class="dropdown-item text-decoration-none ">Sanitize</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/shuffle/" class="dropdown-item text-decoration-none ">Shuffle</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/split/" class="dropdown-item text-decoration-none ">Split</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/style/" class="dropdown-item text-decoration-none ">Style</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/substr/" class="dropdown-item text-decoration-none ">Substr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/tput/" class="dropdown-item text-decoration-none ">Tput</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/transform/" class="dropdown-item text-decoration-none ">Transform</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/trim/" class="dropdown-item text-decoration-none ">Trim</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../text/truncate/" class="dropdown-item text-decoration-none ">Truncate</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Time &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/date_arithmetic/" class="dropdown-item text-decoration-none ">Date arithmetic</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/date_ordinal/" class="dropdown-item text-decoration-none ">Date ordinal</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/dst/" class="dropdown-item text-decoration-none ">Dst</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/duration/" class="dropdown-item text-decoration-none ">Duration</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/epoch/" class="dropdown-item text-decoration-none ">Epoch</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/human_duration/" class="dropdown-item text-decoration-none ">Human duration</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/is_leap_year/" class="dropdown-item text-decoration-none ">Is leap year</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/month_end/" class="dropdown-item text-decoration-none ">Month end</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/seconds_to_hms/" class="dropdown-item text-decoration-none ">Seconds to hms</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../time/timestamp/" class="dropdown-item text-decoration-none ">Timestamp</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Units &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../units/bytes_to_human/" class="dropdown-item text-decoration-none ">Bytes to human</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../units/permissions/" class="dropdown-item text-decoration-none ">Permissions</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../units/temperature/" class="dropdown-item text-decoration-none ">Temperature</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Users &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../users/provision/" class="dropdown-item text-decoration-none ">Provision</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../users/query/" class="dropdown-item text-decoration-none ">Query</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Utils &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/choose/" class="dropdown-item text-decoration-none ">Choose</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/cmd/" class="dropdown-item text-decoration-none ">Cmd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/logging/" class="dropdown-item text-decoration-none ">Logging</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/mkcd/" class="dropdown-item text-decoration-none ">Mkcd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/prompt/" class="dropdown-item text-decoration-none ">Prompt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/repeat/" class="dropdown-item text-decoration-none ">Repeat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/retry_backoff/" class="dropdown-item text-decoration-none ">Retry backoff</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/shuf/" class="dropdown-item text-decoration-none ">Shuf</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/tac/" class="dropdown-item text-decoration-none ">Tac</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/timealert/" class="dropdown-item text-decoration-none ">Timealert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/timeout/" class="dropdown-item text-decoration-none ">Timeout</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/validate_config/" class="dropdown-item text-decoration-none ">Validate config</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/watch/" class="dropdown-item text-decoration-none ">Watch</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../utils/wrap/" class="dropdown-item text-decoration-none ">Wrap</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+            </ul>
+        </li>
+<!-- endblock -->
+                </li>
+                <!-- endblock -->
+
+                <!-- block search -->
+                <li class="nav-item">
+                    <a class="collapsed" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <div class="md-search-icon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+                    </a>
+                </li>
+                <!--  endblock -->
+
+                <!-- block source -->
+                <li class="nav-item">
+                    
+                        
+                            <!-- block source -->
+<div class="md-source source-detail">
+  <div class="md-source-repo-icon">
+    <i class="fa fa-github-alt" aria-hidden="true"></i>
+  </div>
+
+  <div class="md-source-repo-url">
+    <a href="https://github.com/rawiriblundell/shellac" class="md-source">
+        rawiriblundell/shellac
+    </a>
+
+    <ul class="md-source-repo-text">
+      <li>
+        <i class="fa fa-tag" aria-hidden="true"></i>
+        <img
+          alt="GitHub tag (latest by date)"
+          src="https://img.shields.io/github/v/tag/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+
+      <li>
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <img
+          alt="GitHub Repo stars"
+          src="https://img.shields.io/github/stars/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+
+      <li>
+        <i class="fa fa-code-fork" aria-hidden="true"></i>
+        <img
+          alt="GitHub forks"
+          src="https://img.shields.io/github/forks/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+    </ul>
+  </div>
+</div>
+<!--  endblock -->
+                        
+                    
+                </li>
+                <!--  endblock -->
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--  endblock -->
+        </header>
+
+        <main><!-- block search -->
+<div class="collapse" id="collapseExample">
+    <div role="search" class="search-box">
+        <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+            <input type="text" name="q" class="search-query"
+            placeholder="Search docs" title="Type search term here" />
+        </form>
+    </div>
+</div>
+<!-- endblock -->
+
+            
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 d-none d-md-block" id="component-sidebar">
+                        <!-- block sidebar -->
+<div class="navbar-expand-md" role="complementary">
+    
+    <div class="sidebar navbar-collapse collapse card">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_die" class="nav-link">json_die</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_exception" class="nav-link">json_exception</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_open" class="nav-link">json_open</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_close" class="nav-link">json_close</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_comma" class="nav-link">json_comma</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_decomma" class="nav-link">json_decomma</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_sanitise" class="nav-link">json_sanitise</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_sanitize" class="nav-link">json_sanitize</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_require" class="nav-link">json_require</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_gettype" class="nav-link">json_gettype</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_open_arr" class="nav-link">json_open_arr</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_close_arr" class="nav-link">json_close_arr</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_append_arr" class="nav-link">json_append_arr</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_open_obj" class="nav-link">json_open_obj</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_close_obj" class="nav-link">json_close_obj</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_append_obj" class="nav-link">json_append_obj</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_escape_str" class="nav-link">json_escape_str</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_str" class="nav-link">json_str</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_append_str" class="nav-link">json_append_str</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_num" class="nav-link">json_num</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_append_num" class="nav-link">json_append_num</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_bool" class="nav-link">json_bool</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_append_bool" class="nav-link">json_append_bool</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_auto" class="nav-link">json_auto</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_append_auto" class="nav-link">json_append_auto</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_from_dkvp" class="nav-link">json_from_dkvp</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_val_arr" class="nav-link">json_val_arr</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_append_val_arr" class="nav-link">json_append_val_arr</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_foreach" class="nav-link">json_foreach</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_readloop" class="nav-link">json_readloop</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_timestamp" class="nav-link">json_timestamp</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_pretty" class="nav-link">json_pretty</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_validate" class="nav-link">json_validate</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="3"><a href="#json_from_env" class="nav-link">json_from_env</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- endblock -->
+                    </div>
+                    <div class="col-md-9 col-12" id="component-content">
+                        <!-- block content -->
+<section class="container post" id="component-content">
+    <article>
+        <header>
+            
+                <h1 class=" title" id="component-title">Jsonprint</h1>
+            
+        </header>
+        <p><h3 id="json_die">json_die<a class="headerlink" href="#json_die" title="Permanent link">&para;</a></h3>
+<p>Print an error message to stderr and exit 1. Variant of die() for jsonprint.
+Note that in the parent script, extra logic may be necessary to die in subshells.
+See: https://gist.github.com/rawiriblundell/2dab6903848f73641652a8e95e872dcb</p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Error message</li>
+</ul>
+<h4 id="exit-codes">Exit codes<a class="headerlink" href="#exit-codes" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>1</strong>: Always</li>
+</ul>
+<h4 id="output-on-stderr">Output on stderr<a class="headerlink" href="#output-on-stderr" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Error message prefixed with '====&gt; jsonprint exception:'</li>
+</ul>
+<h3 id="json_exception">json_exception<a class="headerlink" href="#json_exception" title="Permanent link">&para;</a></h3>
+<p>Alias for json_die().</p>
+<h3 id="json_open">json_open<a class="headerlink" href="#json_open" title="Permanent link">&para;</a></h3>
+<p>Emit an opening curly brace to denote the start of a JSON block.</p>
+<h4 id="exit-codes_1">Exit codes<a class="headerlink" href="#exit-codes_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout">Output on stdout<a class="headerlink" href="#output-on-stdout" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'{'</li>
+</ul>
+<h3 id="json_close">json_close<a class="headerlink" href="#json_close" title="Permanent link">&para;</a></h3>
+<p>Emit a closing curly brace followed by a newline (for ndjson).</p>
+<h4 id="exit-codes_2">Exit codes<a class="headerlink" href="#exit-codes_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_1">Output on stdout<a class="headerlink" href="#output-on-stdout_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'}\n'</li>
+</ul>
+<h3 id="json_comma">json_comma<a class="headerlink" href="#json_comma" title="Permanent link">&para;</a></h3>
+<p>Emit a single comma.</p>
+<h4 id="exit-codes_3">Exit codes<a class="headerlink" href="#exit-codes_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_2">Output on stdout<a class="headerlink" href="#output-on-stdout_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li>','</li>
+</ul>
+<h3 id="json_decomma">json_decomma<a class="headerlink" href="#json_decomma" title="Permanent link">&para;</a></h3>
+<p>Remove a trailing comma from stdin. Pipe input into this function.
+Use when you cannot avoid emitting a trailing comma on the last element.</p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">some_code | json_decomma</code></pre>
+<h4 id="exit-codes_4">Exit codes<a class="headerlink" href="#exit-codes_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_3">Output on stdout<a class="headerlink" href="#output-on-stdout_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Input with trailing comma removed</li>
+</ul>
+<h3 id="json_sanitise">json_sanitise<a class="headerlink" href="#json_sanitise" title="Permanent link">&para;</a></h3>
+<p>Sanitise a string for use as a JSON key or value. Strips surrounding
+quotes, trailing ':' or '=', and leading/trailing whitespace. Accepts input as an
+argument or via stdin.</p>
+<h4 id="arguments_1">Arguments<a class="headerlink" href="#arguments_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: string to sanitise (reads from stdin if omitted)</li>
+</ul>
+<h4 id="exit-codes_5">Exit codes<a class="headerlink" href="#exit-codes_5" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_4">Output on stdout<a class="headerlink" href="#output-on-stdout_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Sanitised string</li>
+</ul>
+<h3 id="json_sanitize">json_sanitize<a class="headerlink" href="#json_sanitize" title="Permanent link">&para;</a></h3>
+<p>US-English spelling alias for json_sanitise().</p>
+<h3 id="json_require">json_require<a class="headerlink" href="#json_require" title="Permanent link">&para;</a></h3>
+<p>Verify that required commands or files exist. On failure, emits a JSON
+object containing Warning keypairs for each missing item and exits 1.</p>
+<h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_require lsblk /proc/meminfo</code></pre>
+<h4 id="arguments_2">Arguments<a class="headerlink" href="#arguments_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>...</strong> (string): One or more command names or file paths to check</li>
+</ul>
+<h4 id="exit-codes_6">Exit codes<a class="headerlink" href="#exit-codes_6" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: All required items found</li>
+<li><strong>1</strong>: One or more items missing</li>
+</ul>
+<h4 id="output-on-stdout_5">Output on stdout<a class="headerlink" href="#output-on-stdout_5" title="Permanent link">&para;</a></h4>
+<ul>
+<li>JSON Warning object if any required items are missing</li>
+</ul>
+<h3 id="json_gettype">json_gettype<a class="headerlink" href="#json_gettype" title="Permanent link">&para;</a></h3>
+<p>Determine the JSON type of a value: 'float', 'int', 'bool', or 'string'.
+Used internally to select the appropriate output function (json_str, json_num, etc.).</p>
+<h4 id="arguments_3">Arguments<a class="headerlink" href="#arguments_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Value to inspect</li>
+</ul>
+<h4 id="exit-codes_7">Exit codes<a class="headerlink" href="#exit-codes_7" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_6">Output on stdout<a class="headerlink" href="#output-on-stdout_6" title="Permanent link">&para;</a></h4>
+<ul>
+<li>One of: float, int, bool, string</li>
+</ul>
+<h3 id="json_open_arr">json_open_arr<a class="headerlink" href="#json_open_arr" title="Permanent link">&para;</a></h3>
+<p>Emit an opening array bracket. With a name argument, emits '"name": ['.
+Without an argument, emits '['.</p>
+<h4 id="arguments_4">Arguments<a class="headerlink" href="#arguments_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: array name</li>
+</ul>
+<h4 id="exit-codes_8">Exit codes<a class="headerlink" href="#exit-codes_8" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_7">Output on stdout<a class="headerlink" href="#output-on-stdout_7" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'"name": [' or '['</li>
+</ul>
+<h3 id="json_close_arr">json_close_arr<a class="headerlink" href="#json_close_arr" title="Permanent link">&para;</a></h3>
+<p>Emit a closing array bracket. With '-c' or '--comma', appends a trailing comma.</p>
+<h4 id="arguments_5">Arguments<a class="headerlink" href="#arguments_5" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-c' or '--comma' to append a trailing comma</li>
+</ul>
+<h4 id="exit-codes_9">Exit codes<a class="headerlink" href="#exit-codes_9" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_8">Output on stdout<a class="headerlink" href="#output-on-stdout_8" title="Permanent link">&para;</a></h4>
+<ul>
+<li>']' or '],'</li>
+</ul>
+<h3 id="json_append_arr">json_append_arr<a class="headerlink" href="#json_append_arr" title="Permanent link">&para;</a></h3>
+<p>Emit a closing-then-opening array bracket sequence to chain arrays.
+With '-n' or '--no-bracket', the leading ']' is omitted. With a name argument,
+emits '], "name": ['.</p>
+<h4 id="arguments_6">Arguments<a class="headerlink" href="#arguments_6" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-n'/'--no-bracket' to omit the leading bracket</li>
+<li><strong>$2</strong> (string): Optional: array name</li>
+</ul>
+<h4 id="exit-codes_10">Exit codes<a class="headerlink" href="#exit-codes_10" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_9">Output on stdout<a class="headerlink" href="#output-on-stdout_9" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Array transition bracket(s)</li>
+</ul>
+<h3 id="json_open_obj">json_open_obj<a class="headerlink" href="#json_open_obj" title="Permanent link">&para;</a></h3>
+<p>Emit an opening object brace. With a name argument, emits '"name": {'.
+Without an argument, emits '{'.</p>
+<h4 id="arguments_7">Arguments<a class="headerlink" href="#arguments_7" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: object name</li>
+</ul>
+<h4 id="exit-codes_11">Exit codes<a class="headerlink" href="#exit-codes_11" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_10">Output on stdout<a class="headerlink" href="#output-on-stdout_10" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'"name": {' or '{'</li>
+</ul>
+<h3 id="json_close_obj">json_close_obj<a class="headerlink" href="#json_close_obj" title="Permanent link">&para;</a></h3>
+<p>Emit a closing object brace. With '-c' or '--comma', appends a trailing comma.</p>
+<h4 id="arguments_8">Arguments<a class="headerlink" href="#arguments_8" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-c' or '--comma' to append a trailing comma</li>
+</ul>
+<h4 id="exit-codes_12">Exit codes<a class="headerlink" href="#exit-codes_12" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_11">Output on stdout<a class="headerlink" href="#output-on-stdout_11" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'}' or '},'</li>
+</ul>
+<h3 id="json_append_obj">json_append_obj<a class="headerlink" href="#json_append_obj" title="Permanent link">&para;</a></h3>
+<p>Emit a closing-then-opening object brace sequence to chain objects.
+With '-n' or '--no-bracket', the leading '}' is omitted. With a name argument,
+emits '}, "name": {'.</p>
+<h4 id="arguments_9">Arguments<a class="headerlink" href="#arguments_9" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-n'/'--no-bracket' to omit the leading brace</li>
+<li><strong>$2</strong> (string): Optional: object name</li>
+</ul>
+<h4 id="exit-codes_13">Exit codes<a class="headerlink" href="#exit-codes_13" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_12">Output on stdout<a class="headerlink" href="#output-on-stdout_12" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Object transition brace(s)</li>
+</ul>
+<h3 id="json_escape_str">json_escape_str<a class="headerlink" href="#json_escape_str" title="Permanent link">&para;</a></h3>
+<p>Escape characters that must be escaped in JSON strings. Reads from stdin.
+Converts input to octals and substitutes control characters and special characters
+with their JSON escape sequences. Modified from https://stackoverflow.com/a/23166624</p>
+<h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">printf '%s' 'hello "world"' | json_escape_str</code></pre>
+<h4 id="exit-codes_14">Exit codes<a class="headerlink" href="#exit-codes_14" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_13">Output on stdout<a class="headerlink" href="#output-on-stdout_13" title="Permanent link">&para;</a></h4>
+<ul>
+<li>JSON-escaped string</li>
+</ul>
+<h3 id="json_str">json_str<a class="headerlink" href="#json_str" title="Permanent link">&para;</a></h3>
+<p>Emit a JSON string keypair. With '-c' or '--comma', appends a trailing comma.
+If the value is blank or literally 'null', emits null (unquoted).</p>
+<h4 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_str name Alice          # =&gt; "name": "Alice"
+json_str -c name Alice       # =&gt; "name": "Alice",</code></pre>
+<h4 id="arguments_10">Arguments<a class="headerlink" href="#arguments_10" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-c'/'--comma' for trailing comma, otherwise the key</li>
+<li><strong>$2</strong> (string): Value (or key if $1 is a flag)</li>
+</ul>
+<h4 id="exit-codes_15">Exit codes<a class="headerlink" href="#exit-codes_15" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_14">Output on stdout<a class="headerlink" href="#output-on-stdout_14" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'"key": "value"' or '"key": null'</li>
+</ul>
+<h3 id="json_append_str">json_append_str<a class="headerlink" href="#json_append_str" title="Permanent link">&para;</a></h3>
+<p>Emit a comma-prefixed JSON string keypair for stacking inside an object.
+If the value is blank or literally 'null', emits null (unquoted).</p>
+<h4 id="arguments_11">Arguments<a class="headerlink" href="#arguments_11" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Key</li>
+<li><strong>$2</strong> (string): Value</li>
+</ul>
+<h4 id="exit-codes_16">Exit codes<a class="headerlink" href="#exit-codes_16" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_15">Output on stdout<a class="headerlink" href="#output-on-stdout_15" title="Permanent link">&para;</a></h4>
+<ul>
+<li>', "key": "value"' or ', "key": null'</li>
+</ul>
+<h3 id="json_num">json_num<a class="headerlink" href="#json_num" title="Permanent link">&para;</a></h3>
+<p>Emit a JSON number keypair. Numbers are unquoted. With '-c' or '--comma',
+appends a trailing comma. Integers strip leading zeros; floats use 2 decimal places.
+If the value is not a number, calls json_die().</p>
+<h4 id="example_4">Example<a class="headerlink" href="#example_4" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_num count 42            # =&gt; "count": 42
+json_num ratio 3.14          # =&gt; "ratio": 3.14</code></pre>
+<h4 id="arguments_12">Arguments<a class="headerlink" href="#arguments_12" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-c'/'--comma' for trailing comma, otherwise the key</li>
+<li><strong>$2</strong> (string): Numeric value</li>
+</ul>
+<h4 id="exit-codes_17">Exit codes<a class="headerlink" href="#exit-codes_17" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+<li><strong>1</strong>: If value is not a number</li>
+</ul>
+<h4 id="output-on-stdout_16">Output on stdout<a class="headerlink" href="#output-on-stdout_16" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'"key": value' or '"key": null'</li>
+</ul>
+<h3 id="json_append_num">json_append_num<a class="headerlink" href="#json_append_num" title="Permanent link">&para;</a></h3>
+<p>Emit a comma-prefixed JSON number keypair for stacking inside an object.
+Numbers are unquoted. If the value is blank or null, emits null (unquoted).</p>
+<h4 id="arguments_13">Arguments<a class="headerlink" href="#arguments_13" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Key</li>
+<li><strong>$2</strong> (string): Numeric value</li>
+</ul>
+<h4 id="exit-codes_18">Exit codes<a class="headerlink" href="#exit-codes_18" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+<li><strong>1</strong>: If value is not a number</li>
+</ul>
+<h4 id="output-on-stdout_17">Output on stdout<a class="headerlink" href="#output-on-stdout_17" title="Permanent link">&para;</a></h4>
+<ul>
+<li>', "key": value' or ', "key": null'</li>
+</ul>
+<h3 id="json_bool">json_bool<a class="headerlink" href="#json_bool" title="Permanent link">&para;</a></h3>
+<p>Emit a JSON boolean keypair. Booleans are unquoted. With '-c' or '--comma',
+appends a trailing comma. Accepts true/false/yes/no/on/off (case-insensitive).
+Calls json_die() if the value is not a recognised boolean.</p>
+<h4 id="arguments_14">Arguments<a class="headerlink" href="#arguments_14" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-c'/'--comma' for trailing comma, otherwise the key</li>
+<li><strong>$2</strong> (string): Boolean value (true/false/yes/no/on/off)</li>
+</ul>
+<h4 id="exit-codes_19">Exit codes<a class="headerlink" href="#exit-codes_19" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+<li><strong>1</strong>: If value is not a recognised boolean</li>
+</ul>
+<h4 id="output-on-stdout_18">Output on stdout<a class="headerlink" href="#output-on-stdout_18" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'"key": true' or '"key": false'</li>
+</ul>
+<h3 id="json_append_bool">json_append_bool<a class="headerlink" href="#json_append_bool" title="Permanent link">&para;</a></h3>
+<p>Emit a comma-prefixed JSON boolean keypair for stacking inside an object.
+Accepts true/false/yes/no/on/off (case-insensitive). Calls json_die() for unrecognised values.</p>
+<h4 id="arguments_15">Arguments<a class="headerlink" href="#arguments_15" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Key</li>
+<li><strong>$2</strong> (string): Boolean value (true/false/yes/no/on/off)</li>
+</ul>
+<h4 id="exit-codes_20">Exit codes<a class="headerlink" href="#exit-codes_20" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+<li><strong>1</strong>: If value is not a recognised boolean</li>
+</ul>
+<h4 id="output-on-stdout_19">Output on stdout<a class="headerlink" href="#output-on-stdout_19" title="Permanent link">&para;</a></h4>
+<ul>
+<li>', "key": true' or ', "key": false'</li>
+</ul>
+<h3 id="json_auto">json_auto<a class="headerlink" href="#json_auto" title="Permanent link">&para;</a></h3>
+<p>Emit a JSON keypair, automatically selecting the correct type function
+(json_num, json_bool, or json_str) based on the value. Experimental.</p>
+<h4 id="arguments_16">Arguments<a class="headerlink" href="#arguments_16" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Key</li>
+<li><strong>$2</strong> (string): Value</li>
+</ul>
+<h4 id="exit-codes_21">Exit codes<a class="headerlink" href="#exit-codes_21" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_20">Output on stdout<a class="headerlink" href="#output-on-stdout_20" title="Permanent link">&para;</a></h4>
+<ul>
+<li>JSON keypair in the appropriate format</li>
+</ul>
+<h3 id="json_append_auto">json_append_auto<a class="headerlink" href="#json_append_auto" title="Permanent link">&para;</a></h3>
+<p>Emit a comma-prefixed JSON keypair, automatically selecting the correct
+type function. Experimental.</p>
+<h4 id="arguments_17">Arguments<a class="headerlink" href="#arguments_17" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Key</li>
+<li><strong>$2</strong> (string): Value</li>
+</ul>
+<h4 id="exit-codes_22">Exit codes<a class="headerlink" href="#exit-codes_22" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_21">Output on stdout<a class="headerlink" href="#output-on-stdout_21" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Comma-prefixed JSON keypair in the appropriate format</li>
+</ul>
+<h3 id="json_from_dkvp">json_from_dkvp<a class="headerlink" href="#json_from_dkvp" title="Permanent link">&para;</a></h3>
+<p>Parse a delimited key-value pair (using ':' or '=') and emit its
+key and value as separate quoted words suitable for passing to json_str() or json_num().</p>
+<h4 id="example_5">Example<a class="headerlink" href="#example_5" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_num $(json_from_dkvp "Bytes: 22")   # =&gt; "Bytes": 22</code></pre>
+<h4 id="arguments_18">Arguments<a class="headerlink" href="#arguments_18" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Delimited key-value pair (e.g. 'Bytes: 22' or 'Bytes=22')</li>
+</ul>
+<h4 id="exit-codes_23">Exit codes<a class="headerlink" href="#exit-codes_23" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+<li><strong>1</strong>: Line has no recognised delimiter (': ' or '=')</li>
+</ul>
+<h4 id="output-on-stdout_22">Output on stdout<a class="headerlink" href="#output-on-stdout_22" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'"key" "value"'</li>
+</ul>
+<h3 id="json_val_arr">json_val_arr<a class="headerlink" href="#json_val_arr" title="Permanent link">&para;</a></h3>
+<p>Emit a JSON array keypair whose values are auto-typed.
+Integers, floats, and booleans are unquoted; everything else is quoted.
+With '-c' or '--comma', appends a trailing comma.</p>
+<h4 id="example_6">Example<a class="headerlink" href="#example_6" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_val_arr tags foo bar         # =&gt; "tags": ["foo","bar"]
+json_val_arr counts 1 2 3         # =&gt; "counts": [1,2,3]
+json_val_arr flags true false     # =&gt; "flags": [true,false]</code></pre>
+<h4 id="arguments_19">Arguments<a class="headerlink" href="#arguments_19" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-c'/'--comma' for trailing comma, otherwise the key</li>
+<li><strong>$2</strong> (string): Key (when $1 is a flag)</li>
+<li><strong>...</strong> (string): Values to include in the array</li>
+</ul>
+<h4 id="exit-codes_24">Exit codes<a class="headerlink" href="#exit-codes_24" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_23">Output on stdout<a class="headerlink" href="#output-on-stdout_23" title="Permanent link">&para;</a></h4>
+<ul>
+<li>'"key": [values...]'</li>
+</ul>
+<h3 id="json_append_val_arr">json_append_val_arr<a class="headerlink" href="#json_append_val_arr" title="Permanent link">&para;</a></h3>
+<p>Comma-prefixed variant of json_val_arr for stacking inside an object.</p>
+<h4 id="arguments_20">Arguments<a class="headerlink" href="#arguments_20" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Key</li>
+<li><strong>...</strong> (string): Values to include in the array</li>
+</ul>
+<h4 id="exit-codes_25">Exit codes<a class="headerlink" href="#exit-codes_25" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_24">Output on stdout<a class="headerlink" href="#output-on-stdout_24" title="Permanent link">&para;</a></h4>
+<ul>
+<li>', "key": [values...]'</li>
+</ul>
+<h3 id="json_foreach">json_foreach<a class="headerlink" href="#json_foreach" title="Permanent link">&para;</a></h3>
+<p>Emit a complete JSON object from a flat list of alternating key-value pairs.
+Automatically selects the correct type function for each value. With '-n'/'--name',
+wraps the object under a named key.
+Delegates to json_readloop for the iteration logic.</p>
+<h4 id="example_7">Example<a class="headerlink" href="#example_7" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_foreach a b c d         # =&gt; {"a": "b", "c": "d"}
+json_foreach -n root a b     # =&gt; {"root": {"a": "b"}}</code></pre>
+<h4 id="arguments_21">Arguments<a class="headerlink" href="#arguments_21" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-n'/'--name' followed by an object name</li>
+<li><strong>...</strong> (string): Alternating key value pairs</li>
+</ul>
+<h4 id="exit-codes_26">Exit codes<a class="headerlink" href="#exit-codes_26" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_25">Output on stdout<a class="headerlink" href="#output-on-stdout_25" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Complete JSON object</li>
+</ul>
+<h3 id="json_readloop">json_readloop<a class="headerlink" href="#json_readloop" title="Permanent link">&para;</a></h3>
+<p>Read key-value pairs from a file or stdin and emit a JSON object.
+Automatically selects the correct type function for each value.
+Preliminary implementation — do not use in production.</p>
+<h4 id="arguments_22">Arguments<a class="headerlink" href="#arguments_22" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>$1</strong> (string): Optional: '-n'/'--name' followed by an object name, or a file path</li>
+</ul>
+<h4 id="exit-codes_27">Exit codes<a class="headerlink" href="#exit-codes_27" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_26">Output on stdout<a class="headerlink" href="#output-on-stdout_26" title="Permanent link">&para;</a></h4>
+<ul>
+<li>JSON object built from input key-value pairs</li>
+</ul>
+<h3 id="json_timestamp">json_timestamp<a class="headerlink" href="#json_timestamp" title="Permanent link">&para;</a></h3>
+<p>Append a timestamp object to the current JSON output. Tries epoch first;
+falls back to YYYYMMDDHHMMSS format if epoch is unavailable.</p>
+<h4 id="exit-codes_28">Exit codes<a class="headerlink" href="#exit-codes_28" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_27">Output on stdout<a class="headerlink" href="#output-on-stdout_27" title="Permanent link">&para;</a></h4>
+<ul>
+<li>JSON object: {"timestamp": {"utc_epoch": N}} or {"timestamp": {"utc_YYYYMMDDHHMMSS": N}}</li>
+</ul>
+<h3 id="json_pretty">json_pretty<a class="headerlink" href="#json_pretty" title="Permanent link">&para;</a></h3>
+<p>Pretty-print JSON from stdin using python3 or jq, whichever is available.
+Falls back to cat if neither is found.</p>
+<h4 id="example_8">Example<a class="headerlink" href="#example_8" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_open; json_str foo bar; json_close | json_pretty</code></pre>
+<h4 id="exit-codes_29">Exit codes<a class="headerlink" href="#exit-codes_29" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_28">Output on stdout<a class="headerlink" href="#output-on-stdout_28" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Indented, human-readable JSON</li>
+</ul>
+<h3 id="json_validate">json_validate<a class="headerlink" href="#json_validate" title="Permanent link">&para;</a></h3>
+<p>Validate JSON from stdin using python3 or jq, whichever is available.
+Prints nothing on success; prints an error message to stderr on failure.</p>
+<h4 id="example_9">Example<a class="headerlink" href="#example_9" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_open; json_str foo bar; json_close | json_validate</code></pre>
+<h4 id="exit-codes_30">Exit codes<a class="headerlink" href="#exit-codes_30" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Valid JSON</li>
+<li><strong>1</strong>: Invalid JSON or no validator available</li>
+</ul>
+<h3 id="json_from_env">json_from_env<a class="headerlink" href="#json_from_env" title="Permanent link">&para;</a></h3>
+<p>Emit a JSON object from environment variables. With no arguments,
+emits all environment variables. With arguments, emits only those named variables.</p>
+<h4 id="example_10">Example<a class="headerlink" href="#example_10" title="Permanent link">&para;</a></h4>
+<pre class="highlight"><code class="language-bash">json_from_env HOME SHELL       # =&gt; {"HOME": "/root", "SHELL": "/bin/bash"}
+json_from_env                  # =&gt; all environment variables as a JSON object</code></pre>
+<h4 id="arguments_23">Arguments<a class="headerlink" href="#arguments_23" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>...</strong> (string): Optional: names of specific environment variables to include</li>
+</ul>
+<h4 id="exit-codes_31">Exit codes<a class="headerlink" href="#exit-codes_31" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>0</strong>: Always</li>
+</ul>
+<h4 id="output-on-stdout_29">Output on stdout<a class="headerlink" href="#output-on-stdout_29" title="Permanent link">&para;</a></h4>
+<ul>
+<li>JSON object of environment variable keypairs</li>
+</ul></p>
+    </article>
+</section>
+<!-- endblock -->
+                    </div>
+                </div>
+            </div>
+            
+
+        </main>
+
+        
+        <!-- block preview -->
+    <div class="preview row row-cols-md-3 text-center pt-md-3" id="component-preview">
+        <div class="col themed-grid-col">
+            <a rel="prev" href="../../hash/hash/" class="nav-link">
+                <i class="fa fa-arrow-left"></i> Previous
+            </a>
+        </div>
+        <div class="col themed-grid-col"></div>
+        <div class="col themed-grid-col">
+            <a rel="next" href="../../line/behead/" class="nav-link">
+                Next <i class="fa fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+<!-- endblock -->
+        
+
+        
+        <!-- block footer -->
+<footer class="pt-4 my-md-5 pt-md-5 border-top" id="component-footer">
+    <div class="row">
+        <div class="col-12 col-md">
+                <!-- block copyright -->
+
+    <small class="d-block mb-3">
+        Made with
+        <a href="https://github.com/FernandoCelmer/mkdocs-simple-blog" target="_blank" rel="noopener">
+            Simple Blog for MkDocs
+        </a>
+    </small>
+
+<!-- endblock -->
+        </div>
+    </div>
+</footer>
+<!-- endblock -->
+        
+    </div>
+
+    <script src="../../../assets/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../../../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../assets/js/main.min.js"></script>
+    <script src="../../../search/main.js" defer></script>
+
+</body>
+
+</html>

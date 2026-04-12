@@ -144,15 +144,20 @@ shellac add-lib /tmp/contoso.sh
 # Explicit target directory
 shellac add-lib /tmp/contoso.sh /opt/mycompany/lib/sh
 
-# From a GitHub raw URL — namespaced under the repo owner automatically
+# From a GitHub, GitLab, or Bitbucket raw URL — namespaced under the repo owner
 shellac add-lib https://raw.githubusercontent.com/contoso/lib/main/pandas.sh
 # installed to: ~/.local/lib/sh/contoso/pandas.sh
 # load with:    include contoso/pandas
 
-# From any other URL — installed flat, no owner namespace applied
+# From any other URL — namespaced under "external"
 shellac add-lib https://example.com/pandas.sh
-# installed to: ~/.local/lib/sh/pandas.sh
-# load with:    include pandas
+# installed to: ~/.local/lib/sh/external/pandas.sh
+# load with:    include external/pandas
+
+# Override the namespace with -m (useful for self-hosted forges)
+shellac add-lib -m contoso https://mygitea.example.com/contoso/pandas.sh
+# installed to: ~/.local/lib/sh/contoso/pandas.sh
+# load with:    include contoso/pandas
 
 # Remove an installed library
 shellac rm-lib ~/.local/lib/sh/contoso/pandas.sh

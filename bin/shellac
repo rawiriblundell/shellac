@@ -467,16 +467,26 @@ _shellac_rm_confpath() {
 # @internal
 # Install a library file from a local path or HTTPS URL into a target directory.
 # When no target directory is given, defaults to ${HOME}/.local/lib/sh (non-root)
-# or /usr/local/lib/sh (root).  For GitHub raw URLs the repo owner is used as a
-# subdirectory namespace (e.g. contoso/pandas.sh), matching the shellac
-# 'include owner/lib' convention.  The base target directory is registered in
-# paths.conf if not already known to shellac.  Set SHELLAC_INSTALL_YES=1 to skip
-# the confirmation prompt.
+# or /usr/local/lib/sh (root).
+#
+# Namespace resolution for HTTPS URLs:
+#   GitHub (raw.githubusercontent.com, raw.github.com): repo owner
+#   GitLab (gitlab.com):                                repo owner
+#   Bitbucket (bitbucket.org):                          repo owner
+#   Any other URL:                                      "external"
+#   Local file path:                                    none
+#
+# Use -m <name> to override the resolved namespace.  The base target directory
+# is registered in paths.conf if not already known to shellac.  Set
+# SHELLAC_INSTALL_YES=1 to skip the confirmation prompt.
 _shellac_add_lib() {
+  local _opt
+  local _module_override
+  local OPTIND
   local _source
   local _target_dir
   local _install_dir
-  local _github_owner
+  local _namespace
   local _url_path
   local _filename
   local _dest
@@ -484,6 +494,18 @@ _shellac_add_lib() {
   local _reply
   local _element
   local _already_known
+
+  _module_override=""
+  while getopts ":m:" _opt; do
+    case "${_opt}" in
+      (m)  _module_override="${OPTARG}" ;;
+      (\?|:|*)
+        printf -- 'Usage: shellac add-lib [-m module] <source> [target-dir]\n' >&2
+        return 1
+      ;;
+    esac
+  done
+  shift "$(( OPTIND - 1 ))"
 
   _source="${1:?shellac add-lib: source required}"
   _target_dir="${2:-}"
@@ -521,18 +543,23 @@ _shellac_add_lib() {
     return 1
   fi
 
-  # For GitHub raw URLs, namespace the install under the repo owner so the file
-  # lands at target-dir/owner/file.sh and can be loaded as 'include owner/lib'.
-  _install_dir="${_target_dir}"
-  _github_owner=""
+  # Resolve namespace from URL pattern; local paths get none by default.
+  # -m overrides whatever is detected.
+  _namespace=""
   case "${_source}" in
-    (*raw.githubusercontent.com/*|*raw.github.com/*)
+    (*raw.githubusercontent.com/*|*raw.github.com/*|*gitlab.com/*|*bitbucket.org/*)
       _url_path="${_source#https://}"
       _url_path="${_url_path#*/}"
-      _github_owner="${_url_path%%/*}"
-      [[ -n "${_github_owner}" ]] && _install_dir="${_target_dir}/${_github_owner}"
+      _namespace="${_url_path%%/*}"
+    ;;
+    (https://*)
+      _namespace="external"
     ;;
   esac
+  [[ -n "${_module_override}" ]] && _namespace="${_module_override}"
+
+  _install_dir="${_target_dir}"
+  [[ -n "${_namespace}" ]] && _install_dir="${_target_dir}/${_namespace}"
 
   _dest="${_install_dir}/${_filename}"
 
@@ -586,9 +613,9 @@ _shellac_add_lib() {
   esac
 
   printf -- 'shellac add-lib: installed %s to %s\n' "${_filename}" "${_dest}"
-  if [[ -n "${_github_owner}" ]]; then
+  if [[ -n "${_namespace}" ]]; then
     printf -- 'shellac add-lib: load with: include %s/%s\n' \
-      "${_github_owner}" "${_filename%.sh}"
+      "${_namespace}" "${_filename%.sh}"
   fi
 
   # Register the base target directory in paths.conf if not already in SH_LIBPATH
@@ -993,7 +1020,7 @@ shellac() {
         "" \
         "Subcommands:" \
         "  init                 Configure PATH and SH_LIBPATH for this install" \
-        "  add-lib <src> [dir]  Install a library from a local path or URL" \
+        "  add-lib [-m mod] <src> [dir]  Install a library from a local path or URL" \
         "  rm-lib <file>        Remove an installed library file" \
         "  include <lib>        Load a library from SH_LIBPATH" \
         "  requires <deps>      Assert that commands, files or shell version are present" \

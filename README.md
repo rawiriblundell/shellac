@@ -71,7 +71,8 @@ Both full paths and relative paths (resolved via `$SH_LIBPATH`) are supported:
 
 ```bash
 include /opt/contoso/lib/sh/monolithic.sh # loads /opt/contoso/lib/sh/monolithic.sh
-include text/padding                      # loads /opt/shellac/lib/sh/text/padding.sh
+include text/padding                      # resolved from SH_LIBPATH
+include text                              # loads every library in the text/ module
 ```
 
 ### `requires`
@@ -85,13 +86,13 @@ This function serves multiple purposes.  A lot of shell scripts:
 
 `requires()` fixes all of that.
 
-First, it works through multiple items so you only need to declare it once.  It would typically be used to check for the existence of commands in `PATH` like this:
+It works through multiple items so you only need to declare it once.  It would typically be used to check for the existence of commands in `PATH` like this:
 
 ```bash
 requires git jq sed awk
 ```
 
-But it can also check that pre-requisite variables are as desired (or "as required", you might say), for example
+But it can also check that pre-requisite variables are as desired (or "as required", you might say), for example:
 
 ```bash
 requires EDITOR=/usr/bin/vim
@@ -103,7 +104,7 @@ It can also check for a particular version of `bash`, for example to require `ba
 requires BASH41
 ```
 
-It also handles checking full paths for executable scripts, config files and SH_LIBPATH libraries.
+It also accepts full paths to executables, config files, and libraries on `SH_LIBPATH`.
 
 By dealing with this at the very start of the script, we ensure that we fail early.  It abstracts away messy `command -v`/`which`/`type` tests, and when someone reads a line like:
 
@@ -118,6 +119,47 @@ It's clear what the script *requires* in order to run i.e. it's self-documenting
 Sources a file if it exists; silent no-op if not.  A lazy-loader for config files.
 
 Some scripts contain logic to detect environmental facts — OS version quirks, available tools, site-specific paths — that rarely change between runs.  Wrapping that detection behind a variable and caching the result in a config file means subsequent invocations skip straight past it.  Load that config file with `wants` at the top of your script and the short-circuit is free.
+
+### `shellac`
+
+The `shellac` command provides a management interface for the framework.
+
+**Discovery** — explore what is available before you `include` it:
+
+```bash
+shellac modules               # list all modules
+shellac libraries             # list all libraries across SH_LIBPATH
+shellac functions             # list all available functions
+shellac info text             # show functions in the text/ module
+shellac info str_toupper      # full documentation for a function
+shellac provides str_toupper  # which library file defines a function
+```
+
+**Installing third-party libraries:**
+
+```bash
+# From a local file — installs to ~/.local/lib/sh/ (or /usr/local/lib/sh/ as root)
+shellac add-lib /tmp/contoso.sh
+
+# From a GitHub raw URL — namespaced under the repo owner automatically
+shellac add-lib https://raw.githubusercontent.com/contoso/lib/main/pandas.sh
+# installed to: ~/.local/lib/sh/contoso/pandas.sh
+# load with:    include contoso/pandas
+
+# Remove an installed library
+shellac rm-lib ~/.local/lib/sh/contoso/pandas.sh
+```
+
+`add-lib` prompts for confirmation before installing.  Set `SHELLAC_INSTALL_YES=1`
+to bypass the prompt in automation.  The target directory is registered in
+`SH_LIBPATH` automatically so the installed library is immediately discoverable.
+
+**Path management** — if you maintain libraries outside the default search paths:
+
+```bash
+shellac add-libpath /opt/mycompany/lib/sh   # register a custom library directory
+shellac rm-libpath  /opt/mycompany/lib/sh   # deregister it
+```
 
 ## Why
 
@@ -163,7 +205,12 @@ Had my PR instead been:
 ```bash
 + include arrays.sh
 
-... (some time later) ...
++ strings_to_filter=(
++    string-1
++    string-2
++    ... (many lines later)...
++    string-n
++ )
 
 + filter_string=$(array::join '|' "${strings_to_filter[@]}")
 + grep -Ev "${filter_string}" "${some_file}"

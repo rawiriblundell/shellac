@@ -467,12 +467,17 @@ _shellac_rm_confpath() {
 # @internal
 # Install a library file from a local path or HTTPS URL into a target directory.
 # When no target directory is given, defaults to ${HOME}/.local/lib/sh (non-root)
-# or /usr/local/lib/sh (root).  The target directory is registered in paths.conf
-# if it is not already known to shellac.  Set SHELLAC_INSTALL_YES=1 to skip the
-# confirmation prompt.
+# or /usr/local/lib/sh (root).  For GitHub raw URLs the repo owner is used as a
+# subdirectory namespace (e.g. contoso/pandas.sh), matching the shellac
+# 'include owner/lib' convention.  The base target directory is registered in
+# paths.conf if not already known to shellac.  Set SHELLAC_INSTALL_YES=1 to skip
+# the confirmation prompt.
 _shellac_add_lib() {
   local _source
   local _target_dir
+  local _install_dir
+  local _github_owner
+  local _url_path
   local _filename
   local _dest
   local _tmp_file
@@ -516,12 +521,25 @@ _shellac_add_lib() {
     return 1
   fi
 
-  _dest="${_target_dir}/${_filename}"
+  # For GitHub raw URLs, namespace the install under the repo owner so the file
+  # lands at target-dir/owner/file.sh and can be loaded as 'include owner/lib'.
+  _install_dir="${_target_dir}"
+  _github_owner=""
+  case "${_source}" in
+    (*raw.githubusercontent.com/*|*raw.github.com/*)
+      _url_path="${_source#https://}"
+      _url_path="${_url_path#*/}"
+      _github_owner="${_url_path%%/*}"
+      [[ -n "${_github_owner}" ]] && _install_dir="${_target_dir}/${_github_owner}"
+    ;;
+  esac
 
-  # Ensure the target directory exists
-  if [[ ! -d "${_target_dir}" ]]; then
-    mkdir -p "${_target_dir}" || {
-      printf -- 'shellac add-lib: failed to create directory %s\n' "${_target_dir}" >&2
+  _dest="${_install_dir}/${_filename}"
+
+  # Ensure the install directory exists
+  if [[ ! -d "${_install_dir}" ]]; then
+    mkdir -p "${_install_dir}" || {
+      printf -- 'shellac add-lib: failed to create directory %s\n' "${_install_dir}" >&2
       return 1
     }
   fi
@@ -568,8 +586,12 @@ _shellac_add_lib() {
   esac
 
   printf -- 'shellac add-lib: installed %s to %s\n' "${_filename}" "${_dest}"
+  if [[ -n "${_github_owner}" ]]; then
+    printf -- 'shellac add-lib: load with: include %s/%s\n' \
+      "${_github_owner}" "${_filename%.sh}"
+  fi
 
-  # Register the target directory in paths.conf if not already in SH_LIBPATH
+  # Register the base target directory in paths.conf if not already in SH_LIBPATH
   _already_known=0
   for _element in "${SH_LIBPATH_ARRAY[@]}"; do
     if [[ "${_element}" = "${_target_dir}" ]]; then

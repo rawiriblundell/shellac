@@ -1,5 +1,6 @@
 # Code of Conduct
 
-If you are more annoying to work with than your contributions justify, you will be ejected.
+1. Thou shalt not be excessively annoying.
+2. Thou shalt not be easily annoyed.
 
-Political and social activism has no place here.  The only agenda this project has is making good software.
+*— FidoNet, 1984*

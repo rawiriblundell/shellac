@@ -141,10 +141,18 @@ shellac provides str_toupper  # which library file defines a function
 # From a local file — installs to ~/.local/lib/sh/ (or /usr/local/lib/sh/ as root)
 shellac add-lib /tmp/contoso.sh
 
+# Explicit target directory
+shellac add-lib /tmp/contoso.sh /opt/mycompany/lib/sh
+
 # From a GitHub raw URL — namespaced under the repo owner automatically
 shellac add-lib https://raw.githubusercontent.com/contoso/lib/main/pandas.sh
 # installed to: ~/.local/lib/sh/contoso/pandas.sh
 # load with:    include contoso/pandas
+
+# From any other URL — installed flat, no owner namespace applied
+shellac add-lib https://example.com/pandas.sh
+# installed to: ~/.local/lib/sh/pandas.sh
+# load with:    include pandas
 
 # Remove an installed library
 shellac rm-lib ~/.local/lib/sh/contoso/pandas.sh

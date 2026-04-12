@@ -465,6 +465,149 @@ _shellac_rm_confpath() {
 }
 
 # @internal
+# Install a library file from a local path or HTTPS URL into a target directory.
+# When no target directory is given, defaults to ${HOME}/.local/lib/sh (non-root)
+# or /usr/local/lib/sh (root).  The target directory is registered in paths.conf
+# if it is not already known to shellac.  Set SHELLAC_INSTALL_YES=1 to skip the
+# confirmation prompt.
+_shellac_add_lib() {
+  local _source
+  local _target_dir
+  local _filename
+  local _dest
+  local _tmp_file
+  local _reply
+  local _element
+  local _already_known
+
+  _source="${1:?shellac add-lib: source required}"
+  _target_dir="${2:-}"
+
+  # Scope resolution when no target directory is given
+  if [[ -z "${_target_dir}" ]]; then
+    if (( EUID == 0 )); then
+      _target_dir="/usr/local/lib/sh"
+    else
+      _target_dir="${HOME}/.local/lib/sh"
+    fi
+  fi
+
+  # Warning prompt — bypassed by SHELLAC_INSTALL_YES=1
+  if [[ "${SHELLAC_INSTALL_YES:-0}" != "1" ]]; then
+    printf -- 'Warning: shellac add-lib copies an unchecked library from an external source.\n' >&2
+    printf -- 'No signature, checksum, or licence validation is performed.\n' >&2
+    printf -- 'Proceed? [y/N] ' >&2
+    IFS= read -r _reply
+    case "${_reply}" in
+      ([yY]|[yY][eE][sS]) ;;
+      (*)
+        printf -- 'shellac add-lib: aborted\n' >&2
+        return 1
+      ;;
+    esac
+  fi
+
+  # Derive filename from source — strip leading path; strip query string for URLs
+  _filename="${_source##*/}"
+  _filename="${_filename%%\?*}"
+
+  if [[ -z "${_filename}" ]]; then
+    printf -- 'shellac add-lib: could not determine filename from: %s\n' "${_source}" >&2
+    return 1
+  fi
+
+  _dest="${_target_dir}/${_filename}"
+
+  # Ensure the target directory exists
+  if [[ ! -d "${_target_dir}" ]]; then
+    mkdir -p "${_target_dir}" || {
+      printf -- 'shellac add-lib: failed to create directory %s\n' "${_target_dir}" >&2
+      return 1
+    }
+  fi
+
+  # Fetch (URL) or copy (local path)
+  case "${_source}" in
+    (https://*)
+      _tmp_file="$(mktemp)" || {
+        printf -- 'shellac add-lib: failed to create temp file\n' >&2
+        return 1
+      }
+      trap 'rm -f "${_tmp_file}"' EXIT
+
+      if command -v curl >/dev/null 2>&1; then
+        if ! curl -fsSL "${_source}" > "${_tmp_file}"; then
+          printf -- 'shellac add-lib: curl failed to fetch %s\n' "${_source}" >&2
+          return 1
+        fi
+      elif command -v wget >/dev/null 2>&1; then
+        if ! wget -qO- "${_source}" > "${_tmp_file}"; then
+          printf -- 'shellac add-lib: wget failed to fetch %s\n' "${_source}" >&2
+          return 1
+        fi
+      else
+        printf -- 'shellac add-lib: neither curl nor wget found\n' >&2
+        return 1
+      fi
+
+      if ! cp -- "${_tmp_file}" "${_dest}"; then
+        printf -- 'shellac add-lib: failed to copy to %s\n' "${_dest}" >&2
+        return 1
+      fi
+    ;;
+    (*)
+      if [[ ! -f "${_source}" ]]; then
+        printf -- 'shellac add-lib: source not found: %s\n' "${_source}" >&2
+        return 1
+      fi
+      if ! cp -- "${_source}" "${_dest}"; then
+        printf -- 'shellac add-lib: failed to copy to %s\n' "${_dest}" >&2
+        return 1
+      fi
+    ;;
+  esac
+
+  printf -- 'shellac add-lib: installed %s to %s\n' "${_filename}" "${_dest}"
+
+  # Register the target directory in paths.conf if not already in SH_LIBPATH
+  _already_known=0
+  for _element in "${SH_LIBPATH_ARRAY[@]}"; do
+    if [[ "${_element}" = "${_target_dir}" ]]; then
+      _already_known=1
+      break
+    fi
+  done
+
+  if (( _already_known )); then
+    printf -- 'shellac add-lib: %s is already in SH_LIBPATH — skipping registration\n' "${_target_dir}"
+  else
+    _shellac_add_libpath "${_target_dir}"
+  fi
+}
+
+# @internal
+# Remove an installed library file.  Does not modify paths.conf — use
+# 'shellac rm-libpath' to deregister the containing directory if needed.
+_shellac_rm_lib() {
+  local _target
+  _target="${1:?shellac rm-lib: file path required}"
+
+  if [[ ! -f "${_target}" ]]; then
+    printf -- 'shellac rm-lib: file not found: %s\n' "${_target}" >&2
+    return 1
+  fi
+
+  if ! rm -- "${_target}"; then
+    printf -- 'shellac rm-lib: failed to remove %s\n' "${_target}" >&2
+    return 1
+  fi
+
+  printf -- 'shellac rm-lib: removed %s\n' "${_target}"
+  printf -- 'shellac rm-lib: if %s is now empty, use "shellac rm-libpath %s" to deregister it\n' \
+    "${_target%/*}" "${_target%/*}"
+}
+
+# @internal
 # Print functions and one-line descriptions from a single library file.
 _shellac_info_file() {
   local _file _element _rel_path _line _pending_desc _skip_next _func_name _func_status
@@ -785,7 +928,7 @@ _shellac_init() {
 # @description shellac subcommand dispatcher.
 #   Provides a unified interface to shellac's core functions.
 #
-# @arg $1 string Subcommand: include, requires, wants, libraries, functions, info, provides
+# @arg $1 string Subcommand: init, add-lib, rm-lib, include, requires, wants, libraries, functions, info, provides
 #
 # @example
 #   shellac include text/trim
@@ -815,6 +958,8 @@ shellac() {
     (info)         _shellac_info "${@}" ;;
     (provides)     _shellac_provides "${@}" ;;
     (init)          _shellac_init ;;
+    (add-lib)       _shellac_add_lib "${@}" ;;
+    (rm-lib)        _shellac_rm_lib "${@}" ;;
     (add-libpath)   _shellac_add_libpath "${@}" ;;
     (rm-libpath)    _shellac_rm_libpath "${@}" ;;
     (add-confpath)  _shellac_add_confpath "${@}" ;;
@@ -826,6 +971,8 @@ shellac() {
         "" \
         "Subcommands:" \
         "  init                 Configure PATH and SH_LIBPATH for this install" \
+        "  add-lib <src> [dir]  Install a library from a local path or URL" \
+        "  rm-lib <file>        Remove an installed library file" \
         "  include <lib>        Load a library from SH_LIBPATH" \
         "  requires <deps>      Assert that commands, files or shell version are present" \
         "  wants <file>         Source a file if it exists; silently skip if not" \

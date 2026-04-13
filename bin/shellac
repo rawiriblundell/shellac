@@ -79,6 +79,28 @@ if [ -n "${SH_LIBPATH}" ]; then
   sh_stack_add "SH_LIBPATH: already set in environment, skipping discovery"
   # bashism: 'read -ra' and herestring require bash; acceptable as this file requires bash
   IFS=':' read -ra SH_LIBPATH_ARRAY <<< "${SH_LIBPATH}"
+  # Always append paths.conf entries even when SH_LIBPATH was pre-set, so that
+  # 'shellac add-libpath' and 'shellac add-lib' work correctly across sessions.
+  if [ -r "${SHELLAC_PATHS_CONF}" ]; then
+    while IFS= read -r _conf_path; do
+      case "${_conf_path}" in
+        ('#'*|'') continue ;;
+      esac
+      case ":${SH_LIBPATH}:" in
+        (*:"${_conf_path}":*)
+          sh_stack_add "SH_LIBPATH: ${_conf_path} already present, skipping"
+        ;;
+        (*)
+          if [ -d "${_conf_path}" ]; then
+            sh_stack_add "SH_LIBPATH: appending paths.conf entry ${_conf_path}"
+            SH_LIBPATH="${SH_LIBPATH}:${_conf_path}"
+            SH_LIBPATH_ARRAY+=( "${_conf_path}" )
+          fi
+        ;;
+      esac
+    done < "${SHELLAC_PATHS_CONF}"
+    unset -v _conf_path
+  fi
 else
   # Derive candidate from this file's own location (bin/shellac → lib/sh).
   # Handles dev clones, custom prefixes, and direct profile.d sourcing without

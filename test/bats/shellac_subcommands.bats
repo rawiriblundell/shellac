@@ -56,6 +56,34 @@ teardown() {
   [ "${output}" = "ok" ]
 }
 
+@test "add-libpath: updates SH_LIBPATH in the current session" {
+  local new_lib="${TEST_TMPDIR}/newlib"
+  mkdir -p "${new_lib}"
+  run bash -c "
+    export SH_LIBPATH='${SHELLAC_LIB}'
+    export XDG_CONFIG_HOME='${TEST_XDG_CONFIG}'
+    source '${SHELLAC_BIN}'
+    shellac add-libpath '${new_lib}' >/dev/null 2>&1
+    printf '%s\n' \"\${SH_LIBPATH}\"
+  "
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"${new_lib}"* ]]
+}
+
+@test "add-libpath: updates SH_LIBPATH_ARRAY in the current session" {
+  local new_lib="${TEST_TMPDIR}/newlib"
+  mkdir -p "${new_lib}"
+  run bash -c "
+    export SH_LIBPATH='${SHELLAC_LIB}'
+    export XDG_CONFIG_HOME='${TEST_XDG_CONFIG}'
+    source '${SHELLAC_BIN}'
+    shellac add-libpath '${new_lib}' >/dev/null 2>&1
+    printf '%s\n' \"\${SH_LIBPATH_ARRAY[@]}\"
+  "
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"${new_lib}"* ]]
+}
+
 # ---------------------------------------------------------------------------
 # rm-libpath
 # ---------------------------------------------------------------------------

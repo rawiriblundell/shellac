@@ -194,6 +194,9 @@ net_mac() {
         _mac_addr=$(ifconfig "${_iface}" 2>/dev/null | awk '$0 ~ /ether/ {print $2; exit}' | tr ':' '-')
       fi
     fi
+    # Validate: must look like XX-XX-XX-XX-XX-XX; tunnel/POINTOPOINT interfaces
+    # have no link-layer address and ip -brief link returns flags in that field.
+    [[ "${_mac_addr}" =~ ^([0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2}$ ]] || _mac_addr=""
     printf -- '%s\n' "${_mac_addr:--}"
     return 0
   fi
@@ -315,8 +318,8 @@ _net_nics_state() {
 _net_nics_mtu() {
   local _iface
   _iface="${1:?}"
-  if [[ -r "/sys/class/net/${_iface}/_mtu" ]]; then
-    printf -- '%s\n' "$(<"/sys/class/net/${_iface}/_mtu")"
+  if [[ -r "/sys/class/net/${_iface}/mtu" ]]; then
+    printf -- '%s\n' "$(<"/sys/class/net/${_iface}/mtu")"
     return 0
   fi
   if command -v ip >/dev/null 2>&1; then
@@ -332,15 +335,15 @@ _net_nics_mtu() {
 _net_nics_speed() {
   local _iface _speed _duplex _eth_speed _eth_duplex
   _iface="${1:?}"
-  if [[ -r "/sys/class/net/${_iface}/_speed" ]]; then
-    _speed=$(< "/sys/class/net/${_iface}/_speed")
-    # -1 = _speed not reported (common for virtual/loopback interfaces)
+  if [[ -r "/sys/class/net/${_iface}/speed" ]]; then
+    _speed=$(< "/sys/class/net/${_iface}/speed")
+    # -1 = speed not reported (common for virtual/loopback interfaces)
     if (( _speed > 0 )); then
       _duplex="-"
-      if [[ -r "/sys/class/net/${_iface}/_duplex" ]]; then
-        _duplex=$(< "/sys/class/net/${_iface}/_duplex")
+      if [[ -r "/sys/class/net/${_iface}/duplex" ]]; then
+        _duplex=$(< "/sys/class/net/${_iface}/duplex")
       fi
-      printf -- '%s Mb/s (%s _duplex)\n' "${_speed}" "${_duplex}"
+      printf -- '%s Mb/s (%s duplex)\n' "${_speed}" "${_duplex}"
       return 0
     fi
   fi
@@ -348,7 +351,7 @@ _net_nics_speed() {
     _eth_speed=$(ethtool "${_iface}" 2>/dev/null | awk '/Speed:/{print $2}')
     _eth_duplex=$(ethtool "${_iface}" 2>/dev/null | awk '/Duplex:/{print $2}')
     if [[ -n "${_eth_speed}" ]]; then
-      printf -- '%s (%s _duplex)\n' "${_eth_speed}" "${_eth_duplex:--}"
+      printf -- '%s (%s duplex)\n' "${_eth_speed}" "${_eth_duplex:--}"
       return 0
     fi
   fi

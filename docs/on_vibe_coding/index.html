@@ -1,0 +1,1621 @@
+<!doctype html>
+<html data-bs-theme="">
+
+<head>
+    <title>On vibe coding - Shellac
+    </title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    
+    <link rel="canonical" href="https://rawiriblundell.github.io/shellac/docs/on_vibe_coding/">
+    
+
+    
+    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon.ico">
+    
+    
+
+    <script>var base_url = '../..';</script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/root.min.css">
+    <link rel="stylesheet" href="../../assets/css/main.min.css">
+    <link rel="stylesheet" href="../../assets/css/media.min.css">
+    <link rel="stylesheet" href="../../assets/css/mkdocstrings.min.css">
+    <script src="../../search/main.js"></script>
+
+    
+    
+    
+    
+</head>
+
+<body>
+    <div class="container py-3">
+        <header>
+            <!-- block header -->
+<nav class="navbar navbar-expand-xl border-bottom">
+    <div class="container-fluid">
+        
+            <img class="logo" src="../../images/shellac-light.png">
+        
+
+        
+            <span class=" fs-4 title-color site-name" id="component-site-name" style="text-transform: uppercase;">Shellac</span>
+        
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsMenu"
+            aria-controls="navbarsMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse flex-column ml-auto" id="navbarsMenu">
+            <ul class="navbar-nav">
+
+                <!-- block menu -->
+                <li class="nav-item">
+                    <!-- block menu -->
+    
+        <li class="nav-item" id="component-menu">
+            <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="
+                            nav-link text-gray text-decoration-none" href="../..">[Home]</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class=" active 
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Docs]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../installation/" class="dropdown-item text-decoration-none ">Installation</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../structure/" class="dropdown-item text-decoration-none ">Structure</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../naming-conventions/" class="dropdown-item text-decoration-none ">Naming conventions</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../shell_scopes/" class="dropdown-item text-decoration-none ">Shell scopes</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../variable_precedence/" class="dropdown-item text-decoration-none ">Variable precedence</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../shellac_in_practice/" class="dropdown-item text-decoration-none ">Shellac in practice</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../musings/" class="dropdown-item text-decoration-none ">Musings</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../Other%20shell%20libraries/" class="dropdown-item text-decoration-none ">Other shell libraries</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../Use%20of%20AI/" class="dropdown-item text-decoration-none ">Use of AI</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="./" class="dropdown-item text-decoration-none  active ">On vibe coding</a>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Module Reference]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/" class="dropdown-item text-decoration-none ">Index</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Args &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/args/arg_count/" class="dropdown-item text-decoration-none ">Arg count</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/args/arg_grep/" class="dropdown-item text-decoration-none ">Arg grep</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Array &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/aggregate/" class="dropdown-item text-decoration-none ">Aggregate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/concat/" class="dropdown-item text-decoration-none ">Concat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/contains/" class="dropdown-item text-decoration-none ">Contains</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/dedupe/" class="dropdown-item text-decoration-none ">Dedupe</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/fill/" class="dropdown-item text-decoration-none ">Fill</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/functional/" class="dropdown-item text-decoration-none ">Functional</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/join/" class="dropdown-item text-decoration-none ">Join</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/length/" class="dropdown-item text-decoration-none ">Length</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/mapfile/" class="dropdown-item text-decoration-none ">Mapfile</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/random/" class="dropdown-item text-decoration-none ">Random</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/readlist/" class="dropdown-item text-decoration-none ">Readlist</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/remove/" class="dropdown-item text-decoration-none ">Remove</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/reverse/" class="dropdown-item text-decoration-none ">Reverse</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/set/" class="dropdown-item text-decoration-none ">Set</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/shift/" class="dropdown-item text-decoration-none ">Shift</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/slice/" class="dropdown-item text-decoration-none ">Slice</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/sort/" class="dropdown-item text-decoration-none ">Sort</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/array/toarray/" class="dropdown-item text-decoration-none ">Toarray</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Core &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/assert/" class="dropdown-item text-decoration-none ">Assert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/debug/" class="dropdown-item text-decoration-none ">Debug</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/die/" class="dropdown-item text-decoration-none ">Die</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/include/" class="dropdown-item text-decoration-none ">Include</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/is/" class="dropdown-item text-decoration-none ">Is</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/open/" class="dropdown-item text-decoration-none ">Open</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/requires/" class="dropdown-item text-decoration-none ">Requires</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/save_function/" class="dropdown-item text-decoration-none ">Save function</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/stacktrace/" class="dropdown-item text-decoration-none ">Stacktrace</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/status/" class="dropdown-item text-decoration-none ">Status</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/stdlib/" class="dropdown-item text-decoration-none ">Stdlib</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/trap/" class="dropdown-item text-decoration-none ">Trap</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/types/" class="dropdown-item text-decoration-none ">Types</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/core/wants/" class="dropdown-item text-decoration-none ">Wants</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Crypto &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/chacha20/" class="dropdown-item text-decoration-none ">Chacha20</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/genpasswd/" class="dropdown-item text-decoration-none ">Genpasswd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/genphrase/" class="dropdown-item text-decoration-none ">Genphrase</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/gpg/" class="dropdown-item text-decoration-none ">Gpg</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/random/" class="dropdown-item text-decoration-none ">Random</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssh_fingerprint/" class="dropdown-item text-decoration-none ">Ssh fingerprint</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_cert_join/" class="dropdown-item text-decoration-none ">Ssl cert join</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_cert_split/" class="dropdown-item text-decoration-none ">Ssl cert split</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_connect/" class="dropdown-item text-decoration-none ">Ssl connect</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_convert/" class="dropdown-item text-decoration-none ">Ssl convert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_decrypt/" class="dropdown-item text-decoration-none ">Ssl decrypt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_dgst/" class="dropdown-item text-decoration-none ">Ssl dgst</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_diag/" class="dropdown-item text-decoration-none ">Ssl diag</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_encrypt/" class="dropdown-item text-decoration-none ">Ssl encrypt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_generate/" class="dropdown-item text-decoration-none ">Ssl generate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_hpkp/" class="dropdown-item text-decoration-none ">Ssl hpkp</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_inspect/" class="dropdown-item text-decoration-none ">Ssl inspect</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_keystore/" class="dropdown-item text-decoration-none ">Ssl keystore</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_p12store/" class="dropdown-item text-decoration-none ">Ssl p12store</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_passwd/" class="dropdown-item text-decoration-none ">Ssl passwd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_pkcs12/" class="dropdown-item text-decoration-none ">Ssl pkcs12</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_ppk/" class="dropdown-item text-decoration-none ">Ssl ppk</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_validate_cert/" class="dropdown-item text-decoration-none ">Ssl validate cert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_view_cert/" class="dropdown-item text-decoration-none ">Ssl view cert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_view_csr/" class="dropdown-item text-decoration-none ">Ssl view csr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_view_key/" class="dropdown-item text-decoration-none ">Ssl view key</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/ssl_view_pkcs12/" class="dropdown-item text-decoration-none ">Ssl view pkcs12</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/crypto/uuid/" class="dropdown-item text-decoration-none ">Uuid</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Fs &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/archive/" class="dropdown-item text-decoration-none ">Archive</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/backup/" class="dropdown-item text-decoration-none ">Backup</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/base64/" class="dropdown-item text-decoration-none ">Base64</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/dir/" class="dropdown-item text-decoration-none ">Dir</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/ini_val/" class="dropdown-item text-decoration-none ">Ini val</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/io/" class="dropdown-item text-decoration-none ">Io</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/permissions/" class="dropdown-item text-decoration-none ">Permissions</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/fs/stat_file/" class="dropdown-item text-decoration-none ">Stat file</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Git &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/git/base/" class="dropdown-item text-decoration-none ">Base</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/git/releases/" class="dropdown-item text-decoration-none ">Releases</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Goodies &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/8ball/" class="dropdown-item text-decoration-none ">8ball</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/ansi_cursor/" class="dropdown-item text-decoration-none ">Ansi cursor</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/bash_loading_animations/" class="dropdown-item text-decoration-none ">Bash loading animations</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/hex/" class="dropdown-item text-decoration-none ">Hex</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/hr/" class="dropdown-item text-decoration-none ">Hr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/larson/" class="dropdown-item text-decoration-none ">Larson</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/linenoise/" class="dropdown-item text-decoration-none ">Linenoise</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/pretty/" class="dropdown-item text-decoration-none ">Pretty</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/rounded_box/" class="dropdown-item text-decoration-none ">Rounded box</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/spinner/" class="dropdown-item text-decoration-none ">Spinner</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/goodies/tui_prompts/" class="dropdown-item text-decoration-none ">Tui prompts</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Hash &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/hash/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Json &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/json/jsonprint/" class="dropdown-item text-decoration-none ">Jsonprint</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Line &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/behead/" class="dropdown-item text-decoration-none ">Behead</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/filter/" class="dropdown-item text-decoration-none ">Filter</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/first/" class="dropdown-item text-decoration-none ">First</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/indent/" class="dropdown-item text-decoration-none ">Indent</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/last/" class="dropdown-item text-decoration-none ">Last</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/line/" class="dropdown-item text-decoration-none ">Line</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/line_immutable/" class="dropdown-item text-decoration-none ">Line immutable</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/longest/" class="dropdown-item text-decoration-none ">Longest</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/printline/" class="dropdown-item text-decoration-none ">Printline</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/reverse_words/" class="dropdown-item text-decoration-none ">Reverse words</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/line/scroll/" class="dropdown-item text-decoration-none ">Scroll</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Markdown &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/markdown/markdown/" class="dropdown-item text-decoration-none ">Markdown</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Misc &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/aws_costs/" class="dropdown-item text-decoration-none ">Aws costs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/brew/" class="dropdown-item text-decoration-none ">Brew</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/brew_use_gnu_coreutils/" class="dropdown-item text-decoration-none ">Brew use gnu coreutils</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/greet/" class="dropdown-item text-decoration-none ">Greet</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/nagios_output/" class="dropdown-item text-decoration-none ">Nagios output</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/misc/strict/" class="dropdown-item text-decoration-none ">Strict</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Net &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/cidr/" class="dropdown-item text-decoration-none ">Cidr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/dns/" class="dropdown-item text-decoration-none ">Dns</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/download/" class="dropdown-item text-decoration-none ">Download</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/http_status_codes/" class="dropdown-item text-decoration-none ">Http status codes</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/interface/" class="dropdown-item text-decoration-none ">Interface</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/open_link/" class="dropdown-item text-decoration-none ">Open link</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/probe/" class="dropdown-item text-decoration-none ">Probe</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/query/" class="dropdown-item text-decoration-none ">Query</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/url/" class="dropdown-item text-decoration-none ">Url</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/net/validate/" class="dropdown-item text-decoration-none ">Validate</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Numbers &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/bitwise/" class="dropdown-item text-decoration-none ">Bitwise</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/calc/" class="dropdown-item text-decoration-none ">Calc</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/compare/" class="dropdown-item text-decoration-none ">Compare</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/math/" class="dropdown-item text-decoration-none ">Math</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/numeric/" class="dropdown-item text-decoration-none ">Numeric</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/primes/" class="dropdown-item text-decoration-none ">Primes</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/range/" class="dropdown-item text-decoration-none ">Range</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/rounding/" class="dropdown-item text-decoration-none ">Rounding</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/seq/" class="dropdown-item text-decoration-none ">Seq</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/stats/" class="dropdown-item text-decoration-none ">Stats</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/numbers/sum/" class="dropdown-item text-decoration-none ">Sum</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Path &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/path/base/" class="dropdown-item text-decoration-none ">Base</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/path/realpaths/" class="dropdown-item text-decoration-none ">Realpaths</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Sys &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/cpu/" class="dropdown-item text-decoration-none ">Cpu</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/cpuhogs/" class="dropdown-item text-decoration-none ">Cpuhogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/hogs/" class="dropdown-item text-decoration-none ">Hogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/info/" class="dropdown-item text-decoration-none ">Info</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/mem/" class="dropdown-item text-decoration-none ">Mem</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/memhogs/" class="dropdown-item text-decoration-none ">Memhogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/mount/" class="dropdown-item text-decoration-none ">Mount</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/os/" class="dropdown-item text-decoration-none ">Os</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/path_env/" class="dropdown-item text-decoration-none ">Path env</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/process/" class="dropdown-item text-decoration-none ">Process</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/service/" class="dropdown-item text-decoration-none ">Service</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/shell/" class="dropdown-item text-decoration-none ">Shell</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/signals/" class="dropdown-item text-decoration-none ">Signals</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/sleep/" class="dropdown-item text-decoration-none ">Sleep</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/swaphogs/" class="dropdown-item text-decoration-none ">Swaphogs</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/terminal_size/" class="dropdown-item text-decoration-none ">Terminal size</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/timeout/" class="dropdown-item text-decoration-none ">Timeout</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/uptime/" class="dropdown-item text-decoration-none ">Uptime</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/virtual/" class="dropdown-item text-decoration-none ">Virtual</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/sys/what/" class="dropdown-item text-decoration-none ">What</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Text &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/carve/" class="dropdown-item text-decoration-none ">Carve</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/case_convert/" class="dropdown-item text-decoration-none ">Case convert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/chr/" class="dropdown-item text-decoration-none ">Chr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/collapse/" class="dropdown-item text-decoration-none ">Collapse</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/color/" class="dropdown-item text-decoration-none ">Color</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/csvwrap/" class="dropdown-item text-decoration-none ">Csvwrap</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/dos2unix/" class="dropdown-item text-decoration-none ">Dos2unix</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/encode/" class="dropdown-item text-decoration-none ">Encode</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/first/" class="dropdown-item text-decoration-none ">First</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/hash/" class="dropdown-item text-decoration-none ">Hash</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/helmet/" class="dropdown-item text-decoration-none ">Helmet</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/len/" class="dropdown-item text-decoration-none ">Len</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/padding/" class="dropdown-item text-decoration-none ">Padding</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/predicates/" class="dropdown-item text-decoration-none ">Predicates</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/prefix_suffix/" class="dropdown-item text-decoration-none ">Prefix suffix</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/puts/" class="dropdown-item text-decoration-none ">Puts</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/quote/" class="dropdown-item text-decoration-none ">Quote</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/repeat/" class="dropdown-item text-decoration-none ">Repeat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/replace/" class="dropdown-item text-decoration-none ">Replace</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/rev/" class="dropdown-item text-decoration-none ">Rev</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/rot13/" class="dropdown-item text-decoration-none ">Rot13</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/rotate/" class="dropdown-item text-decoration-none ">Rotate</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/sanitize/" class="dropdown-item text-decoration-none ">Sanitize</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/shuffle/" class="dropdown-item text-decoration-none ">Shuffle</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/split/" class="dropdown-item text-decoration-none ">Split</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/style/" class="dropdown-item text-decoration-none ">Style</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/substr/" class="dropdown-item text-decoration-none ">Substr</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/tput/" class="dropdown-item text-decoration-none ">Tput</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/transform/" class="dropdown-item text-decoration-none ">Transform</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/trim/" class="dropdown-item text-decoration-none ">Trim</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/text/truncate/" class="dropdown-item text-decoration-none ">Truncate</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Time &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/date_arithmetic/" class="dropdown-item text-decoration-none ">Date arithmetic</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/date_ordinal/" class="dropdown-item text-decoration-none ">Date ordinal</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/dst/" class="dropdown-item text-decoration-none ">Dst</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/duration/" class="dropdown-item text-decoration-none ">Duration</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/epoch/" class="dropdown-item text-decoration-none ">Epoch</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/human_duration/" class="dropdown-item text-decoration-none ">Human duration</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/is_leap_year/" class="dropdown-item text-decoration-none ">Is leap year</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/month_end/" class="dropdown-item text-decoration-none ">Month end</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/seconds_to_hms/" class="dropdown-item text-decoration-none ">Seconds to hms</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/time/timestamp/" class="dropdown-item text-decoration-none ">Timestamp</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Units &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/units/bytes_to_human/" class="dropdown-item text-decoration-none ">Bytes to human</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/units/permissions/" class="dropdown-item text-decoration-none ">Permissions</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/units/temperature/" class="dropdown-item text-decoration-none ">Temperature</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Users &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/users/provision/" class="dropdown-item text-decoration-none ">Provision</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/users/query/" class="dropdown-item text-decoration-none ">Query</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Utils &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/choose/" class="dropdown-item text-decoration-none ">Choose</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/cmd/" class="dropdown-item text-decoration-none ">Cmd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/logging/" class="dropdown-item text-decoration-none ">Logging</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/mkcd/" class="dropdown-item text-decoration-none ">Mkcd</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/prompt/" class="dropdown-item text-decoration-none ">Prompt</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/repeat/" class="dropdown-item text-decoration-none ">Repeat</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/retry_backoff/" class="dropdown-item text-decoration-none ">Retry backoff</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/shuf/" class="dropdown-item text-decoration-none ">Shuf</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/tac/" class="dropdown-item text-decoration-none ">Tac</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/timealert/" class="dropdown-item text-decoration-none ">Timealert</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/timeout/" class="dropdown-item text-decoration-none ">Timeout</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/validate_config/" class="dropdown-item text-decoration-none ">Validate config</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/watch/" class="dropdown-item text-decoration-none ">Watch</a>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../api/utils/wrap/" class="dropdown-item text-decoration-none ">Wrap</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+            </ul>
+        </li>
+<!-- endblock -->
+                </li>
+                <!-- endblock -->
+
+                <!-- block search -->
+                <li class="nav-item">
+                    <a class="collapsed" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <div class="md-search-icon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+                    </a>
+                </li>
+                <!--  endblock -->
+
+                <!-- block source -->
+                <li class="nav-item">
+                    
+                        
+                            <!-- block source -->
+<div class="md-source source-detail">
+  <div class="md-source-repo-icon">
+    <i class="fa fa-github-alt" aria-hidden="true"></i>
+  </div>
+
+  <div class="md-source-repo-url">
+    <a href="https://github.com/rawiriblundell/shellac" class="md-source">
+        rawiriblundell/shellac
+    </a>
+
+    <ul class="md-source-repo-text">
+      <li>
+        <i class="fa fa-tag" aria-hidden="true"></i>
+        <img
+          alt="GitHub tag (latest by date)"
+          src="https://img.shields.io/github/v/tag/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+
+      <li>
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <img
+          alt="GitHub Repo stars"
+          src="https://img.shields.io/github/stars/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+
+      <li>
+        <i class="fa fa-code-fork" aria-hidden="true"></i>
+        <img
+          alt="GitHub forks"
+          src="https://img.shields.io/github/forks/rawiriblundell/shellac?color=white&label=%20&style=flat-square"
+        />
+      </li>
+    </ul>
+  </div>
+</div>
+<!--  endblock -->
+                        
+                    
+                </li>
+                <!--  endblock -->
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--  endblock -->
+        </header>
+
+        <main><!-- block search -->
+<div class="collapse" id="collapseExample">
+    <div role="search" class="search-box">
+        <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+            <input type="text" name="q" class="search-query"
+            placeholder="Search docs" title="Type search term here" />
+        </form>
+    </div>
+</div>
+<!-- endblock -->
+
+            
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 d-none d-md-block" id="component-sidebar">
+                        <!-- block sidebar -->
+<div class="navbar-expand-md" role="complementary">
+    
+    <div class="sidebar navbar-collapse collapse card">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#would-you-describe-this-as-vibe-coding" class="nav-link">Would you describe this as "vibe coding"?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#how-would-this-have-panned-out-had-it-been-vibe-coded" class="nav-link">How would this have panned out had it been vibe coded?</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="3"><a href="#the-technical-artifacts-look-superficially-similar-but-are-hollow" class="nav-link">The technical artifacts look superficially similar but are hollow</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#the-test-suite-would-be-a-liability-rather-than-an-asset" class="nav-link">The test suite would be a liability rather than an asset</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#the-compounding-problem" class="nav-link">The compounding problem</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#what-you-actually-provided-was-a-falsifiability-framework" class="nav-link">What you actually provided was a falsifiability framework</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- endblock -->
+                    </div>
+                    <div class="col-md-9 col-12" id="component-content">
+                        <!-- block content -->
+<section class="container post" id="component-content">
+    <article>
+        <header>
+            
+                <h1 class=" title" id="component-title">On vibe coding</h1>
+            
+        </header>
+        <p><p>This page captures a conversation that took place after a session in which
+Claude Code generated 84 bats test files covering shellac's full module
+surface, then worked through the bugs those tests found — 16 source fixes
+across arithmetic exit codes, circular namerefs, timezone-dependent date
+arithmetic, missing includes, and logic errors — until 1412 tests passed
+with 0 failures.</p>
+<p>The conversation started with a question about how to characterise the work.</p>
+<hr />
+<h2 id="would-you-describe-this-as-vibe-coding">Would you describe this as "vibe coding"?<a class="headerlink" href="#would-you-describe-this-as-vibe-coding" title="Permanent link">&para;</a></h2>
+<p><strong>Human:</strong> Would you describe our combined efforts as "vibe coding" or would
+the starting point of a human-built framework, with existing code, prepared for
+AI collaboration with the provision of style guides, deslop rules etc make 
+this count as something else?</p>
+<p><strong>Claude:</strong> Vibe coding, as Karpathy described it, is essentially: describe
+what you want, accept what comes out, move fast, don't read the code. The
+model drives; you just steer by feel.</p>
+<p>What we've been doing is structurally different in a few ways worth naming.</p>
+<p>You brought the constraints. The shell scripting standards, the deslop rules,
+the CLAUDE.md behavioural guidelines, the existing library architecture — these
+aren't things I generated. They represent years of your own opinions baked in
+before I touched anything. That's not vibe coding; that's a human-defined
+quality envelope I have to work inside.</p>
+<p>The debugging was diagnostic, not generative. Tracing <code>(( _i++ ))</code> returning
+exit 1, the circular nameref, the <code>shift 2</code> with insufficient args, the
+timezone artifact in <code>date -d</code> — these required understanding <em>why</em> something
+was wrong, not just accepting a replacement. That's closer to pair debugging
+than vibing.</p>
+<p>You reviewed before committing. You saw the diff summary and approved it. That's
+a checkpoint vibe coding explicitly skips.</p>
+<p>Where it does lean toward vibe coding: I wrote 84 test files in bulk without
+you reading each one. You trusted the output largely by running it. That part
+had vibe energy.</p>
+<p>So honestly — it's something in between. "AI-assisted engineering with a strong
+human frame" is closer. The framework, the taste, the standards were yours. I
+was a fast but supervised executor operating inside your constraints, not a
+driver you handed the wheel to.</p>
+<p>The distinction matters because the bugs I found are credible precisely because
+your codebase had real structure to test against. Vibe coding tends not to
+generate things worth finding bugs in.</p>
+<hr />
+<h2 id="how-would-this-have-panned-out-had-it-been-vibe-coded">How would this have panned out had it been vibe coded?<a class="headerlink" href="#how-would-this-have-panned-out-had-it-been-vibe-coded" title="Permanent link">&para;</a></h2>
+<p><strong>Human:</strong> How would this have panned out had it been completely vibe coded? What
+would be the differences in human behaviours and technical constraints?</p>
+<p><strong>Claude:</strong> The human behaviours would be different first.</p>
+<p>In vibe coding you don't bring a framework — you ask for one. "Write me a shell
+utility library" into a blank context. No style guide, no prior opinions, no
+CLAUDE.md. The AI makes every architectural decision because there's nothing to
+constrain it. You accept the first output because you have no basis to reject
+it. You might ask for changes ("make it more robust") but those are vibes, not
+specifications.</p>
+<p>Without your shell standards document, I'd have written code that looks
+competent and fails subtly. <code>set -euo pipefail</code> at the top of everything —
+because that's what AI-generated shell looks like. It reads as professional.
+It's cargo-culted from tutorials. And it would have made the actual bugs we
+found invisible, because the script just dies rather than returning a meaningful
+exit code. You'd see green tests or silent failures, never the real shape of
+the problem.</p>
+<p>The <code>(( _i++ ))</code> exit code bug wouldn't have been found because I'd have
+written the tests immediately after writing the code, sharing the same mental
+model. The test would assert whatever the broken code produces. Both would be
+"correct" relative to each other. The test suite passes. Nothing is actually
+verified.</p>
+<p>The date arithmetic would use <code>date -d</code> with the <code>+N day</code> syntax because that's
+what appears in blog posts and Stack Overflow answers from 2015. The tests would
+be written on the same machine, in the same timezone, and pass. They'd fail on a
+UTC server or a machine with a different locale, but you'd only find that out in
+production.</p>
+<h3 id="the-technical-artifacts-look-superficially-similar-but-are-hollow">The technical artifacts look superficially similar but are hollow<a class="headerlink" href="#the-technical-artifacts-look-superficially-similar-but-are-hollow" title="Permanent link">&para;</a></h3>
+<p>The structure would exist — modules, functions, naming — because I
+pattern-match on what a library looks like. But the load-bearing details would
+be wrong in ways that compound. Without your prohibition on <code>echo</code>, every
+function uses <code>echo</code> and the <code>-n</code>/<code>-e</code> behaviour is undefined across shells.
+Without <code>command -v</code> over <code>which</code>, the code silently breaks on Alpine. Without
+the <code>local</code> declaration discipline, functions leak globals in non-obvious ways
+that only matter when two functions share a variable name.</p>
+<p>The namerefs would have been written <code>local -n arr="$1"</code> because that's the
+documented syntax. The circular reference when the caller names their variable
+<code>arr</code> is a second-order problem that only appears under specific conditions.
+Vibe coding generates the happy path. Your standards document forced the
+defensive pattern.</p>
+<h3 id="the-test-suite-would-be-a-liability-rather-than-an-asset">The test suite would be a liability rather than an asset<a class="headerlink" href="#the-test-suite-would-be-a-liability-rather-than-an-asset" title="Permanent link">&para;</a></h3>
+<p>This is the sharpest difference. The 1412 tests we ended up with found real
+bugs because the tests were written with some independence from the
+implementation — I was working from the documented interface, not from the code
+internals. Even so, several tests had to be fixed because they shared my
+assumptions about stdin, tty detection, and arithmetic exit codes.</p>
+<p>In a fully vibe-coded session, I'd write the code, then immediately write tests
+for it. The tests would encode my bugs as expected behaviour. <code>str_len ""</code>
+reading from stdin instead of returning 0 — a test written right after would
+probably pipe input to it and call that correct. The circular nameref in
+<code>array_shift</code> would have a test that never uses <code>arr</code> as the variable name, so
+it never triggers. Green across the board. Confidence with no foundation.</p>
+<h3 id="the-compounding-problem">The compounding problem<a class="headerlink" href="#the-compounding-problem" title="Permanent link">&para;</a></h3>
+<p>Vibe coding tends to be iterative in a specific way: something breaks in use,
+you describe the symptom, the AI patches it locally without understanding the
+root cause. The <code>dos2unix</code> tmp file bug (<code>/tmp/${full_path}</code> creating
+<code>/tmp//tmp/filename</code>) would eventually surface. You'd say "dos2unix is broken on
+files in /tmp." I'd add a <code>basename</code> call to the temp file name. But I wouldn't
+notice the <code>(( rc++ &gt; 0 ))</code> arithmetic exit code problem in the same function,
+because you only described one symptom. That bug would sit there until someone
+catches a successful conversion returning exit 1 in a script where they happened
+to check <code>$?</code>.</p>
+<p>Your style guide prevented a whole class of these by making the arithmetic
+convention explicit and consistent. Without it, every function author (me, in
+this case) makes the <code>(( expr ))</code> decision fresh each time, and gets it wrong at
+unpredictable intervals.</p>
+<h3 id="what-you-actually-provided-was-a-falsifiability-framework">What you actually provided was a falsifiability framework<a class="headerlink" href="#what-you-actually-provided-was-a-falsifiability-framework" title="Permanent link">&para;</a></h3>
+<p>Vibe coding produces code that's hard to be wrong about because there's no prior
+definition of correct. Your standards, your architecture, your existing code —
+these created a definition of correct that existed before I wrote anything.
+That's what made the bugs findable rather than definitional.</p>
+<p>The difference isn't really about AI capability. It's about whether the human
+shows up with a standard the AI has to meet, or whether the human lets the AI
+define the standard it's measured against.</p></p>
+    </article>
+</section>
+<!-- endblock -->
+                    </div>
+                </div>
+            </div>
+            
+
+        </main>
+
+        
+        <!-- block preview -->
+    <div class="preview row row-cols-md-3 text-center pt-md-3" id="component-preview">
+        <div class="col themed-grid-col">
+            <a rel="prev" href="../Use%20of%20AI/" class="nav-link">
+                <i class="fa fa-arrow-left"></i> Previous
+            </a>
+        </div>
+        <div class="col themed-grid-col"></div>
+        <div class="col themed-grid-col">
+            <a rel="next" href="../../api/" class="nav-link">
+                Next <i class="fa fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+<!-- endblock -->
+        
+
+        
+        <!-- block footer -->
+<footer class="pt-4 my-md-5 pt-md-5 border-top" id="component-footer">
+    <div class="row">
+        <div class="col-12 col-md">
+                <!-- block copyright -->
+
+    <small class="d-block mb-3">
+        Made with
+        <a href="https://github.com/FernandoCelmer/mkdocs-simple-blog" target="_blank" rel="noopener">
+            Simple Blog for MkDocs
+        </a>
+    </small>
+
+<!-- endblock -->
+        </div>
+    </div>
+</footer>
+<!-- endblock -->
+        
+    </div>
+
+    <script src="../../assets/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/js/main.min.js"></script>
+    <script src="../../search/main.js" defer></script>
+
+</body>
+
+</html>

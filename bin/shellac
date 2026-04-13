@@ -72,105 +72,82 @@ SHELLAC_CONFIG_DIR="${XDG_CONFIG_HOME:-${HOME}/.config}/shellac"
 SHELLAC_PATHS_CONF="${SHELLAC_CONFIG_DIR}/paths.conf"
 SHELLAC_CONFPATHS_CONF="${SHELLAC_CONFIG_DIR}/confpaths.conf"
 
-# If SH_LIBPATH is already defined in the environment, use it directly.
-# This allows a site admin to pre-configure SH_LIBPATH via e.g.
-# /etc/profile.d/00-shellac.sh, which can also add /opt/shellac/bin to PATH.
+# Build SH_LIBPATH from all sources in priority order:
+#   1. SH_LIBPATH inherited from the environment (e.g. set in .bashrc or profile.d)
+#   2. paths.conf — paths registered via 'shellac add-libpath' or 'shellac add-lib'
+#   3. Default candidate locations (self-relative, XDG, standard prefixes)
+#   4. FPATH / fpath (ksh/zsh function autoload paths)
+# Candidates are existence-checked and deduplicated; order is preserved.
+_candidate_paths=()
+
+# 1. Seed from environment if already set
 if [ -n "${SH_LIBPATH}" ]; then
-  sh_stack_add "SH_LIBPATH: already set in environment, skipping discovery"
+  sh_stack_add "SH_LIBPATH: seeding from environment: ${SH_LIBPATH}"
   # bashism: 'read -ra' and herestring require bash; acceptable as this file requires bash
-  IFS=':' read -ra SH_LIBPATH_ARRAY <<< "${SH_LIBPATH}"
-  # Always append paths.conf entries even when SH_LIBPATH was pre-set, so that
-  # 'shellac add-libpath' and 'shellac add-lib' work correctly across sessions.
-  if [ -r "${SHELLAC_PATHS_CONF}" ]; then
-    while IFS= read -r _conf_path; do
-      case "${_conf_path}" in
-        ('#'*|'') continue ;;
-      esac
-      case ":${SH_LIBPATH}:" in
-        (*:"${_conf_path}":*)
-          sh_stack_add "SH_LIBPATH: ${_conf_path} already present, skipping"
-        ;;
-        (*)
-          if [ -d "${_conf_path}" ]; then
-            sh_stack_add "SH_LIBPATH: appending paths.conf entry ${_conf_path}"
-            SH_LIBPATH="${SH_LIBPATH}:${_conf_path}"
-            SH_LIBPATH_ARRAY+=( "${_conf_path}" )
-          fi
-        ;;
-      esac
-    done < "${SHELLAC_PATHS_CONF}"
-    unset -v _conf_path
-  fi
-else
-  # Derive candidate from this file's own location (bin/shellac → lib/sh).
-  # Handles dev clones, custom prefixes, and direct profile.d sourcing without
-  # any configuration.  Falls through gracefully if the path doesn't resolve.
-  _self_libpath="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
-  _self_libpath="${_self_libpath%/bin}/lib/sh"
-
-  # Potential basepaths for where our libraries might be placed
-  POSSIBLE_SH_LIBPATHS=(
-    "${_self_libpath}"
-    "${XDG_DATA_HOME:-${HOME}/.local/share}/shellac/lib/sh"
-    "${HOME}/.local/lib/sh"
-    /opt/shellac/lib/sh
-    /usr/local/lib/sh
-  )
-  unset -v _self_libpath
-
-  # Append shellac/lib/sh under each dir in XDG_DATA_DIRS
-  # bashism: 'read -ra' and herestring for splitting colon-separated var
-  IFS=':' read -ra _xdg_dirs <<< "${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
-  for _xdg_dir in "${_xdg_dirs[@]}"; do
-    POSSIBLE_SH_LIBPATHS+=( "${_xdg_dir}/shellac/lib/sh" )
-  done
-  unset -v _xdg_dirs _xdg_dir
-
-  # Append any paths from the user's paths.conf
-  if [ -r "${SHELLAC_PATHS_CONF}" ]; then
-    while IFS= read -r _conf_path; do
-      case "${_conf_path}" in
-        ('#'*|'') continue ;;
-      esac
-      POSSIBLE_SH_LIBPATHS+=( "${_conf_path}" )
-    done < "${SHELLAC_PATHS_CONF}"
-    unset -v _conf_path
-  fi
-
-  # we dynamically build SH_LIBPATH as a var and an array
-  unset -v SH_LIBPATH SH_LIBPATH_ARRAY
-  for _path in "${POSSIBLE_SH_LIBPATHS[@]}"; do
-    if [ -d "${_path}" ]; then
-      sh_stack_add "SH_LIBPATH: checking if ${_path} exists... found!"
-      SH_LIBPATH="${SH_LIBPATH}:${_path}"
-      SH_LIBPATH_ARRAY+=( "${_path}" )
-    else
-      sh_stack_add "SH_LIBPATH: checking if ${_path} exists... not found."
-    fi
-  done
-  unset -v _path
-  # Remove any leading colons from the construction process and export
-  SH_LIBPATH="${SH_LIBPATH#:}"
-
-  # If FPATH or fpath are present in the environment, append them
-  if (( ${#FPATH} > 0 )); then
-    SH_LIBPATH="${SH_LIBPATH}:${FPATH}"
-  fi
-
-  # shellcheck disable=SC2154  # fpath is a zsh array variable; may be set in environment
-  if (( ${#fpath} > 0 )); then
-    SH_LIBPATH="${SH_LIBPATH}:${fpath}"
-  fi
-
-  # Now, de-duplicate
-  SH_LIBPATH=$(printf -- '%s\n' "${SH_LIBPATH}" | tr ':' '\n' | awk '!s[$0]++' | paste -sd ':' -)
-
-  # Rebuild the array from the deduplicated string so the two stay in sync
-  IFS=':' read -ra SH_LIBPATH_ARRAY <<< "${SH_LIBPATH}"
-
-  # Finally, export
-  export SH_LIBPATH
+  IFS=':' read -ra _env_libpath <<< "${SH_LIBPATH}"
+  _candidate_paths+=( "${_env_libpath[@]}" )
+  unset -v _env_libpath
 fi
+
+# 2. Append paths.conf entries
+if [ -r "${SHELLAC_PATHS_CONF}" ]; then
+  while IFS= read -r _conf_path; do
+    case "${_conf_path}" in
+      ('#'*|'') continue ;;
+    esac
+    _candidate_paths+=( "${_conf_path}" )
+  done < "${SHELLAC_PATHS_CONF}"
+  unset -v _conf_path
+fi
+
+# 3. Append default candidates
+# Derive self-relative path from this file's location (bin/shellac → lib/sh)
+_self_libpath="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
+_self_libpath="${_self_libpath%/bin}/lib/sh"
+_candidate_paths+=(
+  "${_self_libpath}"
+  "${XDG_DATA_HOME:-${HOME}/.local/share}/shellac/lib/sh"
+  "${HOME}/.local/lib/sh"
+  /opt/shellac/lib/sh
+  /usr/local/lib/sh
+)
+unset -v _self_libpath
+
+# bashism: 'read -ra' and herestring for splitting colon-separated var
+IFS=':' read -ra _xdg_dirs <<< "${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+for _xdg_dir in "${_xdg_dirs[@]}"; do
+  _candidate_paths+=( "${_xdg_dir}/shellac/lib/sh" )
+done
+unset -v _xdg_dirs _xdg_dir
+
+# 4. Append FPATH / fpath if present
+if (( ${#FPATH} > 0 )); then
+  IFS=':' read -ra _fpath_dirs <<< "${FPATH}"
+  _candidate_paths+=( "${_fpath_dirs[@]}" )
+  unset -v _fpath_dirs
+fi
+# shellcheck disable=SC2154  # fpath is a zsh array variable; may be set in environment
+if (( ${#fpath} > 0 )); then
+  _candidate_paths+=( "${fpath}" )
+fi
+
+# Existence-check all candidates and build SH_LIBPATH
+unset -v SH_LIBPATH SH_LIBPATH_ARRAY
+for _path in "${_candidate_paths[@]}"; do
+  if [ -d "${_path}" ]; then
+    sh_stack_add "SH_LIBPATH: ${_path} exists, adding"
+    SH_LIBPATH="${SH_LIBPATH:+${SH_LIBPATH}:}${_path}"
+    SH_LIBPATH_ARRAY+=( "${_path}" )
+  else
+    sh_stack_add "SH_LIBPATH: ${_path} not found, skipping"
+  fi
+done
+unset -v _path _candidate_paths
+
+# Deduplicate (preserves first occurrence) and rebuild array to match
+SH_LIBPATH=$(printf -- '%s\n' "${SH_LIBPATH}" | tr ':' '\n' | awk '!s[$0]++' | paste -sd ':' -)
+IFS=':' read -ra SH_LIBPATH_ARRAY <<< "${SH_LIBPATH}"
+export SH_LIBPATH
 
 # Check the length of the var again and fail out if it's empty
 if (( "${#SH_LIBPATH}" == 0 )); then

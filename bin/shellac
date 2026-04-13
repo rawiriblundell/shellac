@@ -379,6 +379,11 @@ _shellac_add_libpath() {
     return 1
   }
   printf -- 'shellac: added %s to %s\n' "${new_path}" "${SHELLAC_PATHS_CONF}"
+
+  # Update the live session so include() can find the new path immediately
+  # without requiring a re-source of shellac.
+  SH_LIBPATH="${SH_LIBPATH}:${new_path}"
+  SH_LIBPATH_ARRAY+=( "${new_path}" )
 }
 
 # @internal

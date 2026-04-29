@@ -37,6 +37,14 @@ _SHELLAC_LOADED_text_style=1
 text_blink() {
   local LC_CTYPE
   LC_CTYPE=C
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- '\033[5m%s\033[0m\n' "${REPLY}"
@@ -56,6 +64,14 @@ text_blink() {
 text_bold() {
   local LC_CTYPE
   LC_CTYPE=C
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   # If an arg is given and it's readable, then it's a file
   # Treat it line by line.  This caters for stdin as well
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
@@ -123,6 +139,14 @@ text_center() {
 text_faint() {
   local LC_CTYPE
   LC_CTYPE=C
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- '\033[2m%s\033[0m\n' "${REPLY}"
@@ -144,6 +168,14 @@ text_faint() {
 text_invert() {
   local LC_CTYPE
   LC_CTYPE=C
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- '\033[7m%s\033[0m\n' "${REPLY}"
@@ -163,6 +195,14 @@ text_invert() {
 text_italic() {
   local LC_CTYPE
   LC_CTYPE=C
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- '\033[3m%s\033[0m\n' "${REPLY}"
@@ -255,6 +295,14 @@ text_printline() {
 text_strike() {
   local LC_CTYPE
   LC_CTYPE=C
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- '\033[9m%s\033[0m\n' "${REPLY}"
@@ -275,6 +323,14 @@ text_strike() {
 text_underline() {
   local LC_CTYPE
   LC_CTYPE=C
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- '\033[4m%s\033[0m\n' "${REPLY}"
@@ -332,6 +388,14 @@ text_fg() {
     ;;
   esac
   shift
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- "${_fg_colour}%s\033[0m\n" "${REPLY}"
@@ -374,6 +438,14 @@ text_bg() {
     ;;
   esac
   shift
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- "${_bg_colour}%s\033[0m\n" "${REPLY}"
@@ -425,6 +497,14 @@ text_rgb.fg() {
   esac
   shift 3
   _fg_colour="\033[38;2;${_fg_red};${_fg_green};${_fg_blue}m"
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- "${_fg_colour}%s\033[0m\n" "${REPLY}"
@@ -476,6 +556,14 @@ text_rgb.bg() {
   esac
   shift 3
   _bg_colour="\033[48;2;${_bg_red};${_bg_green};${_bg_blue}m"
+  if [ -n "${NO_COLOR+x}" ]; then
+    if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
+      cat -- "${1:-/dev/stdin}"
+    else
+      printf -- '%s\n' "${*}"
+    fi
+    return 0
+  fi
   if [[ -r "${1}" ]]||[[ -z "${1}" ]]; then
     while read -r; do
       printf -- "${_bg_colour}%s\033[0m\n" "${REPLY}"

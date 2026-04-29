@@ -34,7 +34,7 @@ export _self_pid
 # @stderr Formatted error message prefixed with script name and line number
 # @exitcode 1 Always (via SIGTERM trap)
 cmd_die() {
-    if [ -t 2 ]; then
+    if [ -t 2 ] && [ -z "${NO_COLOR+x}" ]; then
         printf '\e[31;1m====>%s\e[0m\n' "${0}:(${LINENO}): ${*}" >&2
     else
         printf -- '====>%s\n' "${0}:(${LINENO}): ${*}" >&2
@@ -53,7 +53,7 @@ die() { cmd_die "${@}"; }
 # @stderr Formatted warning message prefixed with script name and line number
 # @exitcode 0 Always
 cmd_warn() {
-    if [ -t 2 ]; then
+    if [ -t 2 ] && [ -z "${NO_COLOR+x}" ]; then
         printf '\e[33;1m====>%s\e[0m\n' "${0}:(${LINENO}): ${*}" >&2
     else
         printf -- '====>%s\n' "${0}:(${LINENO}): ${*}" >&2

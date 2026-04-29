@@ -76,6 +76,9 @@ text_COLOR_BG_rgb() {
                                    "${3:?text_COLOR_BG_rgb: blue required}"
 }
 
+# Honour https://no-color.org/ — skip escape-sequence constants if set
+[ -n "${NO_COLOR+x}" ] && return 0
+
 # Define the standard 8 Colors
 COLOR_FG_BLACK='\x1b[1;30m'
 COLOR_FG_RED='\x1b[1;31m'

@@ -50,6 +50,7 @@ if tput ce 2>/dev/null; then
       (rmso)          ctput-null rmso  || ctput se;;
       (rmul)          ctput-null rmul  || ctput ue;;
       (setaf)
+        [ -n "${NO_COLOR+x}" ] && return 0
         case $(uname) in
           (FreeBSD)   ctput AF "${2}";;
           (OpenBSD)   ctput AF "${2}" 0 0;;
@@ -57,6 +58,7 @@ if tput ce 2>/dev/null; then
         esac
       ;;
       (setab)
+        [ -n "${NO_COLOR+x}" ] && return 0
         case $(uname) in
           (FreeBSD)   ctput AB "${2}";;
           (OpenBSD)   ctput AB "${2}" 0 0;;

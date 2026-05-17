@@ -495,6 +495,10 @@ Some light reading into the matter:
 * http://www.oilshell.org/blog/2020/10/osh-features.html
 * https://fvue.nl/wiki/Bash:_Error_handling
 
+And some light watching into the matter:
+
+* https://www.youtube.com/watch?v=4Jo3Ml53kvc
+
 Now don't get me wrong: I recognise and genuinely like the *intent* behind the Unofficial Strict Mode.  But its subcomponents are so broken that the use of this mode often causes more trouble than it's worth.
 
 And if you look at the [original blog post](https://redsymbol.net/articles/unofficial-bash-strict-mode/) describing it, note that more than half of the page is dedicated to documenting workarounds for its flaws.

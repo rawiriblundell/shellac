@@ -219,3 +219,19 @@ teardown() {
   [ "${status}" -ne 0 ]
   [[ "${output}" == *"must be sourced"* ]]
 }
+
+@test "executing shellac with a subcommand other than init fails" {
+  run bash "${SHELLAC_BIN}" modules
+  [ "${status}" -ne 0 ]
+  [[ "${output}" == *"must be sourced"* ]]
+}
+
+@test "executing shellac init runs init and exits" {
+  [ -w /etc/profile.d ] && skip "/etc/profile.d is writable; test would modify the system"
+  touch "${TEST_TMPDIR}/.bashrc"
+  run env HOME="${TEST_TMPDIR}" bash "${SHELLAC_BIN}" init
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"per-user install"* ]]
+  # init resolves symlinks with 'pwd -P', so compare against the physical path
+  grep -qF "export SH_LIBPATH=\"$(cd "${SHELLAC_LIB}" && pwd -P)\"" "${TEST_TMPDIR}/.bashrc"
+}

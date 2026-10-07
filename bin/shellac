@@ -30,9 +30,16 @@ else
   case "${0##*/}" in (sh|-sh|dash|-dash) SHELLAC_LOADED=1 ;; esac
 fi
 
+# Executing is permitted for 'init' only, because sudo cannot call shell
+# functions: 'sudo /opt/shellac/bin/shellac init'.  It runs at the end of file.
 if [ "${SHELLAC_LOADED}" -eq 0 ]; then
-  printf -- '%s\n' "Error: shellac must be sourced, not executed" >&2
-  exit 1
+  case "${1:-}" in
+    (init) _shellac_exec_init=1 ;;
+    (*)
+      printf -- '%s\n' "Error: shellac must be sourced, not executed (except: shellac init)" >&2
+      exit 1
+    ;;
+  esac
 fi
 
 # Record init time for relative timestamps in the stack trace
@@ -929,6 +936,8 @@ _shellac_init() {
         printf -- 'shellac init: failed to write %s\n' "${target_file}" >&2
         return 1
       }
+      # Every user's login shell must read this; don't inherit a hardened umask
+      chmod 0644 "${target_file}"
       printf -- 'shellac init: created %s\n' "${target_file}"
       changed=$(( changed + 1 ))
     else
@@ -1052,3 +1061,9 @@ shellac() {
 # Make color and text-effect variables available immediately in interactive shells.
 # $- contains 'i' when the shell is interactive; non-interactive scripts are unaffected.
 [[ $- = *i* ]] && include "text/color"
+
+# Executed as 'shellac init' (see the execution guard at the top of this file)
+if [ "${_shellac_exec_init:-0}" -eq 1 ]; then
+  _shellac_init
+  exit "$?"
+fi

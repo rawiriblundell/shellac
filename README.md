@@ -12,8 +12,13 @@ The missing library ecosystem for shell
 ## Install
 
 ```bash
-git clone https://github.com/rawiriblundell/shellac /opt/shellac
-source /opt/shellac/bin/shellac
+# System-wide
+sudo sh -c 'umask 022 && git clone https://github.com/rawiriblundell/shellac /opt/shellac'
+sudo /opt/shellac/bin/shellac init
+
+# Per-user
+git clone https://github.com/rawiriblundell/shellac "${HOME}/.local/share/shellac"
+source "${HOME}/.local/share/shellac/bin/shellac"
 shellac init
 ```
 

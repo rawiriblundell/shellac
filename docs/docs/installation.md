@@ -7,11 +7,33 @@ No dodgy `curl | bash` invocations!
 
 ## Quick install
 
+System-wide:
+
 ```bash
-# System-wide (requires sudo for the clone)
-sudo git clone https://github.com/rawiriblundell/shellac /opt/shellac
-source /opt/shellac/bin/shellac
+sudo sh -c 'umask 022 && git clone https://github.com/rawiriblundell/shellac /opt/shellac'
+sudo /opt/shellac/bin/shellac init
+```
+
+Per-user:
+
+```bash
+git clone https://github.com/rawiriblundell/shellac "${HOME}/.local/share/shellac"
+source "${HOME}/.local/share/shellac/bin/shellac"
 shellac init
+```
+
+`bin/shellac` is normally sourced, but `init` can also be executed directly,
+which is what lets it run under `sudo`.  Use the full path, because `sudo`'s
+`secure_path` won't include `/opt/shellac/bin`.
+
+The explicit `umask 022` matters on hardened hosts.  `sudo` does not reset
+your umask, so a CIS/STIG-style `027` carries through to the clone and leaves
+`/opt/shellac` unreadable to everyone except root.  The symptom is
+`bash: /opt/shellac/bin/shellac: Permission denied`.  To repair an existing
+clone:
+
+```bash
+sudo chmod -R a+rX /opt/shellac
 ```
 
 `shellac init` detects whether `/etc/profile.d/` is writable and configures a
@@ -50,8 +72,10 @@ If you prefer to configure the environment yourself rather than running
 ### System-wide
 
 ```bash
-sudo git clone https://github.com/rawiriblundell/shellac /opt/shellac
+sudo sh -c 'umask 022 && git clone https://github.com/rawiriblundell/shellac /opt/shellac'
 ```
+
+See [Quick install](#quick-install) for why the umask is set explicitly.
 
 Create `/etc/profile.d/00-shellac.sh`:
 
@@ -137,9 +161,13 @@ ls "${SH_LIBPATH}"
 ## Keeping up to date
 
 ```bash
-git -C /opt/shellac pull        # system-wide
-git -C ~/.local/share/shellac pull   # per-user
+sudo sh -c 'umask 022 && git -C /opt/shellac pull'   # system-wide
+git -C ~/.local/share/shellac pull                    # per-user
 ```
+
+The system-wide clone is owned by root, so pull as root, and pin the umask
+for the same reason as the initial clone.  A plain `git pull` as your own user
+fails with git's "detected dubious ownership" error.
 
 No rebuild needed after a pull.
 
